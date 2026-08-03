@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Don Bosco Hostel Manager</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;}
+
+/* LOGIN */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);}
+.login-card{background:#fff;border-radius:28px;padding:48px 42px 36px;width:100%;max-width:420px;box-shadow:0 40px 100px rgba(0,0,0,.6);text-align:center;animation:loginFadeIn .4s ease;}
+@keyframes loginFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{font-size:3.6em;margin-bottom:10px;display:block;}
+.login-card h2{font-size:1.75em;color:#1a1a2e;margin-bottom:4px;font-weight:800;}
+.login-card .login-sub{color:#888;margin-bottom:28px;font-size:.9em;}
+.login-input-wrap{position:relative;margin-bottom:13px;}
+.login-input-wrap .input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.1em;pointer-events:none;}
+.login-card input{width:100%;padding:13px 16px 13px 42px;border:2px solid #eee;border-radius:12px;font-size:.97em;transition:.3s;font-family:inherit;color:#1a1a2e;background:#fafafa;}
+.login-card input:focus{outline:none;border-color:#667eea;background:#fff;box-shadow:0 0 0 4px rgba(102,126,234,.12);}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:12px;font-size:1em;font-weight:700;cursor:pointer;transition:.3s;margin-top:4px;letter-spacing:.3px;}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(102,126,234,.5);}
+.login-btn:active{transform:none;}
+.login-err{color:#dc3545;font-size:.85em;margin-top:10px;display:none;padding:8px 12px;background:#fff5f5;border-radius:8px;border:1px solid #fecaca;}
+.login-divider{display:flex;align-items:center;gap:10px;margin:20px 0 16px;color:#ccc;font-size:.78em;}
+.login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:#eee;}
+.login-credentials{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.cred-card{background:linear-gradient(135deg,#f8f0ff,#eef0ff);border:1.5px solid #e0e7ff;border-radius:12px;padding:12px 14px;text-align:left;cursor:pointer;transition:.2s;}
+.cred-card:hover{border-color:#667eea;transform:translateY(-2px);box-shadow:0 4px 12px rgba(102,126,234,.15);}
+.cred-card .cred-role{font-size:.7em;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#667eea;margin-bottom:5px;}
+.cred-card .cred-row{display:flex;justify-content:space-between;align-items:center;font-size:.82em;margin-bottom:3px;}
+.cred-card .cred-label{color:#888;}
+.cred-card .cred-val{font-family:monospace;font-weight:700;color:#1a1a2e;background:#fff;padding:2px 7px;border-radius:5px;font-size:.95em;}
+.cred-note{margin-top:14px;font-size:.75em;color:#bbb;text-align:center;}
+
+/* APP SHELL */
+#appScreen{display:none;}
+.app-wrap{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{width:240px;min-width:240px;background:#1a1a2e;display:flex;flex-direction:column;padding:0 0 20px;}
+.sidebar-logo{padding:24px 20px 16px;border-bottom:1px solid rgba(255,255,255,.08);}
+.sidebar-logo h2{color:#fff;font-size:1.1em;font-weight:800;}
+.sidebar-logo p{color:#aaa;font-size:.75em;margin-top:2px;}
+.sidebar-user{padding:14px 20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.08);}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.95em;}
+.user-name{color:#fff;font-size:.88em;font-weight:600;}
+.user-role{color:#aaa;font-size:.75em;}
+.nav{flex:1;padding:12px 0;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 20px;color:#aaa;cursor:pointer;transition:.2s;font-size:.92em;border-left:3px solid transparent;}
+.nav-item:hover{color:#fff;background:rgba(255,255,255,.06);}
+.nav-item.active{color:#fff;background:rgba(102,126,234,.2);border-left-color:#667eea;}
+.nav-icon{font-size:1.1em;width:20px;text-align:center;}
+.sidebar-bottom{padding:12px 20px;}
+.logout-btn{width:100%;padding:10px;background:rgba(220,53,69,.15);color:#ff6b7a;border:1px solid rgba(220,53,69,.3);border-radius:8px;cursor:pointer;font-size:.88em;font-weight:600;transition:.2s;}
+.logout-btn:hover{background:rgba(220,53,69,.3);}
+
+/* MAIN */
+.main{flex:1;overflow-y:auto;background:#f0f2f8;}
+.topbar{background:#fff;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,.06);position:sticky;top:0;z-index:100;}
+.topbar-title{font-size:1.25em;font-weight:700;color:#1a1a2e;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.notif-btn{position:relative;background:none;border:none;font-size:1.3em;cursor:pointer;padding:6px;}
+.notif-badge{position:absolute;top:2px;right:2px;width:16px;height:16px;background:#dc3545;border-radius:50%;font-size:.65em;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.search-box{padding:9px 14px;border:2px solid #eee;border-radius:10px;font-size:.9em;width:220px;transition:.3s;}
+.search-box:focus{outline:none;border-color:#667eea;}
+
+/* PAGES */
+.page{display:none;padding:24px 28px;}
+.page.active{display:block;animation:fadeUp .25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.page-title{font-size:1.4em;font-weight:800;color:#1a1a2e;margin-bottom:20px;}
+
+/* DASHBOARD CARDS */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+.dash-card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);display:flex;align-items:center;gap:14px;}
+.dash-icon{width:50px;height:50px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.5em;flex-shrink:0;}
+.dash-icon.purple{background:#f0edff;}
+.dash-icon.pink{background:#fff0f6;}
+.dash-icon.blue{background:#eef6ff;}
+.dash-icon.green{background:#edfff5;}
+.dash-icon.orange{background:#fff7ed;}
+.dash-val{font-size:1.9em;font-weight:800;color:#1a1a2e;line-height:1;}
+.dash-lbl{font-size:.8em;color:#888;margin-top:3px;}
+
+/* SECTION CARD */
+.card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:20px;}
+.card-title{font-size:1em;font-weight:700;color:#1a1a2e;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.card-title span{font-size:.82em;color:#888;font-weight:400;}
+
+/* FORMS */
+.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
+.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:140px;}
+.fg label{font-size:.82em;font-weight:600;color:#555;}
+.fg input,.fg select,.fg textarea{padding:10px 13px;border:2px solid #e8e8e8;border-radius:9px;font-size:.93em;transition:.25s;font-family:inherit;}
+.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:#667eea;}
+
+/* BUTTONS */
+.btn{padding:10px 20px;border:none;border-radius:9px;font-size:.9em;font-weight:700;cursor:pointer;transition:.2s;font-family:inherit;}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15);}
+.btn-primary{background:#667eea;color:#fff;}
+.btn-success{background:#28a745;color:#fff;}
+.btn-warning{background:#fd7e14;color:#fff;}
+.btn-danger{background:#dc3545;color:#fff;}
+.btn-info{background:#17a2b8;color:#fff;}
+.btn-gray{background:#6c757d;color:#fff;}
+.btn-sm{padding:6px 12px;font-size:.82em;}
+
+/* TABLES */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:.9em;}
+thead th{background:#f8f9ff;color:#555;font-weight:700;padding:11px 14px;text-align:left;border-bottom:2px solid #eee;}
+tbody td{padding:10px 14px;border-bottom:1px solid #f0f0f0;color:#333;}
+tbody tr:hover td{background:#fafbff;}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.78em;font-weight:700;}
+.badge-girls{background:#ffe0ec;color:#c44569;}
+.badge-boys{background:#dff0ff;color:#0984e3;}
+.badge-success{background:#d4edda;color:#155724;}
+.badge-warning{background:#fff3cd;color:#856404;}
+.badge-new{background:#e8f5e9;color:#2e7d32;}
+
+/* ROOM CARDS */
+.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px;}
+.room-card{border-radius:14px;padding:18px 20px;color:#fff;position:relative;overflow:hidden;}
+.room-card.girls{background:linear-gradient(135deg,#f093fb,#c44569);}
+.room-card.boys{background:linear-gradient(135deg,#4facfe,#0984e3);}
+.room-card.other{background:linear-gradient(135deg,#667eea,#764ba2);}
+.room-card h3{font-size:1.1em;margin-bottom:4px;}
+.room-card .rm-meta{font-size:.8em;opacity:.85;margin-bottom:12px;}
+.room-card .rm-bar-bg{height:6px;background:rgba(255,255,255,.3);border-radius:3px;margin-bottom:12px;}
+.room-card .rm-bar{height:6px;background:#fff;border-radius:3px;transition:.5s;}
+.room-card ul{list-style:none;max-height:180px;overflow-y:auto;}
+.room-card li{padding:5px 9px;background:rgba(255,255,255,.2);margin-bottom:4px;border-radius:6px;font-size:.87em;display:flex;align-items:center;gap:6px;}
+
+/* GENDER SECTION HEADER */
+.gender-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-radius:10px;margin-bottom:12px;color:#fff;font-weight:700;}
+.gender-hdr.girls{background:linear-gradient(135deg,#f093fb,#c44569);}
+.gender-hdr.boys{background:linear-gradient(135deg,#4facfe,#0984e3);}
+.gender-hdr.other{background:linear-gradient(135deg,#667eea,#764ba2);}
+.gender-hdr .gh-badge{background:rgba(255,255,255,.25);padding:4px 12px;border-radius:20px;font-size:.82em;}
+.gender-section{margin-bottom:28px;}
+
+/* UPLOAD ZONE */
+.drop-zone{border:3px dashed #c5cae9;border-radius:14px;padding:36px 24px;text-align:center;background:#f8f9ff;cursor:pointer;transition:.25s;}
+.drop-zone:hover,.drop-zone.over{border-color:#667eea;background:#eef0ff;}
+.drop-zone .dz-icon{font-size:2.8em;margin-bottom:8px;}
+.drop-zone p{color:#666;font-size:.95em;}
+.drop-zone .dz-hint{font-size:.8em;color:#aaa;margin-top:4px;}
+
+/* SUMMARY BAR */
+.summary-bar{display:flex;gap:12px;flex-wrap:wrap;margin-top:20px;}
+.sum-item{flex:1;min-width:100px;background:#fff;border-radius:12px;padding:14px 18px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.sum-val{font-size:2em;font-weight:800;}
+.sum-val.girls{color:#c44569;}
+.sum-val.boys{color:#0984e3;}
+.sum-val.total{color:#28a745;}
+.sum-lbl{font-size:.78em;color:#888;margin-top:2px;}
+
+/* NOTIFICATION PANEL */
+.notif-panel{position:fixed;top:60px;right:20px;width:320px;background:#fff;border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.15);z-index:1000;display:none;animation:fadeUp .2s;}
+.notif-panel.open{display:block;}
+.notif-hdr{padding:14px 18px;border-bottom:1px solid #eee;font-weight:700;color:#1a1a2e;display:flex;justify-content:space-between;align-items:center;}
+.notif-list{max-height:320px;overflow-y:auto;}
+.notif-item{padding:12px 18px;border-bottom:1px solid #f5f5f5;font-size:.87em;display:flex;gap:10px;align-items:flex-start;}
+.notif-item .ni-icon{font-size:1.2em;flex-shrink:0;}
+.ni-text{color:#333;line-height:1.4;}
+.ni-time{color:#bbb;font-size:.78em;margin-top:2px;}
+.no-notif{padding:20px;text-align:center;color:#bbb;font-size:.88em;}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:none;align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:440px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal h3{font-size:1.2em;font-weight:700;color:#1a1a2e;margin-bottom:18px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;padding:13px 20px;border-radius:10px;box-shadow:0 5px 20px rgba(0,0,0,.2);display:none;z-index:9999;color:#fff;font-weight:600;font-size:.93em;animation:slideIn .3s;max-width:380px;}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.toast.success{background:#28a745;}
+.toast.error{background:#dc3545;}
+.toast.info{background:#0984e3;}
+.toast.warn{background:#fd7e14;}
+
+/* SEARCH HIGHLIGHT */
+.hl{background:#fff59d;border-radius:2px;}
+
+/* PROGRESS BAR */
+.progress-wrap{background:#e9ecef;border-radius:6px;height:8px;overflow:hidden;}
+.progress-bar{height:8px;border-radius:6px;transition:.5s;}
+
+/* INFO BOX */
+.info-box{background:#eef4ff;border-left:4px solid #667eea;border-radius:8px;padding:14px 16px;margin-bottom:16px;font-size:.88em;color:#444;line-height:1.6;}
+.info-box strong{color:#1a1a2e;}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px 20px;color:#bbb;}
+.empty .e-icon{font-size:3em;margin-bottom:8px;}
+.empty p{font-size:.93em;}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .page{padding:16px;}
+  .dash-grid{grid-template-columns:repeat(2,1fr);}
+  .search-box{width:140px;}
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:#f0f0f0;}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:#aaa;}
+
+/* TABLE ACTIONS */
+.action-cell{display:flex;gap:6px;flex-wrap:wrap;}
+
+/* ROTATION COUNTDOWN */
+.countdown{display:inline-flex;align-items:center;gap:6px;background:#fff3cd;color:#856404;padding:6px 14px;border-radius:20px;font-size:.85em;font-weight:700;}
+.countdown.urgent{background:#ffe0e0;color:#c0392b;}
+.countdown.ok{background:#d4edda;color:#155724;}
+
+/* SHARE PAGE */
+.share-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;}
+.share-card{background:#f8f9ff;border:2px solid #eee;border-radius:14px;padding:20px;text-align:center;cursor:pointer;transition:.25s;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.share-card:hover{border-color:#667eea;transform:translateY(-3px);box-shadow:0 8px 20px rgba(102,126,234,.15);}
+.share-icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.8em;}
+.share-label{font-weight:700;color:#1a1a2e;font-size:.95em;}
+.share-desc{font-size:.78em;color:#888;line-height:1.4;}
+.deploy-steps{display:flex;flex-direction:column;gap:12px;}
+.deploy-step{display:flex;align-items:flex-start;gap:14px;padding:14px;background:#f8f9ff;border-radius:10px;}
+.step-num{width:30px;height:30px;min-width:30px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.9em;}
+.deploy-step a{color:#667eea;font-weight:600;}
+.info-box{background:#eef4ff;border-left:4px solid #667eea;border-radius:8px;padding:14px 16px;font-size:.88em;color:#444;line-height:1.6;}
+.info-box code{background:#e0e7ff;padding:2px 6px;border-radius:4px;font-size:.92em;color:#4c51bf;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <span class="login-logo">🏠</span>
+    <h2>Don Bosco Hostel</h2>
+    <p class="login-sub">Dormitory Management System</p>
+
+    <div class="login-input-wrap">
+      <span class="input-icon">👤</span>
+      <input type="text" id="lUser" placeholder="Username" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('lPass').focus()">
+    </div>
+    <div class="login-input-wrap">
+      <span class="input-icon">🔒</span>
+      <input type="password" id="lPass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">🚀 Sign In</button>
+    <div id="lErr" class="login-err">❌ Invalid username or password. Try the credentials below.</div>
+
+    <div class="login-divider">Quick Login</div>
+    <div class="login-credentials">
+      <div class="cred-card" onclick="fillLogin('admin','admin123')" title="Click to auto-fill">
+        <div class="cred-role">👑 Admin</div>
+        <div class="cred-row"><span class="cred-label">User</span><span class="cred-val">admin</span></div>
+        <div class="cred-row"><span class="cred-label">Pass</span><span class="cred-val">admin123</span></div>
+      </div>
+      <div class="cred-card" onclick="fillLogin('staff','staff123')" title="Click to auto-fill">
+        <div class="cred-role">🧑‍💼 Staff</div>
+        <div class="cred-row"><span class="cred-label">User</span><span class="cred-val">staff</span></div>
+        <div class="cred-row"><span class="cred-label">Pass</span><span class="cred-val">staff123</span></div>
+      </div>
+    </div>
+    <div class="cred-note">💡 Click a card above to auto-fill credentials</div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="appScreen">
+<div class="app-wrap">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h2>🏠 Don Bosco</h2>
+      <p>Hostel Manager v2.0</p>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="avatarInitial">A</div>
+      <div>
+        <div class="user-name" id="sideUser">Admin</div>
+        <div class="user-role" id="sideRole">Administrator</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" onclick="showPage('rooms',this)"><span class="nav-icon">🏢</span> Rooms</div>
+      <div class="nav-item" onclick="showPage('residents',this)"><span class="nav-icon">👥</span> Residents</div>
+      <div class="nav-item" onclick="showPage('upload',this)"><span class="nav-icon">📂</span> Upload List</div>
+      <div class="nav-item" onclick="showPage('assignments',this)"><span class="nav-icon">📋</span> Assignments</div>
+      <div class="nav-item" onclick="showPage('history',this)"><span class="nav-icon">🕒</span> History</div>
+      <div class="nav-item" onclick="showPage('share',this)"><span class="nav-icon">🔗</span> Share & Export</div>
+      <div class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span> Settings</div>
+    </nav>
+    <div class="sidebar-bottom">
+      <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+    </div>
+  </div>
+
+  <!-- MAIN AREA -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-right">
+        <input class="search-box" id="globalSearch" placeholder="🔍 Search residents..." oninput="doSearch(this.value)">
+        <button class="btn btn-primary btn-sm" onclick="showPage('share',document.querySelector('.nav-item:nth-child(7)'))" style="padding:8px 14px;font-size:.82em;">🔗 Share</button>
+        <button class="notif-btn" onclick="toggleNotif()" title="Notifications">
+          🔔<span class="notif-badge" id="notifCount">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- NOTIFICATION PANEL -->
+    <div class="notif-panel" id="notifPanel">
+      <div class="notif-hdr">
+        <span>🔔 Notifications</span>
+        <button onclick="clearNotifs()" style="background:none;border:none;color:#888;cursor:pointer;font-size:.82em;">Clear all</button>
+      </div>
+      <div class="notif-list" id="notifList"><div class="no-notif">No notifications</div></div>
+    </div>
+
+    <!-- ── DASHBOARD PAGE ── -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title">📊 Dashboard</div>
+      <div class="dash-grid" id="dashCards"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;flex-wrap:wrap;">
+        <div class="card">
+          <div class="card-title">🏢 Room Occupancy</div>
+          <div id="dashOccupancy"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📅 Rotation Info</div>
+          <div id="dashRotation"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🕐 Recent Activity</div>
+        <div id="dashActivity"></div>
+      </div>
+    </div>
+
+    <!-- ── ROOMS PAGE ── -->
+    <div class="page" id="page-rooms">
+      <div class="page-title">🏢 Rooms Management</div>
+      <div class="card">
+        <div class="card-title">➕ Add New Room</div>
+        <div class="form-row">
+          <div class="fg"><label>Room Name</label><input id="rName" placeholder="e.g. Room 101, Dorm A"></div>
+          <div class="fg"><label>Capacity</label><input id="rCap" type="number" min="1" placeholder="e.g. 10"></div>
+          <div class="fg"><label>Block / Gender</label>
+            <select id="rBlock">
+              <option value="">-- Select --</option>
+              <option value="Girls">Girls</option>
+              <option value="Boys">Boys</option>
+              <option value="General">General</option>
+            </select>
+          </div>
+          <div style="padding-bottom:1px"><button class="btn btn-primary" onclick="addRoom()">➕ Add Room</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">All Rooms <span id="roomsCount"></span></div>
+        <div class="tbl-wrap">
+          <table id="roomsTable">
+            <thead><tr><th>#</th><th>Room Name</th><th>Block</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Fill %</th><th>Actions</th></tr></thead>
+            <tbody id="roomsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RESIDENTS PAGE ── -->
+    <div class="page" id="page-residents">
+      <div class="page-title">👥 Residents</div>
+      <div class="card">
+        <div class="card-title">➕ Add Resident</div>
+        <div class="form-row">
+          <div class="fg"><label>Full Name</label><input id="resName" placeholder="Full name" onkeydown="if(event.key==='Enter')addResident()"></div>
+          <div class="fg"><label>ID / Roll No.</label><input id="resId" placeholder="e.g. STU-001"></div>
+          <div class="fg"><label>Gender</label>
+            <select id="resGender">
+              <option value="">-- Select --</option>
+              <option value="Girls">Female</option>
+              <option value="Boys">Male</option>
+            </select>
+          </div>
+          <div style="padding-bottom:1px"><button class="btn btn-primary" onclick="addResident()">➕ Add</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">All Residents <span id="resCount2"></span>
+          <span style="margin-left:auto;display:flex;gap:8px;">
+            <select id="filterGender" onchange="renderResidentsTable()" style="padding:6px 10px;border:2px solid #eee;border-radius:8px;font-size:.85em;">
+              <option value="">All</option><option value="Girls">Girls</option><option value="Boys">Boys</option>
+            </select>
+            <select id="filterRoom" onchange="renderResidentsTable()" style="padding:6px 10px;border:2px solid #eee;border-radius:8px;font-size:.85em;">
+              <option value="">All Rooms</option>
+            </select>
+          </span>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>ID</th><th>Gender</th><th>Room</th><th>Joined</th><th>Actions</th></tr></thead>
+            <tbody id="resTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── UPLOAD PAGE ── -->
+    <div class="page" id="page-upload">
+      <div class="page-title">📂 Upload Name List</div>
+      <div class="info-box">
+        <strong>Smart Import:</strong> Upload a <strong>.csv</strong> or <strong>.txt</strong> file with names.
+        New members are added automatically, duplicates are skipped, rooms are assigned respecting capacity.
+        If all rooms are full, a <strong>new room is created automatically</strong>. ✅
+      </div>
+      <div class="card">
+        <div class="card-title">📁 Upload File or Paste Names</div>
+        <div class="form-row" style="margin-bottom:16px;">
+          <div class="fg"><label>Gender of this list</label>
+            <select id="upGender"><option value="auto">Auto-detect</option><option value="Girls">Girls</option><option value="Boys">Boys</option><option value="General">General</option></select>
+          </div>
+          <div class="fg"><label>Default Room Capacity (if new room needed)</label>
+            <input id="upCapacity" type="number" value="10" min="1">
+          </div>
+        </div>
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileIn').click()"
+          ondragover="event.preventDefault();this.classList.add('over')"
+          ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
+          <input type="file" id="fileIn" accept=".csv,.txt" style="display:none" onchange="handleFile(event)">
+          <div class="dz-icon">📁</div>
+          <p><strong>Click to browse</strong> or drag &amp; drop</p>
+          <div class="dz-hint">.csv or .txt — one name per line, or Name,ID format</div>
+        </div>
+        <div style="margin-top:20px;">
+          <div class="card-title">✏️ Or Paste Names Directly</div>
+          <div class="fg" style="margin-bottom:10px;">
+            <textarea id="pasteArea" rows="6" placeholder="John Smith&#10;Mary Jane, STU-001&#10;Peter Parker, STU-002&#10;...one name per line"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="parsePaste()">🔍 Preview Names</button>
+        </div>
+      </div>
+      <div class="card" id="previewCard" style="display:none;">
+        <div class="card-title">👁️ Preview <span id="prevCount"></span></div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>#</th><th>Name</th><th>ID</th><th>Status</th></tr></thead>
+          <tbody id="prevBody"></tbody></table>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+          <button class="btn btn-success" onclick="importAndAssign()">✅ Import &amp; Auto-Assign Rooms</button>
+          <button class="btn btn-gray" onclick="clearPreview()">✖ Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ASSIGNMENTS PAGE ── -->
+    <div class="page" id="page-assignments">
+      <div class="page-title">📋 Room Assignments</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;">
+        <button class="btn btn-success" onclick="autoAssign()">🚀 Auto-Assign All</button>
+        <button class="btn btn-primary" onclick="assignUnassigned()" style="background:linear-gradient(135deg,#28a745,#20c997)">✨ Assign New Members Only</button>
+        <button class="btn btn-warning" onclick="rotateNow()">🔄 Rotate Now</button>
+        <button class="btn btn-info" onclick="printAssign()">🖨️ Print / Export</button>
+        <button class="btn btn-gray" onclick="clearAllData()">🗑️ Clear All Data</button>
+      </div>
+      <div id="assignView"></div>
+    </div>
+
+    <!-- ── HISTORY PAGE ── -->
+    <div class="page" id="page-history">
+      <div class="page-title">🕒 Rotation History</div>
+      <div id="historyView"></div>
+    </div>
+
+    <!-- ── SHARE & EXPORT PAGE ── -->
+    <div class="page" id="page-share">
+      <div class="page-title">🔗 Share &amp; Export</div>
+
+      <!-- DOWNLOAD SECTION -->
+      <div class="card">
+        <div class="card-title">⬇️ Download Options</div>
+        <div class="share-grid">
+          <div class="share-card" onclick="downloadPDF()">
+            <div class="share-icon" style="background:#fff0f0;">📄</div>
+            <div class="share-label">PDF Report</div>
+            <div class="share-desc">Print-ready PDF with all assignments</div>
+            <button class="btn btn-danger btn-sm">Download PDF</button>
+          </div>
+          <div class="share-card" onclick="downloadCSV()">
+            <div class="share-icon" style="background:#f0fff4;">📊</div>
+            <div class="share-label">CSV Spreadsheet</div>
+            <div class="share-desc">Open in Excel, Google Sheets</div>
+            <button class="btn btn-success btn-sm">Download CSV</button>
+          </div>
+          <div class="share-card" onclick="downloadExcel()">
+            <div class="share-icon" style="background:#f0f8ff;">📗</div>
+            <div class="share-label">Excel Format</div>
+            <div class="share-desc">Full data as .xls file</div>
+            <button class="btn btn-info btn-sm">Download Excel</button>
+          </div>
+          <div class="share-card" onclick="downloadJSON()">
+            <div class="share-icon" style="background:#fffdf0;">💾</div>
+            <div class="share-label">JSON Backup</div>
+            <div class="share-desc">Full data backup — restore anytime</div>
+            <button class="btn btn-warning btn-sm">Download Backup</button>
+          </div>
+          <div class="share-card" onclick="downloadHTML()">
+            <div class="share-icon" style="background:#f8f0ff;">🌐</div>
+            <div class="share-label">Standalone HTML</div>
+            <div class="share-desc">Download full app with data embedded</div>
+            <button class="btn btn-primary btn-sm">Download App</button>
+          </div>
+          <div class="share-card" onclick="restoreBackup()">
+            <div class="share-icon" style="background:#fff0fa;">📥</div>
+            <div class="share-label">Restore Backup</div>
+            <div class="share-desc">Import a previously saved JSON backup</div>
+            <button class="btn btn-gray btn-sm">Restore</button>
+            <input type="file" id="restoreFile" accept=".json" style="display:none" onchange="doRestore(event)">
+          </div>
+        </div>
+      </div>
+
+      <!-- SHARE SECTION -->
+      <div class="card">
+        <div class="card-title">📤 Share Options</div>
+        <div class="share-grid">
+          <div class="share-card" onclick="shareWhatsApp()">
+            <div class="share-icon" style="background:#e8fce8;">💬</div>
+            <div class="share-label">WhatsApp</div>
+            <div class="share-desc">Send room assignments via WhatsApp</div>
+            <button class="btn btn-success btn-sm">Share on WhatsApp</button>
+          </div>
+          <div class="share-card" onclick="shareEmail()">
+            <div class="share-icon" style="background:#fff0ec;">📧</div>
+            <div class="share-label">Email</div>
+            <div class="share-desc">Send full report via Email</div>
+            <button class="btn btn-warning btn-sm">Share via Email</button>
+          </div>
+          <div class="share-card" onclick="copyShareLink()">
+            <div class="share-icon" style="background:#f0f0ff;">🔗</div>
+            <div class="share-label">Shareable Link</div>
+            <div class="share-desc">Copy a link with all data encoded</div>
+            <button class="btn btn-primary btn-sm">Copy Link</button>
+          </div>
+          <div class="share-card" onclick="shareNative()">
+            <div class="share-icon" style="background:#fff5e0;">📱</div>
+            <div class="share-label">Native Share</div>
+            <div class="share-desc">Use phone/browser share menu</div>
+            <button class="btn btn-info btn-sm">Share Now</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR CODE SECTION -->
+      <div class="card">
+        <div class="card-title">📱 QR Code — Scan to View Assignments</div>
+        <div class="info-box" style="margin-bottom:14px;">
+          <strong>How it works:</strong> Click <strong>"Generate Viewer QR"</strong> — it creates a QR that, when scanned, opens a beautiful page showing all room assignments. Works on any phone, no login needed.<br>
+          <strong>Note:</strong> Because this app runs as a local file, the QR opens a <em>self-contained viewer page</em> — use the <strong>"📥 Download Viewer"</strong> button to get a shareable file too.
+        </div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;">
+          <div style="flex:1;min-width:220px;">
+            <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px;">
+              <button class="btn btn-primary" onclick="generateViewerQR()" style="font-size:.95em;padding:12px 20px;">
+                📱 Generate Viewer QR Code
+              </button>
+              <button class="btn btn-success" onclick="downloadViewerHTML()" style="font-size:.95em;padding:12px 20px;">
+                📥 Download Viewer (share this file)
+              </button>
+              <button class="btn btn-info btn-sm" onclick="printQRCode()">🖨️ Print QR</button>
+              <button class="btn btn-ghost btn-sm" onclick="downloadQRImage()">⬇️ Save QR as PNG</button>
+            </div>
+            <div id="qrStatus" style="font-size:.85em;padding:10px 14px;border-radius:8px;background:#f8f9ff;border-left:3px solid #667eea;display:none;line-height:1.6;"></div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div id="qrBox" style="background:#fff;border:3px solid #e8e8e8;border-radius:16px;padding:16px;text-align:center;width:260px;height:260px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,.08);">
+              <div style="color:#ccc;font-size:.85em;display:flex;flex-direction:column;align-items:center;gap:8px;">
+                <span style="font-size:2.5em;">📱</span>
+                <span>Click "Generate Viewer QR"</span>
+              </div>
+            </div>
+            <canvas id="qrCanvas" style="display:none;"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHARE LINK DISPLAY -->
+      <div class="card" id="shareLinkCard" style="display:none;">
+        <div class="card-title">🔗 Your Shareable Link</div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <input id="shareLinkInput" readonly style="flex:1;padding:10px 14px;border:2px solid #eee;border-radius:9px;font-size:.83em;color:#555;min-width:200px;">
+          <button class="btn btn-primary btn-sm" onclick="copyLink()">📋 Copy</button>
+          <button class="btn btn-success btn-sm" onclick="openLink()">🌐 Open</button>
+        </div>
+        <p style="font-size:.78em;color:#888;margin-top:8px;">⚠️ This link contains all your data encoded in the URL. Anyone with this link can view the assignments.</p>
+      </div>
+
+      <!-- DEPLOY ONLINE -->
+      <div class="card">
+        <div class="card-title">🌍 Publish Online — Get a Real Website Link</div>
+        <div class="info-box" style="margin-bottom:16px;">
+          <strong>Want a real public URL like <code>https://yourhostel.netlify.app</code>?</strong><br>
+          Download the <strong>Standalone HTML</strong> file above, then follow these steps to publish it free in 2 minutes.
+        </div>
+        <div class="deploy-steps">
+          <div class="deploy-step">
+            <div class="step-num">1</div>
+            <div><strong>Download the Standalone HTML</strong> — click "Download App" above. It contains your full app + all current data.</div>
+          </div>
+          <div class="deploy-step">
+            <div class="step-num">2</div>
+            <div><strong>Go to <a href="https://netlify.com/drop" target="_blank">netlify.com/drop</a></strong> — free, no account needed.</div>
+          </div>
+          <div class="deploy-step">
+            <div class="step-num">3</div>
+            <div><strong>Drag &amp; drop</strong> your downloaded HTML file onto the Netlify Drop page.</div>
+          </div>
+          <div class="deploy-step">
+            <div class="step-num">4</div>
+            <div><strong>Get your live URL</strong> — e.g. <code>https://amazing-hostel-xyz.netlify.app</code> — share it with anyone!</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="downloadHTML()">⬇️ Download App File</button>
+          <button class="btn btn-success" onclick="window.open('https://app.netlify.com/drop','_blank')">🚀 Open Netlify Drop</button>
+          <button class="btn btn-info" onclick="window.open('https://tiiny.host','_blank')">🌐 Try Tiiny.host</button>
+          <button class="btn btn-warning" onclick="window.open('https://surge.sh','_blank')">⚡ Try Surge.sh</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SETTINGS PAGE ── -->
+    <div class="page" id="page-settings">
+      <div class="page-title">⚙️ Settings</div>
+      <div class="card">
+        <div class="card-title">📅 Rotation Settings</div>
+        <div class="form-row">
+          <div class="fg"><label>Rotation interval (days)</label><input id="rotInt" type="number" min="1" value="15"></div>
+          <div style="padding-bottom:1px"><button class="btn btn-primary" onclick="saveSettings()">💾 Save</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">👤 Manage Accounts</div>
+        <div class="form-row" style="margin-bottom:14px;">
+          <div class="fg"><label>Username</label><input id="aUser" placeholder="Username"></div>
+          <div class="fg"><label>Password</label><input id="aPass" type="password" placeholder="Password"></div>
+          <div class="fg"><label>Role</label><select id="aRole"><option value="admin">Admin</option><option value="staff">Staff</option></select></div>
+          <div style="padding-bottom:1px"><button class="btn btn-success" onclick="addAccount()">➕ Add</button></div>
+        </div>
+        <div id="accountsList"></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /app-wrap -->
+</div><!-- /appScreen -->
+
+<!-- EDIT MODAL -->
+<div class="modal-bg" id="editModal">
+  <div class="modal">
+    <h3 id="modalTitle">Edit</h3>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-gray btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" onclick="saveModal()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════
+//  STORAGE
+// ════════════════════════════════════════════════
+const K = 'hostelData_v2', AK = 'hostelAuth', SK = 'hostelSession', NK = 'hostelNotifs';
+
+const load  = () => { try { return JSON.parse(localStorage.getItem(K)) || defState(); } catch(e){ return defState(); }};
+const save  = d  => localStorage.setItem(K, JSON.stringify(d));
+const defState = () => ({ dormitories:[], residents:[], currentRotation:null,
+  lastRotationDate:null, nextRotationDate:null, rotationInterval:15, history:[], rotationCount:0 });
+
+const loadAccounts = () => {
+  const r = localStorage.getItem(AK);
+  if(r) return JSON.parse(r);
+  const def = [{username:'admin',password:'admin123',role:'admin'},{username:'staff',password:'staff123',role:'staff'}];
+  localStorage.setItem(AK, JSON.stringify(def)); return def;
+};
+const saveAccounts = l => localStorage.setItem(AK, JSON.stringify(l));
+
+// Notifications
+const loadNotifs = () => { try{ return JSON.parse(localStorage.getItem(NK))||[]; }catch(e){return[];} };
+const saveNotifs = n => localStorage.setItem(NK, JSON.stringify(n));
+function addNotif(icon, text) {
+  const n = loadNotifs();
+  n.unshift({ icon, text, time: new Date().toISOString() });
+  if(n.length > 30) n.pop();
+  saveNotifs(n); renderNotifBadge();
+}
+
+// ════════════════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════════════════
+function doLogin() {
+  const u = document.getElementById('lUser').value.trim();
+  const p = document.getElementById('lPass').value;
+  const acc = loadAccounts().find(a => a.username===u && a.password===p);
+  if(!acc){ document.getElementById('lErr').style.display='block'; document.getElementById('lPass').value=''; return; }
+  sessionStorage.setItem(SK, JSON.stringify({username:acc.username, role:acc.role}));
+  document.getElementById('lErr').style.display='none';
+  launchApp(acc);
+}
+function fillLogin(u, p) {
+  document.getElementById('lUser').value = u;
+  document.getElementById('lPass').value = p;
+  document.getElementById('lErr').style.display = 'none';
+  document.getElementById('lPass').focus();
+}
+function doLogout() {
+  sessionStorage.removeItem(SK);
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('lUser').value=''; document.getElementById('lPass').value='';
+}
+function launchApp(u) {
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  document.getElementById('sideUser').textContent = u.username;
+  document.getElementById('sideRole').textContent = u.role==='admin'?'Administrator':'Staff';
+  document.getElementById('avatarInitial').textContent = u.username[0].toUpperCase();
+  checkAutoRotation(); renderAll();
+}
+function checkSession() {
+  const s = sessionStorage.getItem(SK);
+  if(!s) return;
+  try{ launchApp(JSON.parse(s)); }catch(e){}
+}
+
+// ════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════
+const pageTitles = {dashboard:'📊 Dashboard',rooms:'🏢 Rooms Management',residents:'👥 Residents',
+  upload:'📂 Upload Name List',assignments:'📋 Room Assignments',history:'🕒 Rotation History',
+  share:'🔗 Share & Export',settings:'⚙️ Settings'};
+
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('topbarTitle').textContent = pageTitles[name]||name;
+  if(name==='assignments') renderAssignments();
+  if(name==='history')     renderHistory();
+  if(name==='dashboard')   renderDashboard();
+  if(name==='rooms')       renderRoomsTable();
+  if(name==='residents')   renderResidentsTable();
+  if(name==='settings')    renderAccounts();
+  if(name==='share')       renderSharePage();
+}
+
+// ════════════════════════════════════════════════
+//  TOAST
+// ════════════════════════════════════════════════
+function toast(msg, type='success') {
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.className='toast '+type; el.style.display='block';
+  clearTimeout(el._t); el._t=setTimeout(()=>el.style.display='none',3800);
+}
+
+// ════════════════════════════════════════════════
+//  DATE HELPERS
+// ════════════════════════════════════════════════
+const fmt  = iso => new Date(iso).toLocaleString();
+const fmtD = iso => new Date(iso).toLocaleDateString();
+const daysLeft = iso => Math.ceil((new Date(iso)-new Date())/86400000);
+const addDays  = (iso,n) => { const d=new Date(iso); d.setDate(d.getDate()+n); return d.toISOString(); };
+const esc = s => s.replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+const timeAgo = iso => {
+  const s=Math.floor((Date.now()-new Date(iso))/1000);
+  if(s<60) return 'just now'; if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h ago'; return Math.floor(s/86400)+'d ago';
+};
+
+// ════════════════════════════════════════════════
+//  NOTIFICATIONS
+// ════════════════════════════════════════════════
+function renderNotifBadge() {
+  const n=loadNotifs(); document.getElementById('notifCount').textContent=n.length>9?'9+':n.length;
+}
+function toggleNotif() {
+  const p=document.getElementById('notifPanel'); p.classList.toggle('open');
+  if(p.classList.contains('open')) renderNotifPanel();
+}
+function renderNotifPanel() {
+  const n=loadNotifs(), el=document.getElementById('notifList');
+  if(!n.length){ el.innerHTML='<div class="no-notif">No notifications</div>'; return; }
+  el.innerHTML=n.map(x=>`<div class="notif-item"><span class="ni-icon">${x.icon}</span>
+    <div><div class="ni-text">${x.text}</div><div class="ni-time">${timeAgo(x.time)}</div></div></div>`).join('');
+}
+function clearNotifs() {
+  saveNotifs([]); renderNotifBadge();
+  document.getElementById('notifList').innerHTML='<div class="no-notif">No notifications</div>';
+}
+document.addEventListener('click', e => {
+  if(!e.target.closest('.notif-btn')&&!e.target.closest('.notif-panel'))
+    document.getElementById('notifPanel').classList.remove('open');
+});
+
+// ════════════════════════════════════════════════
+//  SEARCH
+// ════════════════════════════════════════════════
+function doSearch(q) {
+  if(!q.trim()){ renderResidentsTable(); return; }
+  const d=load(); q=q.toLowerCase();
+  const hits=d.residents.filter(r=>r.name.toLowerCase().includes(q)||(r.id||'').toLowerCase().includes(q)||(r.dormitory||'').toLowerCase().includes(q));
+  renderResidentsTable(hits);
+  showPage('residents', document.querySelector('.nav-item:nth-child(3)'));
+}
+
+// ════════════════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════════════════
+function renderDashboard() {
+  const d=load();
+  const girls=d.residents.filter(r=>(r.block||'').toLowerCase().includes('girl'));
+  const boys =d.residents.filter(r=>(r.block||'').toLowerCase().includes('boy'));
+  const unassigned=d.residents.filter(r=>!r.dormitory);
+  const totalCap=d.dormitories.reduce((s,dm)=>s+dm.capacity,0);
+  const occupied=d.residents.filter(r=>r.dormitory).length;
+
+  document.getElementById('dashCards').innerHTML=`
+    <div class="dash-card"><div class="dash-icon purple">🏢</div><div><div class="dash-val">${d.dormitories.length}</div><div class="dash-lbl">Total Rooms</div></div></div>
+    <div class="dash-card"><div class="dash-icon blue">👥</div><div><div class="dash-val">${d.residents.length}</div><div class="dash-lbl">Total Residents</div></div></div>
+    <div class="dash-card"><div class="dash-icon pink">👧</div><div><div class="dash-val">${girls.length}</div><div class="dash-lbl">Girls</div></div></div>
+    <div class="dash-card"><div class="dash-icon blue">👦</div><div><div class="dash-val">${boys.length}</div><div class="dash-lbl">Boys</div></div></div>
+    <div class="dash-card"><div class="dash-icon green">✅</div><div><div class="dash-val">${occupied}</div><div class="dash-lbl">Assigned</div></div></div>
+    <div class="dash-card"><div class="dash-icon orange">⚠️</div><div><div class="dash-val">${unassigned.length}</div><div class="dash-lbl">Unassigned</div></div></div>`;
+
+  // Unassigned alert banner
+  const existingAlert=document.getElementById('unassignedAlert');
+  if(existingAlert) existingAlert.remove();
+  if(unassigned.length){
+    const alert=document.createElement('div');
+    alert.id='unassignedAlert';
+    alert.style.cssText='background:linear-gradient(135deg,#fff3cd,#ffeeba);border:1.5px solid #ffc107;border-radius:12px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;';
+    alert.innerHTML=`<span>⚠️ <strong>${unassigned.length} resident${unassigned.length!==1?'s are':' is'} unassigned:</strong> ${unassigned.map(r=>r.name).join(', ')}</span>
+      <button class="btn btn-success btn-sm" onclick="assignUnassigned();showPage('assignments',document.querySelector('.nav-item:nth-child(5)'))">✨ Assign Now</button>`;
+    document.getElementById('page-dashboard').insertBefore(alert, document.getElementById('dashCards').nextSibling);
+  }
+
+  // Occupancy bars
+  const occ=document.getElementById('dashOccupancy');
+  if(!d.dormitories.length){ occ.innerHTML='<div class="empty"><div class="e-icon">🏢</div><p>No rooms added yet</p></div>'; }
+  else {
+    occ.innerHTML=d.dormitories.map(dm=>{
+      const rot=d.currentRotation?.find(x=>x.name===dm.name);
+      const cnt=rot?(rot.residents||[]).length:0;
+      const pct=Math.round((cnt/dm.capacity)*100);
+      const col=pct>=90?'#dc3545':pct>=70?'#fd7e14':'#28a745';
+      return `<div style="margin-bottom:12px;">
+        <div style="display:flex;justify-content:space-between;font-size:.85em;margin-bottom:4px;">
+          <span>${dm.name} <span style="color:#888;font-size:.9em;">(${dm.block||'—'})</span></span>
+          <span style="font-weight:700;color:${col}">${cnt}/${dm.capacity}</span>
+        </div>
+        <div class="progress-wrap"><div class="progress-bar" style="width:${pct}%;background:${col}"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Rotation info
+  const rot=document.getElementById('dashRotation');
+  const days=d.nextRotationDate?daysLeft(d.nextRotationDate):null;
+  const cls=days===null?'':days<=0?'urgent':days<=3?'':' ok';
+  rot.innerHTML=`
+    <div style="margin-bottom:12px;"><strong>Last Rotation:</strong><br><span style="color:#667eea">${d.lastRotationDate?fmt(d.lastRotationDate):'Never'}</span></div>
+    <div style="margin-bottom:12px;"><strong>Next Rotation:</strong><br><span style="color:#667eea">${d.nextRotationDate?fmt(d.nextRotationDate):'Not scheduled'}</span></div>
+    <div style="margin-bottom:12px;"><strong>Interval:</strong> ${d.rotationInterval} days &nbsp; <strong>Done:</strong> ${d.rotationCount||0}x</div>
+    ${days!==null?`<div class="countdown${cls}">${days<=0?'⚠️ Overdue!':'⏳ '+days+' day'+(days!==1?'s':'')+' until next rotation'}</div>`:''}`;
+
+  // Activity
+  const act=document.getElementById('dashActivity');
+  const n=loadNotifs();
+  if(!n.length) act.innerHTML='<div class="empty"><div class="e-icon">📋</div><p>No recent activity</p></div>';
+  else act.innerHTML=n.slice(0,8).map(x=>`<div style="display:flex;gap:10px;padding:8px 0;border-bottom:1px solid #f5f5f5;align-items:flex-start;">
+    <span style="font-size:1.2em">${x.icon}</span>
+    <div><div style="font-size:.88em;color:#333">${x.text}</div><div style="font-size:.77em;color:#bbb;margin-top:2px">${timeAgo(x.time)}</div></div>
+  </div>`).join('');
+}
+</script>
+
+<script>
+// ════════════════════════════════════════════════
+//  ROOMS
+// ════════════════════════════════════════════════
+function addRoom() {
+  const name=document.getElementById('rName').value.trim();
+  const cap=parseInt(document.getElementById('rCap').value);
+  const block=document.getElementById('rBlock').value;
+  if(!name) return toast('Enter room name','error');
+  if(!cap||cap<1) return toast('Enter valid capacity','error');
+  const d=load();
+  if(d.dormitories.some(x=>x.name.toLowerCase()===name.toLowerCase())) return toast('Room already exists','error');
+  d.dormitories.push({name,capacity:cap,block:block||''});
+  save(d);
+  ['rName','rCap'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('rBlock').value='';
+  renderRoomsTable(); renderDashboard(); updateRoomFilter();
+  addNotif('🏢',`Room "${name}" (${block||'General'}, cap:${cap}) added`);
+  toast(`Room "${name}" added!`);
+}
+
+function deleteRoom(name) {
+  if(!confirm(`Delete room "${name}"? Residents will become unassigned.`)) return;
+  const d=load();
+  d.dormitories=d.dormitories.filter(x=>x.name!==name);
+  d.residents=d.residents.map(r=>{ if(r.dormitory===name) r.dormitory=null; return r; });
+  if(d.currentRotation) d.currentRotation=d.currentRotation.filter(x=>x.name!==name);
+  save(d); renderRoomsTable(); renderResidentsTable(); renderDashboard(); updateRoomFilter();
+  addNotif('🗑️',`Room "${name}" deleted`);
+  toast('Room deleted','info');
+}
+
+function editRoom(name) {
+  const d=load(); const dm=d.dormitories.find(x=>x.name===name); if(!dm) return;
+  document.getElementById('modalTitle').textContent='✏️ Edit Room';
+  document.getElementById('modalBody').innerHTML=`
+    <div class="fg" style="margin-bottom:12px;"><label>Room Name</label><input id="mRName" value="${dm.name}"></div>
+    <div class="fg" style="margin-bottom:12px;"><label>Capacity</label><input id="mRCap" type="number" value="${dm.capacity}" min="1"></div>
+    <div class="fg"><label>Block / Gender</label>
+      <select id="mRBlock">
+        <option value="">-- Select --</option>
+        <option value="Girls" ${dm.block==='Girls'?'selected':''}>Girls</option>
+        <option value="Boys" ${dm.block==='Boys'?'selected':''}>Boys</option>
+        <option value="General" ${dm.block==='General'?'selected':''}>General</option>
+      </select></div>`;
+  document.getElementById('editModal')._data={type:'room',oldName:name};
+  document.getElementById('editModal').classList.add('open');
+}
+
+function renderRoomsTable() {
+  const d=load();
+  document.getElementById('roomsCount').textContent=`(${d.dormitories.length} rooms)`;
+  const tb=document.getElementById('roomsTbody');
+  if(!d.dormitories.length){ tb.innerHTML='<tr><td colspan="8"><div class="empty"><div class="e-icon">🏢</div><p>No rooms yet</p></div></td></tr>'; return; }
+  tb.innerHTML=d.dormitories.map((dm,i)=>{
+    const rot=d.currentRotation?.find(x=>x.name===dm.name);
+    const occ=rot?(rot.residents||[]).length:0;
+    const avail=Math.max(0,dm.capacity-occ);
+    const pct=Math.round((occ/dm.capacity)*100);
+    const col=pct>=90?'#dc3545':pct>=70?'#fd7e14':'#28a745';
+    const bCls=dm.block?.toLowerCase().includes('girl')?'badge-girls':dm.block?.toLowerCase().includes('boy')?'badge-boys':'badge-warning';
+    return `<tr>
+      <td>${i+1}</td>
+      <td><strong>${dm.name}</strong></td>
+      <td><span class="badge ${bCls}">${dm.block||'—'}</span></td>
+      <td>${dm.capacity}</td>
+      <td>${occ}</td>
+      <td style="color:${avail?'#28a745':'#dc3545'};font-weight:700">${avail}</td>
+      <td><div class="progress-wrap" style="width:80px"><div class="progress-bar" style="width:${pct}%;background:${col}"></div></div></td>
+      <td><div class="action-cell">
+        <button class="btn btn-info btn-sm" onclick="editRoom('${esc(dm.name)}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteRoom('${esc(dm.name)}')">🗑️</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════
+//  RESIDENTS
+// ════════════════════════════════════════════════
+function addResident() {
+  const name=document.getElementById('resName').value.trim();
+  const id=document.getElementById('resId').value.trim();
+  const gender=document.getElementById('resGender').value;
+  if(!name) return toast('Enter resident name','error');
+  const d=load();
+  if(d.residents.some(x=>x.name.toLowerCase()===name.toLowerCase())) return toast('Resident already exists','error');
+  d.residents.push({name,id:id||'',block:gender||'',dormitory:null,joinedDate:new Date().toISOString()});
+  save(d);
+  document.getElementById('resName').value=''; document.getElementById('resId').value=''; document.getElementById('resGender').value='';
+  renderResidentsTable(); renderDashboard();
+  addNotif('👤',`New resident added: ${name}${gender?' ('+gender+')':''}`);
+  toast(`Resident "${name}" added!`);
+}
+
+function deleteResident(name) {
+  if(!confirm(`Remove resident "${name}"?`)) return;
+  const d=load();
+  d.residents=d.residents.filter(r=>r.name!==name);
+  if(d.currentRotation) d.currentRotation.forEach(dm=>{ dm.residents=(dm.residents||[]).filter(r=>r!==name); });
+  save(d); renderResidentsTable(); renderDashboard();
+  addNotif('🗑️',`Resident "${name}" removed`);
+  toast('Resident removed','info');
+}
+
+function editResident(name) {
+  const d=load(); const r=d.residents.find(x=>x.name===name); if(!r) return;
+  const roomOpts=d.dormitories.map(dm=>`<option value="${dm.name}" ${r.dormitory===dm.name?'selected':''}>${dm.name}</option>`).join('');
+  document.getElementById('modalTitle').textContent='✏️ Edit Resident';
+  document.getElementById('modalBody').innerHTML=`
+    <div class="fg" style="margin-bottom:12px;"><label>Full Name</label><input id="mRName" value="${r.name}"></div>
+    <div class="fg" style="margin-bottom:12px;"><label>ID / Roll No.</label><input id="mRId" value="${r.id||''}"></div>
+    <div class="fg" style="margin-bottom:12px;"><label>Gender</label>
+      <select id="mRGender">
+        <option value="">-- Select --</option>
+        <option value="Girls" ${r.block==='Girls'?'selected':''}>Female</option>
+        <option value="Boys" ${r.block==='Boys'?'selected':''}>Male</option>
+      </select></div>
+    <div class="fg"><label>Assigned Room</label>
+      <select id="mRRoom"><option value="">Unassigned</option>${roomOpts}</select></div>`;
+  document.getElementById('editModal')._data={type:'resident',oldName:name};
+  document.getElementById('editModal').classList.add('open');
+}
+
+function renderResidentsTable(list) {
+  const d=load();
+  const fg=document.getElementById('filterGender')?.value||'';
+  const fr=document.getElementById('filterRoom')?.value||'';
+  let rows=list||d.residents;
+  if(fg) rows=rows.filter(r=>(r.block||'')===fg);
+  if(fr) rows=rows.filter(r=>r.dormitory===fr);
+  document.getElementById('resCount2').textContent=`(${rows.length} shown / ${d.residents.length} total)`;
+  const tb=document.getElementById('resTbody');
+  if(!rows.length){ tb.innerHTML='<tr><td colspan="7"><div class="empty"><div class="e-icon">👥</div><p>No residents found</p></div></td></tr>'; return; }
+  tb.innerHTML=rows.map((r,i)=>{
+    const bCls=r.block?.toLowerCase().includes('girl')?'badge-girls':r.block?.toLowerCase().includes('boy')?'badge-boys':'badge-warning';
+    return `<tr>
+      <td>${i+1}</td>
+      <td><strong>${r.name}</strong></td>
+      <td>${r.id||'—'}</td>
+      <td><span class="badge ${bCls}">${r.block||'—'}</span></td>
+      <td>${r.dormitory||'<span style="color:#dc3545">Unassigned</span>'}</td>
+      <td>${r.joinedDate?fmtD(r.joinedDate):'—'}</td>
+      <td><div class="action-cell">
+        <button class="btn btn-info btn-sm" onclick="editResident('${esc(r.name)}')">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteResident('${esc(r.name)}')">🗑️</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function updateRoomFilter() {
+  const d=load(); const sel=document.getElementById('filterRoom'); if(!sel) return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">All Rooms</option>'+d.dormitories.map(dm=>`<option value="${dm.name}" ${cur===dm.name?'selected':''}>${dm.name}</option>`).join('');
+}
+</script>
+
+<script>
+// ════════════════════════════════════════════════
+//  MODAL
+// ════════════════════════════════════════════════
+function closeModal() { document.getElementById('editModal').classList.remove('open'); }
+function saveModal() {
+  const modal=document.getElementById('editModal');
+  const {type,oldName}=modal._data||{};
+  const d=load();
+  if(type==='room') {
+    const nName=document.getElementById('mRName').value.trim();
+    const nCap=parseInt(document.getElementById('mRCap').value);
+    const nBlock=document.getElementById('mRBlock').value;
+    if(!nName||!nCap) return toast('Fill all fields','error');
+    const dm=d.dormitories.find(x=>x.name===oldName);
+    if(!dm) return;
+    if(nName!==oldName && d.dormitories.some(x=>x.name===nName)) return toast('Name already taken','error');
+    dm.name=nName; dm.capacity=nCap; dm.block=nBlock;
+    // update references
+    d.residents.forEach(r=>{ if(r.dormitory===oldName) r.dormitory=nName; });
+    if(d.currentRotation) d.currentRotation.forEach(x=>{ if(x.name===oldName) { x.name=nName; x.capacity=nCap; x.block=nBlock; } });
+    save(d); closeModal(); renderRoomsTable(); renderDashboard(); updateRoomFilter();
+    addNotif('✏️',`Room "${oldName}" updated to "${nName}"`);
+    toast('Room updated!');
+  } else if(type==='resident') {
+    const nName=document.getElementById('mRName').value.trim();
+    const nId=document.getElementById('mRId').value.trim();
+    const nGender=document.getElementById('mRGender').value;
+    const nRoom=document.getElementById('mRRoom').value;
+    if(!nName) return toast('Enter name','error');
+    const r=d.residents.find(x=>x.name===oldName);
+    if(!r) return;
+    if(nName!==oldName && d.residents.some(x=>x.name===nName)) return toast('Name already exists','error');
+    // Update currentRotation
+    if(d.currentRotation) {
+      d.currentRotation.forEach(dm=>{ dm.residents=(dm.residents||[]).filter(x=>x!==oldName); });
+      if(nRoom) { const dm=d.currentRotation.find(x=>x.name===nRoom); if(dm) dm.residents.push(nName); }
+    }
+    r.name=nName; r.id=nId; r.block=nGender; r.dormitory=nRoom||null;
+    save(d); closeModal(); renderResidentsTable(); renderDashboard();
+    addNotif('✏️',`Resident "${oldName}" updated`);
+    toast('Resident updated!');
+  }
+}
+
+// ════════════════════════════════════════════════
+//  UPLOAD & PARSE
+// ════════════════════════════════════════════════
+let parsedNames=[];
+function handleDrop(e) { e.preventDefault(); document.getElementById('dropZone').classList.remove('over'); parseFile(e.dataTransfer.files[0]); }
+function handleFile(e) { parseFile(e.target.files[0]); }
+function parseFile(file) {
+  if(!file) return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!['csv','txt'].includes(ext)) return toast('Only .csv or .txt supported','error');
+  const reader=new FileReader();
+  reader.onload=e=>parseText(e.target.result);
+  reader.readAsText(file);
+}
+function parsePaste() { parseText(document.getElementById('pasteArea').value); }
+function parseText(text) {
+  parsedNames=[];
+  const lines=text.split(/\r?\n/).map(l=>l.trim()).filter(l=>l);
+  lines.forEach((line,i)=>{
+    if(i===0){ const lo=line.toLowerCase(); if(lo.includes('name')||lo.includes('s/n')||lo.includes('no.')) return; }
+    const parts=line.split(',').map(p=>p.trim().replace(/^"|"$/g,''));
+    if(parts[0]) parsedNames.push({name:parts[0], id:parts[1]||''});
+  });
+  if(!parsedNames.length) return toast('No names found','error');
+  showPreview();
+}
+function showPreview() {
+  const d=load(); const existing=d.residents.map(r=>r.name.toLowerCase());
+  document.getElementById('prevCount').textContent=`(${parsedNames.length} entries)`;
+  document.getElementById('prevBody').innerHTML=parsedNames.map((r,i)=>{
+    const dup=existing.includes(r.name.toLowerCase());
+    return `<tr><td>${i+1}</td><td>${r.name}</td><td>${r.id||'—'}</td>
+      <td>${dup?'<span class="badge badge-warning">Already exists</span>':'<span class="badge badge-new">New</span>'}</td></tr>`;
+  }).join('');
+  document.getElementById('previewCard').style.display='block';
+}
+function clearPreview() {
+  parsedNames=[]; document.getElementById('previewCard').style.display='none';
+  document.getElementById('fileIn').value=''; document.getElementById('pasteArea').value='';
+}
+
+// ════════════════════════════════════════════════
+//  IMPORT & AUTO-ASSIGN (auto-creates rooms)
+// ════════════════════════════════════════════════
+function nextRoomName(block, dorms) {
+  const same=dorms.filter(d=>(d.block||'').toLowerCase()===block.toLowerCase());
+  const nums=same.map(d=>{ const m=d.name.match(/(\d+)/g); return m?parseInt(m[m.length-1]):0; });
+  const n=nums.length?Math.max(...nums)+1:101;
+  return `Room ${n}`;
+}
+
+function importAndAssign() {
+  if(!parsedNames.length) return toast('No data to import','error');
+  const d=load();
+  const gender=document.getElementById('upGender').value;
+  const defCap=parseInt(document.getElementById('upCapacity').value)||10;
+  let added=0, skipped=0, newRooms=[];
+
+  // Add new residents
+  parsedNames.forEach(r=>{
+    if(!d.residents.some(x=>x.name.toLowerCase()===r.name.toLowerCase())) {
+      d.residents.push({name:r.name,id:r.id||'',block:gender!=='auto'?gender:'',dormitory:null,joinedDate:new Date().toISOString()});
+      added++;
+    } else skipped++;
+  });
+
+  // Build live dorms
+  let dorms=d.dormitories.map(dm=>({name:dm.name,capacity:dm.capacity,block:dm.block||'',residents:[]}));
+  d.residents.filter(r=>r.dormitory).forEach(r=>{
+    const dm=dorms.find(x=>x.name===r.dormitory); if(dm) dm.residents.push(r.name);
+  });
+
+  // Assign unassigned
+  d.residents.filter(r=>!r.dormitory).forEach(r=>{
+    const pBlock=(r.block||gender!=='auto'?r.block||gender:'').toLowerCase();
+    let dm=pBlock?dorms.find(x=>x.block.toLowerCase()===pBlock&&x.residents.length<x.capacity):null;
+    if(!dm) dm=dorms.find(x=>x.residents.length<x.capacity);
+    if(!dm) {
+      const nb=r.block||gender!=='auto'?r.block||gender:'General';
+      const nName=nextRoomName(nb, d.dormitories);
+      d.dormitories.push({name:nName,capacity:defCap,block:nb});
+      newRooms.push(nName);
+      dm={name:nName,capacity:defCap,block:nb,residents:[]};
+      dorms.push(dm);
+    }
+    r.dormitory=dm.name; dm.residents.push(r.name);
+  });
+
+  const now=new Date().toISOString();
+  d.currentRotation=dorms; d.lastRotationDate=now;
+  d.nextRotationDate=addDays(now,d.rotationInterval);
+  d.rotationCount=(d.rotationCount||0)+1;
+  save(d); clearPreview(); renderAll();
+
+  let msg=`✅ ${added} member${added!==1?'s':''} added & assigned.`;
+  if(skipped) msg+=` ${skipped} duplicate${skipped!==1?'s':''} skipped.`;
+  if(newRooms.length) msg+=` 🏢 ${newRooms.length} new room${newRooms.length!==1?'s':''} auto-created!`;
+  addNotif('📂',msg); toast(msg, newRooms.length?'info':'success');
+
+  // Go to assignments
+  showPage('assignments',document.querySelector('.nav-item:nth-child(5)'));
+}
+
+// ════════════════════════════════════════════════
+//  AUTO-ASSIGN
+// ════════════════════════════════════════════════
+function autoAssign() {
+  const d=load();
+  if(!d.dormitories.length) return toast('Add rooms first','error');
+  if(!d.residents.length)   return toast('Add residents first','error');
+
+  // Check if there are only unassigned residents to place (new members added)
+  const unassigned=d.residents.filter(r=>!r.dormitory);
+  if(unassigned.length && d.currentRotation) {
+    // Use smart assign: keep existing, only place unassigned
+    assignUnassigned();
+    return;
+  }
+
+  if(d.currentRotation) d.history.unshift({date:d.lastRotationDate||new Date().toISOString(),rotation:JSON.parse(JSON.stringify(d.currentRotation))});
+  const dorms=d.dormitories.map(dm=>({name:dm.name,capacity:dm.capacity,block:dm.block||'',residents:[]}));
+  d.residents.forEach((r,i)=>{
+    let placed=false;
+    for(let j=0;j<dorms.length;j++){
+      const idx=(i+j)%dorms.length;
+      if(dorms[idx].residents.length<dorms[idx].capacity){ r.dormitory=dorms[idx].name; dorms[idx].residents.push(r.name); placed=true; break; }
+    }
+    if(!placed){ const l=dorms[dorms.length-1]; r.dormitory=l.name; l.residents.push(r.name); }
+  });
+  const now=new Date().toISOString();
+  d.currentRotation=dorms; d.lastRotationDate=now; d.nextRotationDate=addDays(now,d.rotationInterval);
+  d.rotationCount=(d.rotationCount||0)+1;
+  save(d); renderAssignments(); renderDashboard();
+  addNotif('🚀',`Auto-assign complete — ${d.residents.length} residents across ${d.dormitories.length} rooms`);
+  toast(`✅ All ${d.residents.length} residents assigned!`);
+}
+
+// Assign only unassigned residents — keeps all existing assignments intact
+function assignUnassigned() {
+  const d=load();
+  const unassigned=d.residents.filter(r=>!r.dormitory);
+  if(!unassigned.length) return toast('All residents are already assigned!','info');
+  if(!d.dormitories.length) return toast('Add a room first','error');
+
+  // Build a live occupancy map from current rotation
+  const dorms=d.dormitories.map(dm=>{
+    const existing=d.currentRotation?.find(x=>x.name===dm.name);
+    return {name:dm.name, capacity:dm.capacity, block:dm.block||'', residents:[...(existing?.residents||[])]};
+  });
+  // Add any new rooms not yet in currentRotation
+  d.dormitories.forEach(dm=>{
+    if(!dorms.find(x=>x.name===dm.name))
+      dorms.push({name:dm.name, capacity:dm.capacity, block:dm.block||'', residents:[]});
+  });
+
+  let placed=0, overflow=[];
+  unassigned.forEach(r=>{
+    const block=(r.block||'').toLowerCase();
+    // Try same-gender room with space first
+    let target=dorms.find(dm=> block && (dm.block||'').toLowerCase()===block && dm.residents.length<dm.capacity);
+    // Fall back to any room with space
+    if(!target) target=dorms.find(dm=>dm.residents.length<dm.capacity);
+    if(target){ r.dormitory=target.name; target.residents.push(r.name); placed++; }
+    else overflow.push(r.name);
+  });
+
+  d.currentRotation=dorms;
+  save(d); renderAssignments(); renderDashboard();
+
+  if(overflow.length){
+    addNotif('⚠️',`${placed} assigned. ${overflow.length} could not be placed (rooms full): ${overflow.join(', ')}`);
+    toast(`⚠️ ${placed} assigned — ${overflow.length} unplaced (all rooms full)`,'warn');
+  } else {
+    addNotif('✅',`${placed} new member${placed!==1?'s':''} assigned to room${placed!==1?'s':''}`);
+    toast(`✅ ${placed} new member${placed!==1?'s':''} assigned successfully!`);
+  }
+}
+
+// ════════════════════════════════════════════════
+//  ROTATION
+// ════════════════════════════════════════════════
+function checkAutoRotation() {
+  const d=load(); if(!d.nextRotationDate) return;
+  if(new Date()>=new Date(d.nextRotationDate)) doRotate(true);
+}
+function rotateNow() {
+  const d=load(); if(!d.currentRotation) return toast('Run Auto-Assign first','error');
+  if(!confirm('Rotate all residents to new rooms now?')) return; doRotate(false);
+}
+function doRotate(auto) {
+  const d=load(); if(!d.residents.length||!d.dormitories.length) return;
+  if(d.currentRotation) { d.history.unshift({date:d.lastRotationDate||new Date().toISOString(),rotation:JSON.parse(JSON.stringify(d.currentRotation))}); if(d.history.length>30) d.history.pop(); }
+  const names=d.dormitories.map(dm=>dm.name);
+  d.residents.forEach(r=>{ const ci=names.indexOf(r.dormitory); r.dormitory=names[(ci+1)%names.length]; });
+  const dorms=d.dormitories.map(dm=>({name:dm.name,capacity:dm.capacity,block:dm.block||'',residents:[]}));
+  d.residents.forEach(r=>{ const dm=dorms.find(x=>x.name===r.dormitory); if(dm) dm.residents.push(r.name); });
+  const now=new Date().toISOString();
+  d.currentRotation=dorms; d.lastRotationDate=now; d.nextRotationDate=addDays(now,d.rotationInterval);
+  d.rotationCount=(d.rotationCount||0)+1;
+  save(d); renderAssignments(); renderDashboard();
+  addNotif('🔄',`Rotation #${d.rotationCount} ${auto?'(auto)':'(manual)'} — next in ${d.rotationInterval} days`);
+  toast(auto?'🔄 Auto-rotation done!':'🔄 Manual rotation done!','info');
+}
+</script>
+
+<script>
+// ════════════════════════════════════════════════
+//  ASSIGNMENTS RENDER
+// ════════════════════════════════════════════════
+function roomCard(dm, gClass) {
+  const occ=(dm.residents||[]).length;
+  const pct=Math.min(100,Math.round((occ/dm.capacity)*100));
+  return `<div class="room-card ${gClass}">
+    <h3>🏢 ${dm.name}</h3>
+    <div class="rm-meta">Capacity: ${dm.capacity} &nbsp;|&nbsp; Occupied: ${occ}</div>
+    <div class="rm-bar-bg"><div class="rm-bar" style="width:${pct}%"></div></div>
+    <ul>${dm.residents&&dm.residents.length
+      ? dm.residents.map((r,i)=>`<li><span style="opacity:.6;font-size:.8em">${i+1}.</span> ${r}</li>`).join('')
+      : '<li style="opacity:.7;font-style:italic">No residents</li>'}</ul>
+  </div>`;
+}
+
+function renderAssignments() {
+  const d=load(); const el=document.getElementById('assignView');
+  if(!d.currentRotation||!d.currentRotation.length) {
+    el.innerHTML='<div class="empty"><div class="e-icon">📋</div><p>No assignments yet. Add rooms &amp; residents, then click <strong>🚀 Auto-Assign</strong></p></div>'; return;
+  }
+  const girls=d.currentRotation.filter(dm=>(dm.block||'').toLowerCase().includes('girl'));
+  const boys =d.currentRotation.filter(dm=>(dm.block||'').toLowerCase().includes('boy'));
+  const other=d.currentRotation.filter(dm=>!girls.includes(dm)&&!boys.includes(dm));
+  const gc=girls.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const bc=boys.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const oc=other.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  let html='';
+  if(girls.length) html+=`<div class="gender-section"><div class="gender-hdr girls"><span>👧 Girls Section</span><span class="gh-badge">${gc} Residents · ${girls.length} Rooms</span></div><div class="rooms-grid">${girls.map(dm=>roomCard(dm,'girls')).join('')}</div></div>`;
+  if(boys.length)  html+=`<div class="gender-section"><div class="gender-hdr boys"><span>👦 Boys Section</span><span class="gh-badge">${bc} Residents · ${boys.length} Rooms</span></div><div class="rooms-grid">${boys.map(dm=>roomCard(dm,'boys')).join('')}</div></div>`;
+  if(other.length) html+=`<div class="gender-section"><div class="gender-hdr other"><span>🏢 Other Rooms</span><span class="gh-badge">${oc} Residents · ${other.length} Rooms</span></div><div class="rooms-grid">${other.map(dm=>roomCard(dm,'other')).join('')}</div></div>`;
+  html+=`<div class="summary-bar">
+    <div class="sum-item"><div class="sum-val girls">${gc}</div><div class="sum-lbl">👧 Girls</div></div>
+    <div class="sum-item"><div class="sum-val boys">${bc}</div><div class="sum-lbl">👦 Boys</div></div>
+    ${oc?`<div class="sum-item"><div class="sum-val" style="color:#764ba2">${oc}</div><div class="sum-lbl">🏢 Other</div></div>`:''}
+    <div class="sum-item"><div class="sum-val total">${gc+bc+oc}</div><div class="sum-lbl">Total</div></div>
+  </div>`;
+  el.innerHTML=html;
+}
+
+// ════════════════════════════════════════════════
+//  HISTORY
+// ════════════════════════════════════════════════
+function renderHistory() {
+  const d=load(); const el=document.getElementById('historyView');
+  if(!d.history||!d.history.length) { el.innerHTML='<div class="empty"><div class="e-icon">🕒</div><p>No rotation history yet</p></div>'; return; }
+  el.innerHTML=d.history.map((entry,i)=>`
+    <div class="card" style="margin-bottom:16px;">
+      <div class="card-title">Rotation #${d.history.length-i} &nbsp;—&nbsp; ${fmt(entry.date)}</div>
+      <div class="rooms-grid">${entry.rotation.map(dm=>roomCard(dm,dm.block?.toLowerCase().includes('girl')?'girls':dm.block?.toLowerCase().includes('boy')?'boys':'other')).join('')}</div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+//  PRINT
+// ════════════════════════════════════════════════
+function printAssign() {
+  const d=load(); if(!d.currentRotation||!d.currentRotation.length) return toast('No assignments to print','error');
+  const girls=d.currentRotation.filter(dm=>(dm.block||'').toLowerCase().includes('girl'));
+  const boys =d.currentRotation.filter(dm=>(dm.block||'').toLowerCase().includes('boy'));
+  const other=d.currentRotation.filter(dm=>!girls.includes(dm)&&!boys.includes(dm));
+  const gc=girls.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const bc=boys.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  function tbl(rooms,th) {
+    return rooms.map(dm=>`<h3 style="margin:18px 0 6px;color:#333">🏢 ${dm.name}${dm.block?' ('+dm.block+')':''} — Cap: ${dm.capacity}</h3>
+      <table><tr>${th}</tr>${(dm.residents&&dm.residents.length)?dm.residents.map((r,i)=>{const res=d.residents.find(x=>x.name===r);return`<tr><td>${i+1}</td><td>${r}</td><td>${res?.id||'—'}</td></tr>`}).join(''):'<tr><td colspan="3" style="color:#aaa;font-style:italic">Empty</td></tr>'}</table>`).join('');
+  }
+  const thG='<th style="background:#f093fb;color:#fff">#</th><th style="background:#f093fb;color:#fff">Name</th><th style="background:#f093fb;color:#fff">ID</th>';
+  const thB='<th style="background:#4facfe;color:#fff">#</th><th style="background:#4facfe;color:#fff">Name</th><th style="background:#4facfe;color:#fff">ID</th>';
+  const thO='<th style="background:#667eea;color:#fff">#</th><th style="background:#667eea;color:#fff">Name</th><th style="background:#667eea;color:#fff">ID</th>';
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Don Bosco Hostel — Room Assignments</title>
+  <style>body{font-family:Arial,sans-serif;padding:24px}h1{margin-bottom:4px}table{width:100%;border-collapse:collapse;margin-bottom:16px}th,td{padding:9px 12px;text-align:left}td{border-bottom:1px solid #eee}tr:nth-child(even)td{background:#fafafa}.sh{padding:10px 16px;border-radius:6px;color:#fff;font-weight:700;font-size:1.05em;margin:20px 0 4px}.sum{display:flex;gap:20px;margin:16px 0;padding:16px;background:#f5f5f5;border-radius:8px}.sv{font-size:1.6em;font-weight:800}@media print{button{display:none}}</style></head><body>
+  <button onclick="window.print()" style="padding:10px 22px;background:#667eea;color:#fff;border:none;border-radius:6px;cursor:pointer;margin-bottom:18px">🖨️ Print</button>
+  <h1>🏠 Don Bosco Hostel — Room Assignments</h1>
+  <p style="color:#888;margin-bottom:16px">Generated: ${new Date().toLocaleString()} | Rooms: ${d.currentRotation.length} | Residents: ${d.residents.length}</p>
+  <div class="sum"><div><div class="sv" style="color:#c44569">${gc}</div><div>👧 Girls</div></div><div><div class="sv" style="color:#0984e3">${bc}</div><div>👦 Boys</div></div><div><div class="sv" style="color:#28a745">${gc+bc}</div><div>Total</div></div></div>
+  ${girls.length?`<div class="sh" style="background:#c44569">👧 Girls Section — ${gc} Residents</div>${tbl(girls,thG)}`:''}
+  ${boys.length?`<div class="sh" style="background:#0984e3">👦 Boys Section — ${bc} Residents</div>${tbl(boys,thB)}`:''}
+  ${other.length?`<div class="sh" style="background:#667eea">🏢 Other — Residents</div>${tbl(other,thO)}`:''}
+  </body></html>`);
+  w.document.close();
+}
+
+// ════════════════════════════════════════════════
+//  SETTINGS
+// ════════════════════════════════════════════════
+function saveSettings() {
+  const v=parseInt(document.getElementById('rotInt').value);
+  if(!v||v<1) return toast('Enter valid interval','error');
+  const d=load(); d.rotationInterval=v;
+  if(d.lastRotationDate) d.nextRotationDate=addDays(d.lastRotationDate,v);
+  save(d); renderDashboard(); toast(`Rotation interval set to ${v} days`);
+  addNotif('⚙️',`Rotation interval updated to ${v} days`);
+}
+function addAccount() {
+  const u=document.getElementById('aUser').value.trim();
+  const p=document.getElementById('aPass').value.trim();
+  const r=document.getElementById('aRole').value;
+  if(!u||!p) return toast('Enter username and password','error');
+  const acc=loadAccounts();
+  if(acc.some(a=>a.username===u)) return toast('Username already exists','error');
+  acc.push({username:u,password:p,role:r}); saveAccounts(acc);
+  document.getElementById('aUser').value=''; document.getElementById('aPass').value='';
+  renderAccounts(); toast(`Account "${u}" created!`);
+}
+function deleteAccount(u) {
+  const s=JSON.parse(sessionStorage.getItem(SK)||'{}');
+  if(s.username===u) return toast("Can't delete your own account",'error');
+  if(!confirm(`Delete account "${u}"?`)) return;
+  saveAccounts(loadAccounts().filter(a=>a.username!==u)); renderAccounts(); toast('Account deleted','info');
+}
+function renderAccounts() {
+  const acc=loadAccounts();
+  document.getElementById('accountsList').innerHTML=acc.map(a=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#f8f9ff;border-radius:8px;margin-bottom:8px;">
+      <div><strong>${a.username}</strong> <span class="badge ${a.role==='admin'?'badge-boys':'badge-warning'}">${a.role}</span></div>
+      <button class="btn btn-danger btn-sm" onclick="deleteAccount('${esc(a.username)}')">Delete</button>
+    </div>`).join('');
+  const d=load(); document.getElementById('rotInt').value=d.rotationInterval;
+}
+
+// ════════════════════════════════════════════════
+//  CLEAR ALL
+// ════════════════════════════════════════════════
+function clearAllData() {
+  if(!confirm('⚠️ Delete ALL rooms, residents, assignments and history?\n\nThis cannot be undone.')) return;
+  save(defState()); renderAll(); addNotif('🗑️','All data cleared'); toast('All data cleared','info');
+}
+
+// ════════════════════════════════════════════════
+//  RENDER ALL
+// ════════════════════════════════════════════════
+function renderAll() {
+  renderDashboard(); renderRoomsTable(); renderResidentsTable(); renderAssignments(); updateRoomFilter();
+}
+
+// ════════════════════════════════════════════════
+//  PRELOAD DON BOSCO DATA
+// ════════════════════════════════════════════════
+function preloadData() {
+  const d=load(); if(d.dormitories.length||d.residents.length) return;
+  const rooms=[
+    {name:'Mamma Margaret Mansion:101',capacity:12,block:'Girls'},
+    {name:'Mamma Margaret Mansion:104',capacity:10,block:'Girls'},
+    {name:'Rayanna:306',capacity:14,block:'Girls'},
+    {name:'Velunaachi:307',capacity:14,block:'Girls'},
+    {name:'Thiruvalluvar:304',capacity:10,block:'Boys'},
+    {name:'Sitarama:305',capacity:10,block:'Boys'},
+    {name:'Krishnadevaraya:302',capacity:14,block:'Boys'},
+    {name:'Kuriakose:303',capacity:14,block:'Boys'},
+    {name:'215',capacity:13,block:'Boys'}
+  ];
+  const byRoom={
+    'Mamma Margaret Mansion:101':['Priyanka','Darathi','Aihun Ryngkhlem','Merlin','Aiphrinda Nongrum','Emideimaya Dkhar','Mahadharshini','Daphishisha Lyngdoh','Baiamomlang lamare','Banasha kurkalang','Peacefull lyngdoh','Judith susngi'],
+    'Mamma Margaret Mansion:104':['Rakshana','Jancy','Ibadawanshwa Shylla','Sabitha Nayaki','Ibalahun Wahlang','Jacinta Susngi','Arockia Jenifer','Kasarika Lynthong','Lapynbiang Khyriem','Keerthana'],
+    'Rayanna:306':['Amala Rakkini','Afrin Banu','Pynsngewbha Shylla','Monaliza Dkhar Sawian','Roslin','Medarita Iawram','Ramyowon Siro','Amalin Mary','Rinmichan Siro','Jamila','Risolda Nongrum','Sathya Jothi','Sincerity Shabong','Saini Chyrmang'],
+    'Velunaachi:307':['Serene','Swathi','Jenifer Jones','Skillfully Rynghang','Kaviyadharshini R','Stacy Reamei','Vanesa Mukhim','Viccuna L. Kadete'],
+    'Thiruvalluvar:304':['Rohith','Benadict','Robertstar Kharkongor','Balaji','Perfectson Marthong','Joel','Montfort','Syed Farhan','Syed Sameeruddin','Ribok Nongspung'],
+    'Sitarama:305':['Sam','Ram Charan','Don Bosco','Ryngkatborlang Sohtun','Tejas MA','Edwin Amburose','Subith','Praveen Samuel','Visazoto Savi'],
+    'Krishnadevaraya:302':['Santhosh','Pavankalyan','Carmellus Lakashiang','Veeramani','Allwinson Lyngdoh','Diago Armando Lamin'],
+    'Kuriakose:303':['Tamilmani','Iniyan C','Dijoy Marak','I. Ignatius Kadete','Arish Paston C','Michealraj','Gothandam','Arun Kumar','Hendry Thomas','Surendhiran','Hameisha Tyngkan','Rohith T','Vimal arul francis','Arun Vineeth'],
+    '215':['Haarris Augusta','Kingsly','Jeffery','Windston','Asrar Ahamed','Lanka','Ajay Kumar','Vishwa S','Jeron','Sonu Joseph S','Felix Raja','Madhavan']
+  };
+  d.dormitories=rooms;
+  const now=new Date().toISOString(); const rotation=[];
+  rooms.forEach(room=>{
+    const names=byRoom[room.name]||[];
+    const entry={name:room.name,capacity:room.capacity,block:room.block,residents:[]};
+    names.forEach(name=>{
+      d.residents.push({name,id:'',block:room.block,dormitory:room.name,joinedDate:now});
+      entry.residents.push(name);
+    });
+    rotation.push(entry);
+  });
+  d.currentRotation=rotation; d.lastRotationDate=now;
+  d.nextRotationDate=addDays(now,d.rotationInterval); d.rotationCount=1;
+  save(d);
+  addNotif('🏠','Don Bosco Skill Mission data loaded — 95 residents, 9 rooms');
+}
+
+// ════════════════════════════════════════════════
+//  SHARE PAGE INIT
+// ════════════════════════════════════════════════
+function renderSharePage() {
+  // auto-generate QR on open
+  setTimeout(generateViewerQR, 200);
+}
+
+// ════════════════════════════════════════════════
+//  DOWNLOAD — CSV
+// ════════════════════════════════════════════════
+function downloadCSV() {
+  const d = load();
+  let csv = 'Room Name,Block/Gender,Capacity,Resident Name,Resident ID,Joined Date\n';
+  d.dormitories.forEach(dm => {
+    const rot = d.currentRotation?.find(x => x.name === dm.name);
+    const residents = rot ? (rot.residents || []) : [];
+    if (!residents.length) {
+      csv += `"${dm.name}","${dm.block||''}",${dm.capacity},"(empty)","",""\n`;
+    } else {
+      residents.forEach(rName => {
+        const r = d.residents.find(x => x.name === rName);
+        csv += `"${dm.name}","${dm.block||''}",${dm.capacity},"${rName}","${r?.id||''}","${r?.joinedDate?new Date(r.joinedDate).toLocaleDateString():''}"\n`;
+      });
+    }
+  });
+  triggerDownload(csv, 'hostel_assignments_'+dateStr()+'.csv', 'text/csv');
+  addNotif('📊','CSV file downloaded');
+  toast('CSV downloaded!');
+}
+
+// ════════════════════════════════════════════════
+//  DOWNLOAD — EXCEL (XLS via HTML table trick)
+// ════════════════════════════════════════════════
+function downloadExcel() {
+  const d = load();
+  let html = '<html><head><meta charset="UTF-8"></head><body>';
+  html += '<h2>Don Bosco Hostel — Room Assignments</h2>';
+  html += `<p>Generated: ${new Date().toLocaleString()}</p>`;
+  html += '<table border="1"><thead><tr><th>Room</th><th>Block</th><th>Capacity</th><th>Resident Name</th><th>Resident ID</th><th>Joined</th></tr></thead><tbody>';
+  d.dormitories.forEach(dm => {
+    const rot = d.currentRotation?.find(x => x.name === dm.name);
+    const residents = rot ? (rot.residents || []) : [];
+    if (!residents.length) {
+      html += `<tr><td>${dm.name}</td><td>${dm.block||''}</td><td>${dm.capacity}</td><td colspan="3" style="color:gray;font-style:italic">Empty</td></tr>`;
+    } else {
+      residents.forEach((rName, i) => {
+        const r = d.residents.find(x => x.name === rName);
+        html += `<tr><td>${i===0?dm.name:''}</td><td>${i===0?dm.block||'':''}</td><td>${i===0?dm.capacity:''}</td><td>${rName}</td><td>${r?.id||''}</td><td>${r?.joinedDate?new Date(r.joinedDate).toLocaleDateString():''}</td></tr>`;
+      });
+    }
+  });
+  html += '</tbody></table></body></html>';
+  triggerDownload(html, 'hostel_assignments_'+dateStr()+'.xls', 'application/vnd.ms-excel');
+  addNotif('📗','Excel file downloaded');
+  toast('Excel downloaded!');
+}
+
+// ════════════════════════════════════════════════
+//  DOWNLOAD — JSON BACKUP
+// ════════════════════════════════════════════════
+function downloadJSON() {
+  const d = load();
+  const backup = { ...d, exportedAt: new Date().toISOString(), version: '2.0', app: 'Don Bosco Hostel Manager' };
+  triggerDownload(JSON.stringify(backup, null, 2), 'hostel_backup_'+dateStr()+'.json', 'application/json');
+  addNotif('💾','JSON backup downloaded');
+  toast('Backup downloaded!');
+}
+
+// ════════════════════════════════════════════════
+//  DOWNLOAD — STANDALONE HTML (app + data baked in)
+// ════════════════════════════════════════════════
+function downloadHTML() {
+  const d = load();
+  const dataScript = `<script>localStorage.setItem('hostelData_v2',${JSON.stringify(JSON.stringify(d))});<\/script>`;
+  // Read current page HTML and inject the data
+  const pageHTML = document.documentElement.outerHTML;
+  // Insert data restore script right before </body>
+  const injected = pageHTML.replace('</body>', dataScript + '\n</body>');
+  triggerDownload(injected, 'hostel_manager_'+dateStr()+'.html', 'text/html');
+  addNotif('🌐','Standalone HTML app downloaded with all data');
+  toast('App file downloaded! Drag it to netlify.com/drop for a live URL.');
+}
+
+// ════════════════════════════════════════════════
+//  DOWNLOAD — PDF (opens print dialog)
+// ════════════════════════════════════════════════
+function downloadPDF() {
+  const d = load();
+  if(!d.currentRotation||!d.currentRotation.length) return toast('No assignments to export','error');
+  const girls = d.currentRotation.filter(dm=>(dm.block||'').toLowerCase().includes('girl'));
+  const boys  = d.currentRotation.filter(dm=>(dm.block||'').toLowerCase().includes('boy'));
+  const other = d.currentRotation.filter(dm=>!girls.includes(dm)&&!boys.includes(dm));
+  const gc = girls.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const bc = boys.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+
+  function sec(rooms, color, label) {
+    if(!rooms.length) return '';
+    return `<div style="background:${color};color:#fff;padding:10px 16px;border-radius:6px;font-weight:700;font-size:1.05em;margin:20px 0 8px">${label}</div>`
+      + rooms.map(dm=>`<div style="margin-bottom:16px">
+        <h3 style="color:#333;margin-bottom:6px">🏢 ${dm.name}${dm.block?' ('+dm.block+')':''} — Cap: ${dm.capacity}</h3>
+        <table style="width:100%;border-collapse:collapse">
+          <tr><th style="background:#f5f5f5;padding:8px;text-align:left;border:1px solid #ddd">#</th>
+              <th style="background:#f5f5f5;padding:8px;text-align:left;border:1px solid #ddd">Name</th>
+              <th style="background:#f5f5f5;padding:8px;text-align:left;border:1px solid #ddd">ID</th></tr>
+          ${(dm.residents&&dm.residents.length)?dm.residents.map((r,i)=>{const res=d.residents.find(x=>x.name===r);return`<tr><td style="padding:7px 8px;border:1px solid #eee">${i+1}</td><td style="padding:7px 8px;border:1px solid #eee">${r}</td><td style="padding:7px 8px;border:1px solid #eee">${res?.id||'—'}</td></tr>`}).join(''):'<tr><td colspan="3" style="padding:8px;color:#aaa;font-style:italic;border:1px solid #eee">No residents</td></tr>'}
+        </table></div>`).join('');
+  }
+
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Don Bosco Hostel — Room Assignments</title>
+  <style>body{font-family:Arial,sans-serif;padding:24px;color:#222}h1{margin-bottom:4px}
+  .sum{display:flex;gap:24px;padding:14px;background:#f5f5f5;border-radius:8px;margin:14px 0}
+  .sv{font-size:1.5em;font-weight:800}.nb{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  @media print{.no-print{display:none}}</style></head><body>
+  <div class="no-print" style="margin-bottom:16px">
+    <button onclick="window.print()" style="padding:10px 22px;background:#667eea;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:1em;margin-right:8px">🖨️ Print / Save PDF</button>
+    <button onclick="window.close()" style="padding:10px 16px;background:#eee;border:none;border-radius:6px;cursor:pointer">✖ Close</button>
+  </div>
+  <h1>🏠 Don Bosco Skill Mission — Hostel Room Assignments</h1>
+  <p style="color:#888;margin-bottom:10px">Generated: ${new Date().toLocaleString()} &nbsp;|&nbsp; Rooms: ${d.currentRotation.length} &nbsp;|&nbsp; Residents: ${d.residents.length}</p>
+  <div class="sum">
+    <div><div class="sv" style="color:#c44569">${gc}</div><div style="font-size:.85em;color:#666">👧 Girls</div></div>
+    <div><div class="sv" style="color:#0984e3">${bc}</div><div style="font-size:.85em;color:#666">👦 Boys</div></div>
+    <div><div class="sv" style="color:#28a745">${gc+bc}</div><div style="font-size:.85em;color:#666">Total</div></div>
+    <div><div class="sv" style="color:#667eea">${d.dormitories.length}</div><div style="font-size:.85em;color:#666">Rooms</div></div>
+  </div>
+  ${sec(girls,'#c44569','👧 Girls Section — '+gc+' Residents')}
+  ${sec(boys,'#0984e3','👦 Boys Section — '+bc+' Residents')}
+  ${sec(other,'#667eea','🏢 Other Rooms')}
+  </body></html>`);
+  w.document.close();
+  addNotif('📄','PDF report opened for printing');
+  toast('PDF ready — use browser Print to save as PDF');
+}
+
+// ════════════════════════════════════════════════
+//  RESTORE BACKUP
+// ════════════════════════════════════════════════
+function restoreBackup() { document.getElementById('restoreFile').click(); }
+function doRestore(event) {
+  const file = event.target.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if(!data.dormitories || !data.residents) return toast('Invalid backup file','error');
+      if(!confirm(`Restore backup from ${data.exportedAt?new Date(data.exportedAt).toLocaleString():'unknown date'}?\nThis will replace all current data.`)) return;
+      save(data); renderAll();
+      addNotif('📥',`Backup restored — ${data.residents.length} residents, ${data.dormitories.length} rooms`);
+      toast('Backup restored successfully!');
+      showPage('dashboard', document.querySelector('.nav-item'));
+    } catch(err) { toast('Could not read backup file','error'); }
+  };
+  reader.readAsText(file);
+}
+
+// ════════════════════════════════════════════════
+//  SHARE — WHATSAPP
+// ════════════════════════════════════════════════
+function shareWhatsApp() {
+  const d = load();
+  let msg = `🏠 *Don Bosco Hostel — Room Assignments*\n`;
+  msg += `📅 ${new Date().toLocaleDateString()}\n\n`;
+  const girls = d.currentRotation?.filter(dm=>(dm.block||'').toLowerCase().includes('girl'))||[];
+  const boys  = d.currentRotation?.filter(dm=>(dm.block||'').toLowerCase().includes('boy'))||[];
+  if(girls.length) {
+    msg += `👧 *GIRLS SECTION*\n`;
+    girls.forEach(dm=>{ msg+=`\n🏢 *${dm.name}* (${(dm.residents||[]).length}/${dm.capacity})\n`; (dm.residents||[]).forEach((r,i)=>{ msg+=`  ${i+1}. ${r}\n`; }); });
+  }
+  if(boys.length) {
+    msg += `\n👦 *BOYS SECTION*\n`;
+    boys.forEach(dm=>{ msg+=`\n🏢 *${dm.name}* (${(dm.residents||[]).length}/${dm.capacity})\n`; (dm.residents||[]).forEach((r,i)=>{ msg+=`  ${i+1}. ${r}\n`; }); });
+  }
+  msg += `\n📊 Total: ${d.residents.length} residents | ${d.dormitories.length} rooms`;
+  const url = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  window.open(url,'_blank');
+  addNotif('💬','Shared to WhatsApp');
+  toast('Opening WhatsApp...','info');
+}
+
+// ════════════════════════════════════════════════
+//  SHARE — EMAIL
+// ════════════════════════════════════════════════
+function shareEmail() {
+  const d = load();
+  const subject = encodeURIComponent('Don Bosco Hostel — Room Assignments ' + new Date().toLocaleDateString());
+  let body = 'Don Bosco Hostel — Room Assignments\n';
+  body += 'Generated: ' + new Date().toLocaleString() + '\n\n';
+  const girls = d.currentRotation?.filter(dm=>(dm.block||'').toLowerCase().includes('girl'))||[];
+  const boys  = d.currentRotation?.filter(dm=>(dm.block||'').toLowerCase().includes('boy'))||[];
+  if(girls.length) { body+='GIRLS SECTION\n'+'='.repeat(30)+'\n'; girls.forEach(dm=>{ body+='\n'+dm.name+' ('+dm.block+') — '+dm.capacity+' beds\n'; (dm.residents||[]).forEach((r,i)=>{ body+='  '+(i+1)+'. '+r+'\n'; }); }); }
+  if(boys.length)  { body+='\nBOYS SECTION\n'+'='.repeat(30)+'\n'; boys.forEach(dm=>{ body+='\n'+dm.name+' ('+dm.block+') — '+dm.capacity+' beds\n'; (dm.residents||[]).forEach((r,i)=>{ body+='  '+(i+1)+'. '+r+'\n'; }); }); }
+  body += '\nTotal: '+d.residents.length+' residents, '+d.dormitories.length+' rooms';
+  window.location.href = 'mailto:?subject='+subject+'&body='+encodeURIComponent(body);
+  addNotif('📧','Email share opened');
+  toast('Opening email client...','info');
+}
+
+// ════════════════════════════════════════════════
+//  SHARE — COPY LINK (data in URL hash)
+// ════════════════════════════════════════════════
+function copyShareLink() {
+  const d = load();
+  // Compress the data: only essentials for sharing
+  const shareData = {
+    n: d.dormitories.map(dm=>({n:dm.name,c:dm.capacity,b:dm.block})),
+    r: (d.currentRotation||[]).map(dm=>({n:dm.name,b:dm.block,res:dm.residents||[]})),
+    d: new Date().toLocaleDateString()
+  };
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(shareData))));
+  const link = window.location.href.split('#')[0] + '#share=' + encoded;
+  document.getElementById('shareLinkInput').value = link;
+  document.getElementById('shareLinkCard').style.display = 'block';
+  navigator.clipboard.writeText(link).then(()=>toast('Link copied to clipboard! 📋')).catch(()=>toast('Link ready — copy from the box below','info'));
+  addNotif('🔗','Shareable link generated and copied');
+}
+function copyLink() {
+  const val = document.getElementById('shareLinkInput').value;
+  navigator.clipboard.writeText(val).then(()=>toast('Copied!')).catch(()=>{ document.getElementById('shareLinkInput').select(); document.execCommand('copy'); toast('Copied!'); });
+}
+function openLink() { window.open(document.getElementById('shareLinkInput').value,'_blank'); }
+
+// ════════════════════════════════════════════════
+//  SHARE — NATIVE (Web Share API)
+// ════════════════════════════════════════════════
+function shareNative() {
+  const d = load();
+  const text = `Don Bosco Hostel — ${d.residents.length} residents across ${d.dormitories.length} rooms. Girls: ${d.currentRotation?.filter(dm=>(dm.block||'').toLowerCase().includes('girl')).reduce((s,dm)=>s+(dm.residents||[]).length,0)||0}, Boys: ${d.currentRotation?.filter(dm=>(dm.block||'').toLowerCase().includes('boy')).reduce((s,dm)=>s+(dm.residents||[]).length,0)||0}`;
+  if(navigator.share) {
+    navigator.share({ title:'Don Bosco Hostel Assignments', text, url: window.location.href })
+      .then(()=>toast('Shared!'))
+      .catch(()=>toast('Share cancelled','info'));
+  } else {
+    copyShareLink();
+    toast('Native share not available — link copied instead','info');
+  }
+  addNotif('📱','Native share triggered');
+}
+
+// ════════════════════════════════════════════════
+//  QR CODE — FINAL WORKING IMPLEMENTATION
+//  Strategy: Upload viewer HTML to a free paste host
+//  (rentry.co) → get real https:// URL → encode in QR
+//  Fallback: data:text/html URI in QR (works on Android)
+// ════════════════════════════════════════════════
+
+function buildViewerHTML() {
+  const d = load();
+  const rooms  = (d.currentRotation||[]);
+  const girls  = rooms.filter(dm=>(dm.block||'').toLowerCase().includes('girl'));
+  const boys   = rooms.filter(dm=>(dm.block||'').toLowerCase().includes('boy'));
+  const other  = rooms.filter(dm=>!girls.includes(dm)&&!boys.includes(dm));
+  const gc = girls.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const bc = boys.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const oc = other.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const date = new Date().toLocaleDateString();
+
+  function roomCards(list, color) {
+    return list.map(dm=>{
+      const cnt=(dm.residents||[]).length;
+      const cap=dm.capacity||cnt||1;
+      const pct=Math.min(100,Math.round(cnt/cap*100));
+      const rows=(dm.residents||[]).map((r,i)=>`<div class="row"><span class="num">${i+1}</span>${r}</div>`).join('');
+      return `<div class="room" style="border-top:4px solid ${color}">
+        <div class="rhead"><strong>${dm.name}</strong><span class="cnt" style="background:${color}20;color:${color}">${cnt}/${cap}</span></div>
+        <div class="bar-bg"><div class="bar" style="width:${pct}%;background:${color}"></div></div>
+        ${rows||'<div class="row empty">No residents</div>'}
+      </div>`;
+    }).join('');
+  }
+
+  function sec(label, emoji, list, color, count) {
+    if(!list.length) return '';
+    return `<div class="sec">
+      <div class="shead" style="background:${color}">${emoji} ${label} <span>${count} residents · ${list.length} rooms</span></div>
+      <div class="grid">${roomCards(list,color)}</div>
+    </div>`;
+  }
+
+  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Don Bosco Hostel — Room Assignments</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff;color:#1a1a2e}
+.header{background:linear-gradient(135deg,#1a1a2e,#0f3460);color:#fff;padding:24px 16px;text-align:center}
+.header h1{font-size:1.5em;font-weight:800;margin-bottom:4px}
+.header p{opacity:.75;font-size:.88em}
+.stats{background:#fff;border-bottom:1px solid #eee;display:flex;justify-content:center;gap:4px;flex-wrap:wrap;padding:12px}
+.stat{text-align:center;padding:8px 14px;min-width:70px}
+.stat .v{font-size:1.8em;font-weight:800;line-height:1}
+.stat .l{font-size:.7em;color:#888;margin-top:2px}
+.body{max-width:900px;margin:0 auto;padding:16px}
+.sec{margin-bottom:24px}
+.shead{color:#fff;font-weight:700;font-size:.92em;padding:10px 16px;border-radius:8px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.shead span{font-size:.8em;opacity:.9}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.room{background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);overflow:hidden}
+.rhead{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 8px;font-size:.92em}
+.cnt{font-size:.75em;font-weight:700;padding:2px 8px;border-radius:10px}
+.bar-bg{height:4px;background:#f0f0f0;margin:0 14px 8px}
+.bar{height:4px;border-radius:2px}
+.row{padding:6px 14px;font-size:.85em;border-bottom:1px solid #f5f5f5;display:flex;gap:8px;align-items:center;color:#333}
+.row:last-child{border-bottom:none}
+.num{color:#bbb;font-size:.78em;min-width:18px}
+.empty{color:#ccc;font-style:italic;font-size:.82em}
+.footer{text-align:center;font-size:.75em;color:#bbb;padding:16px;margin-top:8px}
+@media(max-width:480px){.grid{grid-template-columns:1fr}}
+</style></head><body>
+<div class="header"><div style="font-size:2.2em;margin-bottom:6px">🏠</div>
+<h1>Don Bosco Hostel</h1><p>Room Assignments · ${date}</p></div>
+<div class="stats">
+  <div class="stat"><div class="v" style="color:#4f46e5">${rooms.length}</div><div class="l">🏢 Rooms</div></div>
+  <div class="stat"><div class="v" style="color:#16a34a">${gc+bc+oc}</div><div class="l">👥 Total</div></div>
+  ${gc?`<div class="stat"><div class="v" style="color:#be185d">${gc}</div><div class="l">👧 Girls</div></div>`:''}
+  ${bc?`<div class="stat"><div class="v" style="color:#1d4ed8">${bc}</div><div class="l">👦 Boys</div></div>`:''}
+</div>
+<div class="body">
+${sec('Girls Section','👧',girls,'#be185d',gc)}
+${sec('Boys Section','👦',boys,'#1d4ed8',bc)}
+${sec('Other Rooms','🏢',other,'#7c3aed',oc)}
+${!rooms.length?'<div style="text-align:center;padding:60px 20px;color:#bbb"><div style="font-size:3em">📋</div><p>No assignments yet.</p></div>':''}
+</div>
+<div class="footer">Don Bosco Hostel Manager · ${date}</div>
+</body></html>`;
+}
+
+// Download viewer as standalone HTML file
+function downloadViewerHTML() {
+  const html = buildViewerHTML();
+  const blob = new Blob([html], {type:'text/html'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'hostel_viewer_'+dateStr()+'.html';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); },1000);
+  addNotif('📥','Viewer HTML downloaded');
+  toast('📥 Viewer downloaded! Share hostel_viewer_*.html with anyone.');
+}
+
+// ── Main QR generator ────────────────────────────
+function generateViewerQR() {
+  const box    = document.getElementById('qrBox');
+  const status = document.getElementById('qrStatus');
+
+  // Show loading
+  box.innerHTML = '<div style="color:#888;font-size:.85em;display:flex;flex-direction:column;align-items:center;gap:8px;padding:30px"><span style="font-size:2em">⏳</span><span>Publishing &amp; generating QR…</span></div>';
+  status.style.display='none';
+
+  // Step 1: Upload viewer HTML to htmlpreview via paste.ee or use dpaste.com API
+  const viewerHTML = buildViewerHTML();
+
+  // Try dpaste.com — free, no auth, returns JSON with URL
+  fetch('https://dpaste.com/api/v2/', {
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body: 'content='+encodeURIComponent(viewerHTML)+'&syntax=html&title=Don+Bosco+Hostel&expiry_days=365'
+  })
+  .then(r => { if(!r.ok) throw new Error('dpaste failed'); return r.text(); })
+  .then(url => {
+    // dpaste returns the URL as plain text e.g. https://dpaste.com/XXXXX
+    // Append .txt to get raw content — but we need the HTML rendered
+    // dpaste doesn't render HTML. Use htmlpreview.github.io trick with raw URL
+    const rawUrl = url.trim() + '.txt';
+    // Use htmlpreview to render it
+    const viewUrl = 'https://htmlpreview.github.io/?' + rawUrl;
+    renderQRFromUrl(viewUrl, box, status, 'dpaste.com');
+  })
+  .catch(() => {
+    // Fallback 1: Try paste.rs — truly free raw paste API
+    fetch('https://paste.rs', {
+      method: 'POST',
+      headers: {'Content-Type':'text/html'},
+      body: viewerHTML
+    })
+    .then(r => { if(!r.ok) throw new Error('paste.rs failed'); return r.text(); })
+    .then(url => {
+      const rawUrl = url.trim();
+      const viewUrl = 'https://htmlpreview.github.io/?' + rawUrl;
+      renderQRFromUrl(viewUrl, box, status, 'paste.rs');
+    })
+    .catch(() => {
+      // Fallback 2: Encode summary as data:text/html URI (works on Android Chrome)
+      useDataUriQR(box, status);
+    });
+  });
+}
+
+function renderQRFromUrl(viewUrl, box, status, source) {
+  // Use qrserver.com to create QR image for the URL
+  const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&format=png&ecc=M&qzone=1&data=' + encodeURIComponent(viewUrl);
+
+  const img = document.createElement('img');
+  img.style.cssText = 'width:220px;height:220px;display:block;border-radius:4px;';
+  img.id = 'qrImg';
+
+  img.onload = function() {
+    box.innerHTML = '';
+    box.style.cssText = 'background:#fff;border:3px solid #28a745;border-radius:16px;padding:16px;text-align:center;width:260px;height:auto;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.08);';
+    box.appendChild(img);
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:.72em;color:#28a745;font-weight:700;';
+    lbl.textContent = '✅ Scan to view all assignments';
+    box.appendChild(lbl);
+    // Show the live URL too
+    status.innerHTML = `✅ <strong>QR code is LIVE!</strong> Scan with any phone camera to open the full assignment viewer.<br>
+      <span style="font-size:.9em;color:#555">Live URL: <a href="${viewUrl}" target="_blank" style="color:#667eea;word-break:break-all">${viewUrl}</a></span><br>
+      <span style="color:#888;font-size:.85em">Hosted via ${source} · valid for 1 year</span>`;
+    status.style.cssText = 'display:block;font-size:.85em;padding:10px 14px;border-radius:8px;background:#d4edda;border-left:3px solid #28a745;line-height:1.8;margin-top:8px;';
+    addNotif('📱','QR code live! URL: '+viewUrl);
+    toast('✅ QR is LIVE! Scan with any phone now.', 'success');
+  };
+
+  img.onerror = function() {
+    useDataUriQR(box, status);
+  };
+
+  img.src = qrApiUrl;
+}
+
+// Last resort: encode a compact data:text/html URI into the QR
+// Works on Android Chrome when data is < ~2000 chars
+function useDataUriQR(box, status) {
+  const d = load();
+  const gc = (d.currentRotation||[]).filter(dm=>(dm.block||'').toLowerCase().includes('girl')).reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const bc = (d.currentRotation||[]).filter(dm=>(dm.block||'').toLowerCase().includes('boy')).reduce((s,dm)=>s+(dm.residents||[]).length,0);
+
+  // Build ultra-compact HTML viewer (< 1500 chars)
+  let rows = '';
+  (d.currentRotation||[]).forEach(dm=>{
+    rows += `<h3 style="margin:10px 0 4px;color:${(dm.block||'').toLowerCase().includes('girl')?'#be185d':'#1d4ed8'}">${dm.name}</h3><ol style="margin:0 0 8px 20px">`;
+    (dm.residents||[]).forEach(r=>{ rows+=`<li>${r}</li>`; });
+    rows += '</ol>';
+  });
+
+  const miniHtml = `<!DOCTYPE html><html><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Don Bosco Hostel</title><style>body{font-family:sans-serif;padding:16px;background:#f5f7ff;color:#1a1a2e}h1{font-size:1.2em;margin-bottom:4px}p{color:#888;font-size:.85em;margin-bottom:16px}h3{font-size:.9em}li{font-size:.85em;padding:2px 0}</style></head><body><h1>🏠 Don Bosco Hostel</h1><p>Room Assignments · ${new Date().toLocaleDateString()} · Girls:${gc} Boys:${bc}</p>${rows}</body></html>`;
+
+  const dataUri = 'data:text/html;charset=utf-8,' + encodeURIComponent(miniHtml);
+
+  const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&format=png&ecc=L&qzone=1&data=' + encodeURIComponent(dataUri);
+
+  const img = document.createElement('img');
+  img.style.cssText = 'width:220px;height:220px;display:block;border-radius:4px;';
+  img.id = 'qrImg';
+
+  img.onload = function() {
+    box.innerHTML = '';
+    box.style.cssText = 'background:#fff;border:3px solid #f59e0b;border-radius:16px;padding:16px;text-align:center;width:260px;height:auto;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,0,0,.08);';
+    box.appendChild(img);
+    const lbl = document.createElement('div');
+    lbl.style.cssText = 'font-size:.72em;color:#d97706;font-weight:700;';
+    lbl.textContent = '⚠️ Works on Android Chrome';
+    box.appendChild(lbl);
+    status.innerHTML = `⚠️ <strong>Offline mode QR</strong> — Internet was unavailable for live hosting.<br>
+      This QR uses a <code>data:text/html</code> URL. It <strong>works on Android Chrome and Firefox</strong> — scan and it opens the viewer directly.<br>
+      <strong>Best option:</strong> Use "📥 Download Viewer" and share that file for guaranteed compatibility.`;
+    status.style.cssText = 'display:block;font-size:.85em;padding:10px 14px;border-radius:8px;background:#fff3cd;border-left:3px solid #f59e0b;line-height:1.8;margin-top:8px;';
+    toast('QR generated (offline mode — works on Android)', 'warn');
+  };
+
+  img.onerror = function() {
+    box.innerHTML = `<div style="padding:20px;text-align:center;font-size:.85em;color:#555">
+      <div style="font-size:2em;margin-bottom:8px">🌐</div>
+      <strong>No internet available</strong><br><br>
+      Use <strong>📥 Download Viewer</strong><br>to share the assignments.
+    </div>`;
+    status.innerHTML = '❌ No internet. Use "📥 Download Viewer" button — download the file and send it via WhatsApp or email.';
+    status.style.cssText = 'display:block;font-size:.85em;padding:10px 14px;border-radius:8px;background:#fee2e2;border-left:3px solid #dc2626;line-height:1.6;margin-top:8px;';
+    toast('No internet — use Download Viewer', 'error');
+  };
+
+  img.src = qrApiUrl;
+}
+
+function downloadQRImage() {
+  const img = document.getElementById('qrImg');
+  if (!img) return toast('Generate QR first','error');
+  const a = document.createElement('a');
+  a.href = img.src;
+  a.download = 'hostel_qr_'+dateStr()+'.png';
+  a.target = '_blank';
+  a.click();
+  toast('QR image saved!');
+}
+
+function printQRCode() {
+  const img = document.getElementById('qrImg');
+  if (!img) return toast('Generate QR first','error');
+  const d = load();
+  const gc=(d.currentRotation||[]).filter(dm=>(dm.block||'').toLowerCase().includes('girl')).reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const bc=(d.currentRotation||[]).filter(dm=>(dm.block||'').toLowerCase().includes('boy')).reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const w = window.open('','_blank');
+  w.document.write(`<!DOCTYPE html><html><head><title>QR — Don Bosco Hostel</title>
+  <style>*{box-sizing:border-box}body{font-family:'Segoe UI',sans-serif;text-align:center;padding:32px;background:#fff}
+  h2{color:#1a1a2e;margin-bottom:4px;font-size:1.4em}.sub{color:#888;font-size:.88em;margin-bottom:20px}
+  .qr-frame{display:inline-block;border:3px solid #1a1a2e;border-radius:12px;padding:14px;margin-bottom:14px}
+  img{width:220px;height:220px;display:block}
+  .stats{display:flex;justify-content:center;gap:20px;margin:12px 0;font-size:.9em}.stat strong{font-size:1.4em;display:block}
+  p{color:#555;font-size:.85em;margin-top:10px}@media print{.no-print{display:none}}</style></head><body>
+  <button class="no-print" onclick="window.print()" style="padding:9px 22px;background:#667eea;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-bottom:24px">🖨️ Print</button>
+  <h2>🏠 Don Bosco Hostel</h2><div class="sub">Room Assignments · ${new Date().toLocaleDateString()}</div>
+  <div class="qr-frame"><img src="${img.src}" alt="QR Code"></div>
+  <div class="stats">
+    <div class="stat"><strong style="color:#4f46e5">${d.dormitories.length}</strong>Rooms</div>
+    <div class="stat"><strong style="color:#be185d">${gc}</strong>Girls</div>
+    <div class="stat"><strong style="color:#1d4ed8">${bc}</strong>Boys</div>
+    <div class="stat"><strong style="color:#16a34a">${gc+bc}</strong>Total</div>
+  </div>
+  <p>📱 Scan with any phone camera to view room assignments</p>
+  </body></html>`);
+  w.document.close();
+}
+
+// ════════════════════════════════════════════════
+//  HELPERS
+// ════════════════════════════════════════════════
+function triggerDownload(content, filename, mimeType) {
+  const blob = new Blob([content], {type: mimeType});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = filename; a.style.display = 'none';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); document.body.removeChild(a); }, 1000);
+}
+function dateStr() { return new Date().toISOString().slice(0,10); }
+
+// ════════════════════════════════════════════════
+//  PUBLIC VIEWER — shown when QR is scanned
+//  No login needed — read-only beautiful page
+// ════════════════════════════════════════════════
+function checkSharedLink() {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#share=')) return;
+  try {
+    const encoded = hash.replace('#share=', '');
+    const data = JSON.parse(decodeURIComponent(escape(atob(encoded))));
+    history.replaceState(null, '', window.location.pathname);
+    // Hide login & app — show public viewer instead
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appScreen').style.display = 'none';
+    buildPublicViewer(data);
+  } catch(e) { /* bad hash — ignore, show normal app */ }
+}
+
+function buildPublicViewer(data) {
+  const rooms = data.r || [];
+  const date  = data.d || new Date().toLocaleDateString();
+  const girls = rooms.filter(dm => (dm.b||'').toLowerCase().includes('girl'));
+  const boys  = rooms.filter(dm => (dm.b||'').toLowerCase().includes('boy'));
+  const other = rooms.filter(dm => !girls.includes(dm) && !boys.includes(dm));
+  const gc    = girls.reduce((s,dm)=>s+(dm.res||[]).length,0);
+  const bc    = boys.reduce((s,dm)=>s+(dm.res||[]).length,0);
+  const oc    = other.reduce((s,dm)=>s+(dm.res||[]).length,0);
+  const total = gc+bc+oc;
+
+  function roomCard(dm, borderColor) {
+    const cnt = (dm.res||[]).length;
+    const cap = dm.c || cnt || 1;
+    const pct = Math.min(100, Math.round(cnt/cap*100));
+    const items = (dm.res||[]).map((r,i) =>
+      `<div style="padding:6px 10px;border-bottom:1px solid #f5f5f5;font-size:.87em;color:#333;display:flex;gap:8px;align-items:center;">
+        <span style="color:#bbb;font-size:.78em;min-width:18px">${i+1}.</span>${r}
+      </div>`
+    ).join('');
+    return `<div style="background:#fff;border-radius:14px;box-shadow:0 2px 14px rgba(0,0,0,.08);overflow:hidden;border-top:4px solid ${borderColor}">
+      <div style="padding:14px 16px 10px;display:flex;justify-content:space-between;align-items:center">
+        <strong style="font-size:.95em;color:#1a1a2e">🏢 ${dm.n}</strong>
+        <span style="font-size:.78em;background:${borderColor}20;color:${borderColor};padding:3px 9px;border-radius:10px;font-weight:700">${cnt}/${cap}</span>
+      </div>
+      <div style="height:4px;background:#f0f0f0;margin:0 16px 10px"><div style="height:4px;background:${borderColor};width:${pct}%;border-radius:2px"></div></div>
+      <div>${items || '<div style="padding:8px 16px;font-size:.83em;color:#ccc;font-style:italic">No residents</div>'}</div>
+    </div>`;
+  }
+
+  function section(label, emoji, list, color, count) {
+    if (!list.length) return '';
+    return `<div style="margin-bottom:28px">
+      <div style="background:${color};color:#fff;padding:11px 18px;border-radius:10px;font-weight:700;font-size:.95em;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center">
+        <span>${emoji} ${label}</span>
+        <span style="font-size:.8em;opacity:.9">${count} residents · ${list.length} room${list.length!==1?'s':''}</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">
+        ${list.map(dm=>roomCard(dm,color)).join('')}
+      </div>
+    </div>`;
+  }
+
+  const v = document.createElement('div');
+  v.innerHTML = `<style>
+    body{margin:0;font-family:'Segoe UI',system-ui,sans-serif;background:#f0f4ff}
+    *{box-sizing:border-box}
+    @media(max-width:480px){.pv-grid{grid-template-columns:1fr!important}}
+  </style>
+  <!-- HEADER -->
+  <div style="background:linear-gradient(135deg,#1a1a2e 0%,#0f3460 100%);color:#fff;padding:28px 20px 22px;text-align:center">
+    <div style="font-size:2.8em;margin-bottom:6px">🏠</div>
+    <h1 style="margin:0 0 4px;font-size:1.6em;font-weight:800">Don Bosco Hostel</h1>
+    <p style="margin:0;opacity:.75;font-size:.9em">Dormitory Room Assignments &nbsp;·&nbsp; ${date}</p>
+  </div>
+  <!-- STATS -->
+  <div style="background:#fff;border-bottom:1px solid #eee;padding:16px 20px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap">
+    <div style="text-align:center;min-width:72px;padding:8px 12px"><div style="font-size:2em;font-weight:800;color:#4f46e5;line-height:1">${rooms.length}</div><div style="font-size:.72em;color:#888;margin-top:2px">🏢 Rooms</div></div>
+    <div style="text-align:center;min-width:72px;padding:8px 12px"><div style="font-size:2em;font-weight:800;color:#16a34a;line-height:1">${total}</div><div style="font-size:.72em;color:#888;margin-top:2px">👥 Total</div></div>
+    ${gc?`<div style="text-align:center;min-width:72px;padding:8px 12px"><div style="font-size:2em;font-weight:800;color:#be185d;line-height:1">${gc}</div><div style="font-size:.72em;color:#888;margin-top:2px">👧 Girls</div></div>`:''}
+    ${bc?`<div style="text-align:center;min-width:72px;padding:8px 12px"><div style="font-size:2em;font-weight:800;color:#1d4ed8;line-height:1">${bc}</div><div style="font-size:.72em;color:#888;margin-top:2px">👦 Boys</div></div>`:''}
+  </div>
+  <!-- BODY -->
+  <div style="max-width:960px;margin:0 auto;padding:20px 16px 40px" class="pv-grid">
+    ${section('Girls Section','👧',girls,'#be185d',gc)}
+    ${section('Boys Section','👦',boys,'#1d4ed8',bc)}
+    ${section('Other Rooms','🏢',other,'#7c3aed',oc)}
+    ${!rooms.length?`<div style="text-align:center;padding:60px 20px;color:#bbb"><div style="font-size:3em">📋</div><p>No assignment data in this QR.</p></div>`:''}
+  </div>
+  <!-- FOOTER -->
+  <div style="text-align:center;font-size:.75em;color:#bbb;padding:0 16px 24px">
+    Scanned from QR code &nbsp;·&nbsp; Don Bosco Hostel Manager &nbsp;·&nbsp; ${date}
+  </div>`;
+
+  document.body.insertBefore(v, document.body.firstChild);
+}
+
+// ════════════════════════════════════════════════
+//  BOOT
+// ════════════════════════════════════════════════
+(function init(){
+  preloadData();
+  checkSession();
+  checkSharedLink();
+  setInterval(checkAutoRotation, 3600000);
+  setInterval(()=>{ const d=load(); if(d.nextRotationDate){ const el=document.getElementById('statDays'); if(el){ const l=daysLeft(d.nextRotationDate); el.textContent=l<=0?'Overdue!':l+' days'; }} }, 60000);
+})();
+</script>
+</body>
+</html>
