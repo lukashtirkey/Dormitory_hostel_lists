@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const DATA_DIR = path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'dormitory_data.json');
 const HISTORY_FILE = path.join(DATA_DIR, 'rotation_history.json');
@@ -13,6 +13,7 @@ const HISTORY_FILE = path.join(DATA_DIR, 'rotation_history.json');
 app.use(bodyParser.json({ limit: '5mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(express.static(__dirname));
 
 // ─── DATA HELPERS ───────────────────────────────────────────────
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });

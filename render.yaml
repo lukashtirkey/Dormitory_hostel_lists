@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: dormitory-hostel-lists
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
