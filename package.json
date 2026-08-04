@@ -1,0 +1,18 @@
+{
+  "name": "hostel-dormitory-manager",
+  "version": "1.0.0",
+  "description": "Hostel dormitory management system with automatic 15-day rotation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["hostel", "dormitory", "management", "rotation"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-cron": "^3.0.3",
+    "body-parser": "^1.20.2"
+  }
+}

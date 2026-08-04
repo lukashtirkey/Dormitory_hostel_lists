@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hostel Dormitory Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app-layout">
+
+  <!-- ════ SIDEBAR ════ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <h1>🏠 Hostel Manager</h1>
+      <p>Auto-rotation system</p>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" data-page="dormitories" onclick="showPage('dormitories',this)">
+        <span class="nav-icon">🏢</span> Dormitories
+      </div>
+      <div class="nav-item" data-page="residents" onclick="showPage('residents',this)">
+        <span class="nav-icon">👥</span> Residents
+      </div>
+      <div class="nav-item" data-page="import" onclick="showPage('import',this)">
+        <span class="nav-icon">📂</span> Bulk Import
+      </div>
+      <div class="nav-item" data-page="assignments" onclick="showPage('assignments',this)">
+        <span class="nav-icon">📋</span> Assignments
+      </div>
+      <div class="nav-item" data-page="history" onclick="showPage('history',this)">
+        <span class="nav-icon">🕒</span> History
+      </div>
+      <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
+        <span class="nav-icon">⚙️</span> Settings
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="rotation-badge">
+        <strong>⏳ Next Rotation</strong>
+        <span id="sideCountdown" class="countdown">—</span>
+        <span style="font-size:.72em;color:#a5b4fc;margin-top:4px;display:block" id="sideNextDate">Not scheduled</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ════ MAIN ════ -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="topbarTitle">📊 Dashboard</div>
+      <div class="topbar-actions">
+        <button class="btn btn-success btn-sm" onclick="showPage('import',document.querySelector('[data-page=import]'))">📂 Import Names</button>
+        <button class="btn btn-warning btn-sm" onclick="rotateNow()">🔄 Rotate Now</button>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ─── DASHBOARD ─── -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid" id="statsGrid"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card">
+            <div class="card-title">🏢 Room Occupancy</div>
+            <div id="dashOccupancy"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">📅 Rotation Status</div>
+            <div id="dashRotation"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── DORMITORIES ─── -->
+      <div class="page" id="page-dormitories">
+        <div class="card">
+          <div class="card-title">➕ Add New Dormitory / Room</div>
+          <div class="form-row">
+            <div class="fg">
+              <label>Room Name</label>
+              <input id="dormName" placeholder="e.g. Room 101, Dorm A">
+            </div>
+            <div class="fg" style="max-width:110px">
+              <label>Capacity</label>
+              <input id="dormCapacity" type="number" min="1" placeholder="10">
+            </div>
+            <div class="fg" style="max-width:150px">
+              <label>Block / Gender</label>
+              <select id="dormBlock">
+                <option value="">General</option>
+                <option value="Girls">Girls</option>
+                <option value="Boys">Boys</option>
+              </select>
+            </div>
+            <div style="padding-bottom:1px">
+              <button class="btn btn-primary" onclick="addDormitory()">➕ Add Room</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">All Rooms <span class="badge-count" id="dormCount">0</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Room Name</th><th>Block</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Fill</th><th>Actions</th></tr></thead>
+              <tbody id="dormTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── RESIDENTS ─── -->
+      <div class="page" id="page-residents">
+        <div class="card">
+          <div class="card-title">➕ Add Single Resident</div>
+          <div class="form-row">
+            <div class="fg">
+              <label>Full Name</label>
+              <input id="resName" placeholder="Full name" onkeydown="if(event.key==='Enter')addResident()">
+            </div>
+            <div class="fg" style="max-width:150px">
+              <label>ID / Roll No.</label>
+              <input id="resId" placeholder="e.g. STU-001">
+            </div>
+            <div class="fg" style="max-width:140px">
+              <label>Gender</label>
+              <select id="resBlock">
+                <option value="">— Select —</option>
+                <option value="Girls">Female</option>
+                <option value="Boys">Male</option>
+              </select>
+            </div>
+            <div style="padding-bottom:1px">
+              <button class="btn btn-primary" onclick="addResident()">➕ Add</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">
+            All Residents <span class="badge-count" id="resCount">0</span>
+            <span style="margin-left:auto;display:flex;gap:8px;">
+              <select id="filterBlock" onchange="renderResidents()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.82em;">
+                <option value="">All</option><option value="Girls">Girls</option><option value="Boys">Boys</option>
+              </select>
+              <select id="filterDorm" onchange="renderResidents()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.82em;">
+                <option value="">All Rooms</option>
+              </select>
+            </span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>ID</th><th>Gender</th><th>Room</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody id="resTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── BULK IMPORT ─── -->
+      <div class="page" id="page-import">
+        <div class="info-box">
+          <strong>Bulk Import:</strong> Upload a <strong>.csv</strong> or <strong>.txt</strong> file, or paste names directly.
+          One name per line. Format: <code>Name</code> or <code>Name, ID</code>.
+          Duplicates are skipped automatically. Rooms will be assigned right after import.
+        </div>
+        <div class="card">
+          <div class="card-title">⚙️ Import Options</div>
+          <div class="form-row">
+            <div class="fg">
+              <label>Gender of this list</label>
+              <select id="impBlock">
+                <option value="">Auto / General</option>
+                <option value="Girls">Girls</option>
+                <option value="Boys">Boys</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📁 Upload File</div>
+          <div class="drop-zone" id="dropZone"
+            onclick="document.getElementById('fileInput').click()"
+            ondragover="event.preventDefault();this.classList.add('over')"
+            ondragleave="this.classList.remove('over')"
+            ondrop="handleDrop(event)">
+            <input type="file" id="fileInput" accept=".csv,.txt" style="display:none" onchange="handleFile(event)">
+            <div class="dz-icon">📁</div>
+            <p><strong>Click to browse</strong> or drag &amp; drop</p>
+            <small>.csv or .txt — one name per line</small>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">✏️ Or Paste Names</div>
+          <div class="fg" style="margin-bottom:12px">
+            <textarea id="pasteArea" rows="8"
+              placeholder="John Smith&#10;Mary Jane, STU-001&#10;Peter Parker, STU-002&#10;&#10;One name per line. Optionally add comma + ID."></textarea>
+          </div>
+          <button class="btn btn-info" onclick="previewNames()">🔍 Preview</button>
+        </div>
+
+        <!-- Preview -->
+        <div class="card" id="previewCard">
+          <div class="card-title">👁️ Preview <span class="badge-count" id="previewCount">0</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>ID</th><th>Status</th></tr></thead>
+              <tbody id="previewBody"></tbody>
+            </table>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+            <button class="btn btn-success" onclick="importNames()">✅ Import &amp; Auto-Assign Rooms</button>
+            <button class="btn btn-ghost" onclick="clearPreview()">✖ Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── ASSIGNMENTS ─── -->
+      <div class="page" id="page-assignments">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+          <button class="btn btn-primary" onclick="initAssign()">🚀 Auto-Assign All</button>
+          <button class="btn btn-warning" onclick="rotateNow()">🔄 Rotate Now</button>
+          <button class="btn btn-ghost" onclick="showPage('import',document.querySelector('[data-page=import]'))">📂 Import Names</button>
+        </div>
+        <div id="assignView"></div>
+      </div>
+
+      <!-- ─── HISTORY ─── -->
+      <div class="page" id="page-history">
+        <div class="card">
+          <div class="card-title">🕒 Rotation History</div>
+          <div id="historyView"></div>
+        </div>
+      </div>
+
+      <!-- ─── SETTINGS ─── -->
+      <div class="page" id="page-settings">
+        <div class="card">
+          <div class="card-title">📅 Rotation Settings</div>
+          <div class="form-row" style="margin-bottom:12px">
+            <div class="fg" style="max-width:200px">
+              <label>Rotation interval (days)</label>
+              <input id="rotInterval" type="number" min="1" value="15">
+            </div>
+            <div style="padding-bottom:1px">
+              <button class="btn btn-primary" onclick="saveSettings()">💾 Save</button>
+            </div>
+          </div>
+          <div class="info-box" style="margin-bottom:0">
+            The system automatically checks for due rotation every hour (cron job on the server).
+            It also checks at startup and at midnight daily.
+            You can also trigger a rotation manually using the <strong>Rotate Now</strong> button.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🗑️ Danger Zone</div>
+          <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+          <p style="margin-top:10px;font-size:.82em;color:var(--text-muted)">
+            Deletes all dormitories, residents, assignments, and history. Cannot be undone.
+          </p>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app-layout -->
+
+<div id="toast" class="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
