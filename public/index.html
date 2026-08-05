@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hostel Dormitory Manager</title>
+  <title>Hostel Admin Dashboard — Don Bosco</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,24 +14,35 @@
   <!-- ════ SIDEBAR ════ -->
   <aside class="sidebar">
     <div class="sidebar-brand">
-      <h1>🏠 Hostel Manager</h1>
-      <p>Auto-rotation system</p>
+      <div class="brand-logo">🏠</div>
+      <div>
+        <h1>Don Bosco Hostel</h1>
+        <p>Admin Dashboard</p>
+      </div>
     </div>
     <nav class="nav">
       <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
         <span class="nav-icon">📊</span> Dashboard
       </div>
+      <div class="nav-section-label">Management</div>
       <div class="nav-item" data-page="dormitories" onclick="showPage('dormitories',this)">
-        <span class="nav-icon">🏢</span> Dormitories
+        <span class="nav-icon">🏢</span> Rooms
       </div>
       <div class="nav-item" data-page="residents" onclick="showPage('residents',this)">
         <span class="nav-icon">👥</span> Residents
       </div>
-      <div class="nav-item" data-page="import" onclick="showPage('import',this)">
-        <span class="nav-icon">📂</span> Bulk Import
-      </div>
       <div class="nav-item" data-page="assignments" onclick="showPage('assignments',this)">
         <span class="nav-icon">📋</span> Assignments
+      </div>
+      <div class="nav-section-label">Tools</div>
+      <div class="nav-item" data-page="share" onclick="showPage('share',this)">
+        <span class="nav-icon">📲</span> Live Share &amp; QR Scanner
+      </div>
+      <div class="nav-item" data-page="download" onclick="showPage('download',this)">
+        <span class="nav-icon">📥</span> Download &amp; Export
+      </div>
+      <div class="nav-item" data-page="import" onclick="showPage('import',this)">
+        <span class="nav-icon">📂</span> Bulk Import
       </div>
       <div class="nav-item" data-page="history" onclick="showPage('history',this)">
         <span class="nav-icon">🕒</span> History
@@ -43,18 +55,23 @@
       <div class="rotation-badge">
         <strong>⏳ Next Rotation</strong>
         <span id="sideCountdown" class="countdown">—</span>
-        <span style="font-size:.72em;color:#a5b4fc;margin-top:4px;display:block" id="sideNextDate">Not scheduled</span>
+        <span class="side-date" id="sideNextDate">Not scheduled</span>
       </div>
+      <button class="btn-logout" onclick="logout()">🚪 Logout</button>
     </div>
   </aside>
 
   <!-- ════ MAIN ════ -->
   <div class="main">
     <div class="topbar">
-      <div class="topbar-title" id="topbarTitle">📊 Dashboard</div>
-      <div class="topbar-actions">
-        <button class="btn btn-success btn-sm" onclick="showPage('import',document.querySelector('[data-page=import]'))">📂 Import Names</button>
-        <button class="btn btn-warning btn-sm" onclick="rotateNow()">🔄 Rotate Now</button>
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbarTitle">📊 Dashboard</div>
+      </div>
+      <div class="topbar-actions" id="topbarActions">
+        <button class="btn btn-primary btn-sm" id="btnAdminLoginModal" onclick="openAdminLoginModal()">🔐 Admin Login</button>
+        <button class="btn btn-girls btn-sm admin-only" onclick="openQuickAdd('member')">➕ Add Member</button>
+        <button class="btn btn-boys btn-sm admin-only" onclick="openQuickAdd('room')">🏢 Add Room</button>
+        <button class="btn btn-warning btn-sm admin-only" onclick="rotateNow()">🔄 Rotate Now</button>
       </div>
     </div>
 
@@ -62,8 +79,19 @@
 
       <!-- ─── DASHBOARD ─── -->
       <div class="page active" id="page-dashboard">
+        <!-- Don Bosco Poster Header Banner -->
+        <div id="dashPosterHeader" style="background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;border-radius:18px;padding:20px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;box-shadow:0 8px 25px rgba(30,58,138,0.3);">
+          <div>
+            <div style="font-family:'Outfit',sans-serif;font-size:1.6em;font-weight:900;letter-spacing:1px;text-transform:uppercase;">DON BOSCO SKILL MISSION</div>
+            <div style="font-size:0.95em;opacity:0.9;margin-top:2px;font-weight:700;">DORMITORY LIST</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.2);padding:8px 18px;border-radius:20px;font-family:'Outfit',sans-serif;font-weight:800;font-size:1.05em;border:1px solid rgba(255,255,255,0.3);">
+            📅 <span id="dashBannerPeriod">01.08.2026 - 15.08.2026</span>
+          </div>
+        </div>
+
         <div class="stats-grid" id="statsGrid"></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="dash-lower">
           <div class="card">
             <div class="card-title">🏢 Room Occupancy</div>
             <div id="dashOccupancy"></div>
@@ -73,27 +101,47 @@
             <div id="dashRotation"></div>
           </div>
         </div>
+        <!-- Gender summary -->
+        <div class="gender-overview">
+          <div class="gender-overview-card girls">
+            <div class="go-icon">👧</div>
+            <div>
+              <div class="go-count" id="dashGirlsCount">0</div>
+              <div class="go-label">Girls Residents</div>
+            </div>
+          </div>
+          <div class="gender-overview-card boys">
+            <div class="go-icon">👦</div>
+            <div>
+              <div class="go-count" id="dashBoysCount">0</div>
+              <div class="go-label">Boys Residents</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student Lists directly on Dashboard -->
+        <div id="dashStudentLists" style="margin-top:24px;"></div>
       </div>
 
       <!-- ─── DORMITORIES ─── -->
       <div class="page" id="page-dormitories">
         <div class="card">
-          <div class="card-title">➕ Add New Dormitory / Room</div>
+          <div class="card-title">➕ Add New Room</div>
           <div class="form-row">
             <div class="fg">
               <label>Room Name</label>
-              <input id="dormName" placeholder="e.g. Room 101, Dorm A">
+              <input id="dormName" placeholder="e.g. Mamma Margaret 101, Rayanna 306">
             </div>
-            <div class="fg" style="max-width:110px">
+            <div class="fg" style="max-width:120px">
               <label>Capacity</label>
-              <input id="dormCapacity" type="number" min="1" placeholder="10">
+              <input id="dormCapacity" type="number" min="1" placeholder="12">
             </div>
-            <div class="fg" style="max-width:150px">
+            <div class="fg" style="max-width:160px">
               <label>Block / Gender</label>
               <select id="dormBlock">
                 <option value="">General</option>
-                <option value="Girls">Girls</option>
-                <option value="Boys">Boys</option>
+                <option value="Girls">👧 Girls</option>
+                <option value="Boys">👦 Boys</option>
               </select>
             </div>
             <div style="padding-bottom:1px">
@@ -101,12 +149,31 @@
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-title">All Rooms <span class="badge-count" id="dormCount">0</span></div>
+
+        <!-- Girls Rooms -->
+        <div class="gender-section girls-section">
+          <div class="gender-header girls">
+            <span>👧 Girls Rooms</span>
+            <span class="gh-meta" id="girlsDormCount">0 rooms</span>
+          </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Room Name</th><th>Block</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Fill</th><th>Actions</th></tr></thead>
-              <tbody id="dormTbody"></tbody>
+              <thead><tr><th>#</th><th>Room Name</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Fill %</th><th>Actions</th></tr></thead>
+              <tbody id="girlsDormTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Boys Rooms -->
+        <div class="gender-section boys-section">
+          <div class="gender-header boys">
+            <span>👦 Boys Rooms</span>
+            <span class="gh-meta" id="boysDormCount">0 rooms</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Room Name</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Fill %</th><th>Actions</th></tr></thead>
+              <tbody id="boysDormTbody"></tbody>
             </table>
           </div>
         </div>
@@ -115,48 +182,75 @@
       <!-- ─── RESIDENTS ─── -->
       <div class="page" id="page-residents">
         <div class="card">
-          <div class="card-title">➕ Add Single Resident</div>
+          <div class="card-title">➕ Add New Member</div>
           <div class="form-row">
             <div class="fg">
               <label>Full Name</label>
-              <input id="resName" placeholder="Full name" onkeydown="if(event.key==='Enter')addResident()">
+              <input id="resName" placeholder="Student full name" onkeydown="if(event.key==='Enter')addResident()">
             </div>
-            <div class="fg" style="max-width:150px">
+            <div class="fg" style="max-width:160px">
               <label>ID / Roll No.</label>
               <input id="resId" placeholder="e.g. STU-001">
             </div>
-            <div class="fg" style="max-width:140px">
+            <div class="fg" style="max-width:150px">
               <label>Gender</label>
               <select id="resBlock">
                 <option value="">— Select —</option>
-                <option value="Girls">Female</option>
-                <option value="Boys">Male</option>
+                <option value="Girls">👧 Female</option>
+                <option value="Boys">👦 Male</option>
               </select>
             </div>
             <div style="padding-bottom:1px">
-              <button class="btn btn-primary" onclick="addResident()">➕ Add</button>
+              <button class="btn btn-primary" onclick="addResident()">➕ Add Member</button>
             </div>
           </div>
         </div>
-        <div class="card">
-          <div class="card-title">
-            All Residents <span class="badge-count" id="resCount">0</span>
-            <span style="margin-left:auto;display:flex;gap:8px;">
-              <select id="filterBlock" onchange="renderResidents()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.82em;">
-                <option value="">All</option><option value="Girls">Girls</option><option value="Boys">Boys</option>
-              </select>
-              <select id="filterDorm" onchange="renderResidents()" style="padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:.82em;">
-                <option value="">All Rooms</option>
-              </select>
-            </span>
+
+        <!-- Filters -->
+        <div class="filter-bar">
+          <span style="color:var(--muted);font-size:.82em;font-weight:600">Filter:</span>
+          <select id="filterDorm" onchange="renderResidents()" class="filter-select">
+            <option value="">All Rooms</option>
+          </select>
+        </div>
+
+        <!-- Girls Residents -->
+        <div class="gender-section girls-section">
+          <div class="gender-header girls">
+            <span>👧 Girls Residents</span>
+            <span class="gh-meta" id="girlsResCount">0</span>
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>#</th><th>Name</th><th>ID</th><th>Gender</th><th>Room</th><th>Joined</th><th>Actions</th></tr></thead>
-              <tbody id="resTbody"></tbody>
+              <thead><tr><th>#</th><th>Name</th><th>ID</th><th>Room</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody id="girlsResTbody"></tbody>
             </table>
           </div>
         </div>
+
+        <!-- Boys Residents -->
+        <div class="gender-section boys-section">
+          <div class="gender-header boys">
+            <span>👦 Boys Residents</span>
+            <span class="gh-meta" id="boysResCount">0</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Name</th><th>ID</th><th>Room</th><th>Joined</th><th>Actions</th></tr></thead>
+              <tbody id="boysResTbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── ASSIGNMENTS ─── -->
+      <div class="page" id="page-assignments">
+        <div class="action-bar">
+          <button class="btn btn-primary" onclick="initAssign()">🚀 Auto-Assign All</button>
+          <button class="btn btn-warning" onclick="rotateNow()">🔄 Rotate Now</button>
+          <button class="btn btn-ghost" onclick="showPage('import',document.querySelector('[data-page=import]'))">📂 Import Names</button>
+        </div>
+        <div id="assignView"></div>
       </div>
 
       <!-- ─── BULK IMPORT ─── -->
@@ -164,7 +258,7 @@
         <div class="info-box">
           <strong>Bulk Import:</strong> Upload a <strong>.csv</strong> or <strong>.txt</strong> file, or paste names directly.
           One name per line. Format: <code>Name</code> or <code>Name, ID</code>.
-          Duplicates are skipped automatically. Rooms will be assigned right after import.
+          Duplicates are skipped automatically.
         </div>
         <div class="card">
           <div class="card-title">⚙️ Import Options</div>
@@ -173,8 +267,8 @@
               <label>Gender of this list</label>
               <select id="impBlock">
                 <option value="">Auto / General</option>
-                <option value="Girls">Girls</option>
-                <option value="Boys">Boys</option>
+                <option value="Girls">👧 Girls</option>
+                <option value="Boys">👦 Boys</option>
               </select>
             </div>
           </div>
@@ -200,9 +294,7 @@
           </div>
           <button class="btn btn-info" onclick="previewNames()">🔍 Preview</button>
         </div>
-
-        <!-- Preview -->
-        <div class="card" id="previewCard">
+        <div class="card" id="previewCard" style="display:none">
           <div class="card-title">👁️ Preview <span class="badge-count" id="previewCount">0</span></div>
           <div class="table-wrap">
             <table>
@@ -217,14 +309,67 @@
         </div>
       </div>
 
-      <!-- ─── ASSIGNMENTS ─── -->
-      <div class="page" id="page-assignments">
-        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
-          <button class="btn btn-primary" onclick="initAssign()">🚀 Auto-Assign All</button>
-          <button class="btn btn-warning" onclick="rotateNow()">🔄 Rotate Now</button>
-          <button class="btn btn-ghost" onclick="showPage('import',document.querySelector('[data-page=import]'))">📂 Import Names</button>
+      <!-- ─── LIVE SHARE & QR SCANNER ─── -->
+      <div class="page" id="page-share">
+        <div class="card">
+          <div class="card-title">📲 Live QR Code Generator</div>
+          <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;">
+            <div id="qrBox" style="background:#fff;padding:16px;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,0.3);text-align:center;">
+              <img id="qrImage" src="" alt="QR Code" style="width:180px;height:180px;display:block;margin:0 auto 8px;">
+              <span style="color:#0f172a;font-size:0.75em;font-weight:700;">Scan with Phone</span>
+            </div>
+            <div style="flex:1;min-width:240px;">
+              <h3 style="color:#fff;margin-bottom:8px;font-size:1.15em;">Share Live Dormitory List</h3>
+              <p style="color:var(--muted);font-size:0.88em;margin-bottom:16px;line-height:1.5;">
+                Scan this QR code with any mobile device or share the URL below. Students can view room assignments in real-time.
+              </p>
+              <div class="fg" style="margin-bottom:14px;">
+                <label>Shareable Link</label>
+                <input id="shareUrlInput" readonly style="font-family:monospace;background:rgba(0,0,0,0.2);">
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="btn btn-primary" onclick="copyShareLink()">📋 Copy Share Link</button>
+                <button class="btn btn-girls" onclick="openScannerModal()">🎥 Open Live Camera Scanner</button>
+              </div>
+            </div>
+          </div>
         </div>
-        <div id="assignView"></div>
+      </div>
+
+      <!-- ─── DOWNLOAD & EXPORT ─── -->
+      <div class="page" id="page-download">
+        <div class="card">
+          <div class="card-title">📥 Export &amp; Download Options</div>
+          <p style="color:var(--muted);font-size:0.88em;margin-bottom:20px;">
+            Download the current dormitory lists and resident assignments in various formats.
+          </p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;">
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;">
+              <div style="font-size:2.2em;margin-bottom:10px;">📊</div>
+              <h4 style="color:#fff;font-size:1em;margin-bottom:6px;">CSV Spreadsheet</h4>
+              <p style="color:var(--muted);font-size:0.78em;margin-bottom:16px;">Export all rooms and residents as a CSV file.</p>
+              <button class="btn btn-primary btn-sm" style="width:100%" onclick="downloadCSV()">📥 Download CSV</button>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;">
+              <div style="font-size:2.2em;margin-bottom:10px;">📗</div>
+              <h4 style="color:#fff;font-size:1em;margin-bottom:6px;">Excel Document</h4>
+              <p style="color:var(--muted);font-size:0.78em;margin-bottom:16px;">Formatted XLS table download.</p>
+              <button class="btn btn-success btn-sm" style="width:100%" onclick="downloadExcel()">📥 Download Excel</button>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;">
+              <div style="font-size:2.2em;margin-bottom:10px;">📦</div>
+              <h4 style="color:#fff;font-size:1em;margin-bottom:6px;">JSON Backup</h4>
+              <p style="color:var(--muted);font-size:0.78em;margin-bottom:16px;">Raw database backup file.</p>
+              <button class="btn btn-info btn-sm" style="width:100%" onclick="downloadJSON()">📥 Download JSON</button>
+            </div>
+            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center;">
+              <div style="font-size:2.2em;margin-bottom:10px;">🖨️</div>
+              <h4 style="color:#fff;font-size:1em;margin-bottom:6px;">Printable Poster</h4>
+              <p style="color:var(--muted);font-size:0.78em;margin-bottom:16px;">Print high-res 2-column poster (Girls &amp; Boys).</p>
+              <button class="btn btn-warning btn-sm" style="width:100%" onclick="openPrintablePoster()">🖨️ Open Poster View</button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ─── HISTORY ─── -->
@@ -240,7 +385,7 @@
         <div class="card">
           <div class="card-title">📅 Rotation Settings</div>
           <div class="form-row" style="margin-bottom:12px">
-            <div class="fg" style="max-width:200px">
+            <div class="fg" style="max-width:220px">
               <label>Rotation interval (days)</label>
               <input id="rotInterval" type="number" min="1" value="15">
             </div>
@@ -249,15 +394,41 @@
             </div>
           </div>
           <div class="info-box" style="margin-bottom:0">
-            The system automatically checks for due rotation every hour (cron job on the server).
-            It also checks at startup and at midnight daily.
-            You can also trigger a rotation manually using the <strong>Rotate Now</strong> button.
+            The system automatically rotates the student list every <strong>15 days</strong> (configurable above).
+            Rotation runs as a cron job on the server — it checks every hour and at midnight daily.
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-title">👤 Change Admin Username</div>
+          <div class="form-row">
+            <div class="fg" style="max-width:260px">
+              <label>New Username</label>
+              <input type="text" id="newAdminUser" placeholder="Min 3 characters">
+            </div>
+            <div style="padding-bottom:1px">
+              <button class="btn btn-primary" onclick="changeAdminUsername()">👤 Update Username</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🔐 Change Admin Password</div>
+          <div class="form-row">
+            <div class="fg" style="max-width:260px">
+              <label>New Password</label>
+              <input type="password" id="newPass" placeholder="Min 4 characters">
+            </div>
+            <div style="padding-bottom:1px">
+              <button class="btn btn-primary" onclick="changePassword()">🔐 Update Password</button>
+            </div>
+          </div>
+        </div>
+
         <div class="card">
           <div class="card-title">🗑️ Danger Zone</div>
           <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
-          <p style="margin-top:10px;font-size:.82em;color:var(--text-muted)">
+          <p style="margin-top:10px;font-size:.82em;color:var(--muted)">
             Deletes all dormitories, residents, assignments, and history. Cannot be undone.
           </p>
         </div>
@@ -268,6 +439,63 @@
 </div><!-- /app-layout -->
 
 <div id="toast" class="toast"></div>
+
+<!-- Quick Add Modal -->
+<div class="modal-overlay" id="quickModal" onclick="closeModal(event)">
+  <div class="modal-box" id="quickModalBox">
+    <div class="modal-header" id="modalHeader"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- Live Camera QR Scanner Modal -->
+<div class="modal-overlay" id="scannerModal">
+  <div class="modal-box" style="max-width:500px;">
+    <div class="modal-header">
+      <span>🎥 Live QR Scanner</span>
+      <span class="modal-close" onclick="closeScannerModal()">✕</span>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <p style="color:var(--muted);font-size:0.85em;margin-bottom:14px;">
+        Point your camera at a Hostel QR code to view live dormitory lists.
+      </p>
+      <div style="position:relative;background:#000;border-radius:16px;overflow:hidden;min-height:260px;display:flex;align-items:center;justify-content:center;">
+        <video id="scannerVideo" autoplay playsinline style="width:100%;height:100%;object-fit:cover;"></video>
+        <div style="position:absolute;inset:40px;border:2px dashed #38bdf8;border-radius:16px;pointer-events:none;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);"></div>
+      </div>
+      <div id="scannerStatus" style="margin-top:14px;font-size:0.85em;color:#a5b4fc;font-weight:600;">Scanning camera feed...</div>
+      <div style="margin-top:16px;">
+        <button class="btn btn-ghost" onclick="closeScannerModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+<!-- Inline Admin Login Modal -->
+<div class="modal-overlay" id="adminLoginModal">
+  <div class="modal-box" style="max-width:420px;">
+    <div class="modal-header">
+      <span>🛡️ Admin Login</span>
+      <span class="modal-close" onclick="closeAdminLoginModal()">✕</span>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--muted);font-size:0.85em;margin-bottom:16px;">
+        Authenticate as Hostel Admin to manage rooms, residents, and rotations.
+      </p>
+      <div class="fg" style="margin-bottom:14px;">
+        <label>Admin Username</label>
+        <input type="text" id="dashAdminUser" placeholder="Enter username" value="admin" autocomplete="username">
+      </div>
+      <div class="fg" style="margin-bottom:16px;">
+        <label>Admin Password</label>
+        <input type="password" id="dashAdminPass" placeholder="Enter password" autocomplete="current-password" onkeydown="if(event.key==='Enter')loginAdminFromModal()">
+      </div>
+      <div id="dashAdminErr" style="display:none;color:#fca5a5;font-size:0.8em;margin-bottom:14px;padding:8px 12px;background:rgba(239,68,68,0.1);border-radius:8px;border:1px solid rgba(239,68,68,0.2);"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-ghost" onclick="closeAdminLoginModal()">Cancel</button>
+        <button class="btn btn-primary" id="dashAdminSubmitBtn" onclick="loginAdminFromModal()">🔐 Login as Admin</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script src="app.js"></script>
 </body>

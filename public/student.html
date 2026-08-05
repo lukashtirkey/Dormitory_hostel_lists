@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Room — Don Bosco Hostel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary: #6366f1;
+      --girls: #f43f5e;
+      --girls2: #ec4899;
+      --boys: #3b82f6;
+      --boys2: #6366f1;
+      --bg: #0d0f1a;
+      --surface: #1a1d35;
+      --surface2: #1e2240;
+      --surface3: #242848;
+      --border: rgba(255,255,255,0.08);
+      --border2: rgba(255,255,255,0.12);
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 10% 10%, rgba(99,102,241,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 90% 90%, rgba(244,63,94,0.12) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px 60px;
+    }
+
+    /* ── TOP NAV ── */
+    .topnav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 20px;
+      margin-bottom: 28px;
+    }
+    .topnav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .tnav-logo {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .tnav-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1em;
+      font-weight: 700;
+      color: #fff;
+    }
+    .tnav-sub { font-size: 0.72em; color: var(--muted); }
+    .tnav-right { display: flex; align-items: center; gap: 12px; }
+    .tnav-user {
+      font-size: 0.83em;
+      color: var(--text);
+      font-weight: 600;
+    }
+    .btn-logout {
+      padding: 7px 16px;
+      background: rgba(239,68,68,0.1);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px;
+      color: #fca5a5;
+      font-size: 0.78em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-logout:hover { background: rgba(239,68,68,0.2); }
+
+    /* ── MY ROOM CARD ── */
+    .my-room-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 30px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .my-room-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+    }
+    .my-room-card.girls::before { background: linear-gradient(90deg, var(--girls), var(--girls2)); }
+    .my-room-card.boys::before  { background: linear-gradient(90deg, var(--boys), var(--boys2)); }
+
+    .my-room-label {
+      font-size: 0.75em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .my-room-name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2em;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .my-room-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .girls .my-room-badge { background: rgba(244,63,94,0.15); color: #fb7185; border: 1px solid rgba(244,63,94,0.2); }
+    .boys  .my-room-badge { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+
+    .my-room-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 14px;
+    }
+    .info-tile {
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .info-tile-label { font-size: 0.72em; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 4px; }
+    .info-tile-val { font-size: 1.05em; font-weight: 700; color: #fff; }
+
+    /* ── ROOMMATES ── */
+    .roommates-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05em;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .roommate-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .roommate-chip {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .roommate-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .girls .roommate-avatar { background: rgba(244,63,94,0.2); }
+    .boys  .roommate-avatar { background: rgba(59,130,246,0.2); }
+    .roommate-name { font-size: 0.83em; font-weight: 600; color: var(--text); }
+
+    /* ── ROTATION NOTICE ── */
+    .rotation-notice {
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.25);
+      border-radius: 16px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .rotation-notice .label { font-size: 0.8em; color: #a5b4fc; font-weight: 600; margin-bottom: 4px; }
+    .rotation-notice .val { font-size: 1.1em; font-weight: 700; color: #fff; }
+    .rotation-notice .countdown {
+      font-size: 1.8em;
+      font-weight: 800;
+      color: #6ee7b7;
+    }
+    .rotation-notice .countdown.soon { color: #fde68a; }
+    .rotation-notice .countdown.overdue { color: #fca5a5; }
+
+    /* ── FULL DORM LIST ── */
+    .dorm-list-section { margin-bottom: 24px; }
+    .gender-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px;
+      border-radius: 16px 16px 0 0;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 1.05em;
+      color: #fff;
+    }
+    .gender-header.girls { background: linear-gradient(135deg, rgba(244,63,94,0.4), rgba(236,72,153,0.3)); border: 1px solid rgba(244,63,94,0.3); border-bottom: none; }
+    .gender-header.boys  { background: linear-gradient(135deg, rgba(59,130,246,0.4), rgba(99,102,241,0.3)); border: 1px solid rgba(59,130,246,0.3);  border-bottom: none; }
+    .dorms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      padding: 16px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-top: none;
+      border-radius: 0 0 16px 16px;
+    }
+    .dorm-card {
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      transition: transform 0.2s;
+    }
+    .dorm-card:hover { transform: translateY(-2px); }
+    .dorm-card.girls { border-color: rgba(244,63,94,0.25); }
+    .dorm-card.boys  { border-color: rgba(59,130,246,0.25); }
+    .dorm-card.highlight { box-shadow: 0 0 0 2px #6366f1; }
+    .dorm-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88em;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .dorm-sub { font-size: 0.73em; color: var(--muted); margin-bottom: 10px; }
+    .dorm-bar-bg { height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; margin-bottom: 10px; }
+    .dorm-bar { height: 4px; border-radius: 4px; }
+    .girls .dorm-bar { background: linear-gradient(90deg, var(--girls), var(--girls2)); }
+    .boys  .dorm-bar  { background: linear-gradient(90deg, var(--boys), var(--boys2)); }
+    .dorm-card ul { list-style: none; }
+    .dorm-card li {
+      font-size: 0.78em;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text);
+    }
+    .dorm-card li:last-child { border-bottom: none; }
+    .dorm-card li.is-me { color: #a5b4fc; font-weight: 700; }
+    .li-num { color: var(--muted); font-size: 0.82em; min-width: 16px; }
+
+    /* Summary bar */
+    .summary-bar {
+      display: flex;
+      gap: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 24px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .sum-item { text-align: center; }
+    .sum-val { font-family: 'Outfit', sans-serif; font-size: 1.8em; font-weight: 800; line-height: 1; }
+    .sum-val.girls { color: var(--girls); }
+    .sum-val.boys  { color: var(--boys); }
+    .sum-val.total { color: var(--primary); }
+    .sum-lbl { font-size: 0.72em; color: var(--muted); margin-top: 3px; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+      font-size: 0.88em;
+    }
+    .empty-icon { font-size: 2.8em; display: block; margin-bottom: 12px; }
+
+    .loading {
+      text-align: center;
+      padding: 60px;
+      color: var(--muted);
+      font-size: 0.9em;
+    }
+    .spinner-lg {
+      display: inline-block;
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 14px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .last-update {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.72em;
+      margin-top: 32px;
+      opacity: 0.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+
+    <!-- Top Nav -->
+    <div class="topnav">
+      <div class="topnav-brand">
+        <div class="tnav-logo">🏠</div>
+        <div>
+          <div class="tnav-title">Don Bosco Hostel</div>
+          <div class="tnav-sub">Student Portal</div>
+        </div>
+      </div>
+      <div class="tnav-right">
+        <span class="tnav-user" id="navUserName">👤 Loading...</span>
+        <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div id="mainContent">
+      <div class="loading">
+        <div class="spinner-lg"></div>
+        <p>Loading your room info...</p>
+      </div>
+    </div>
+
+    <div class="last-update" id="lastUpdate"></div>
+  </div>
+
+  <script>
+    const TOKEN = localStorage.getItem('dorm_token');
+    const ROLE  = localStorage.getItem('dorm_role');
+    const MY_NAME = localStorage.getItem('dorm_name');
+
+    if (!TOKEN || ROLE !== 'student') {
+      window.location.href = '/';
+    }
+
+    document.getElementById('navUserName').textContent = '👤 ' + (MY_NAME || 'Student');
+
+    function logout() {
+      fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': TOKEN } }).catch(() => {});
+      localStorage.clear();
+      window.location.href = '/';
+    }
+
+    async function loadData() {
+      try {
+        const [meRes, listRes] = await Promise.all([
+          fetch('/api/me',          { headers: { 'x-auth-token': TOKEN } }),
+          fetch('/api/public-list', { headers: { 'x-auth-token': TOKEN } })
+        ]);
+
+        if (meRes.status === 401 || meRes.status === 403) { logout(); return; }
+
+        const me   = await meRes.json();
+        const list = await listRes.json();
+
+        if (me.error) { showError(me.error); return; }
+
+        renderPage(me, list);
+        document.getElementById('lastUpdate').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+      } catch (e) {
+        showError('Cannot connect to server. Please try again.');
+      }
+    }
+
+    function renderPage(me, list) {
+      const isGirl = (me.block || '').toLowerCase().includes('girl');
+      const isBoy  = (me.block || '').toLowerCase().includes('boy');
+      const genderCls = isGirl ? 'girls' : isBoy ? 'boys' : '';
+      const genderIcon = isGirl ? '👧' : isBoy ? '👦' : '👤';
+      const genderLabel = isGirl ? 'Girls Dormitory' : isBoy ? 'Boys Dormitory' : 'General';
+
+      const nextDate = list.nextRotationDate ? new Date(list.nextRotationDate) : null;
+      const lastDate = list.lastRotationDate ? new Date(list.lastRotationDate) : null;
+      const daysRemain = nextDate ? Math.ceil((nextDate - new Date()) / 86400000) : null;
+
+      const fmtDate = iso => new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+      // My Room card
+      let myRoomHtml = '';
+      if (me.isGuest || me.role === 'guest') {
+        myRoomHtml = `
+        <div class="my-room-card" style="border-left:4px solid #38bdf8;background:rgba(56,189,248,0.08);">
+          <div class="my-room-label" style="color:#38bdf8;">🌐 Common Public View</div>
+          <div class="my-room-name">Welcome, Visitor!</div>
+          <p style="color:var(--muted);font-size:0.88em;margin-top:6px;">
+            Viewing live Don Bosco Skill Mission dormitory lists &amp; 15-day rotation schedule.
+          </p>
+        </div>`;
+      } else if (me.dormitory) {
+        myRoomHtml = `
+        <div class="my-room-card ${genderCls}">
+          <div class="my-room-label">Your Current Room</div>
+          <div class="my-room-name">🛏️ ${esc(me.dormitory)}</div>
+          <div class="my-room-badge">${genderIcon} ${genderLabel}</div>
+          <div class="my-room-info">
+            <div class="info-tile"><div class="info-tile-label">Your Name</div><div class="info-tile-val">${esc(me.name)}</div></div>
+            ${me.id ? `<div class="info-tile"><div class="info-tile-label">Student ID</div><div class="info-tile-val">${esc(me.id)}</div></div>` : ''}
+            <div class="info-tile"><div class="info-tile-label">Period Start</div><div class="info-tile-val">${lastDate ? fmtDate(lastDate) : '—'}</div></div>
+            <div class="info-tile"><div class="info-tile-label">Period End</div><div class="info-tile-val">${nextDate ? fmtDate(nextDate) : '—'}</div></div>
+          </div>
+        </div>`;
+      } else {
+        myRoomHtml = `
+        <div class="my-room-card">
+          <div class="empty-state"><span class="empty-icon">🛏️</span><p>You have not been assigned a room yet.<br>Please contact the hostel admin.</p></div>
+        </div>`;
+      }
+
+      // Rotation notice
+      let rotationHtml = '';
+      if (daysRemain !== null) {
+        const cdClass = daysRemain <= 0 ? 'overdue' : daysRemain <= 3 ? 'soon' : '';
+        const cdText  = daysRemain <= 0 ? '⚠️ Overdue!' : daysRemain + ' days';
+        rotationHtml = `
+        <div class="rotation-notice">
+          <div>
+            <div class="label">📅 Current Rotation Period</div>
+            <div class="val">${lastDate ? fmtDate(lastDate) : '—'} — ${nextDate ? fmtDate(nextDate) : '—'}</div>
+            <div style="font-size:.78em;color:var(--muted);margin-top:4px">Rooms change automatically every ${list.rotationInterval || 15} days</div>
+          </div>
+          <div style="text-align:right">
+            <div class="label">Next change in</div>
+            <div class="countdown ${cdClass}">${cdText}</div>
+          </div>
+        </div>`;
+      }
+
+      // Roommates
+      let roommatesHtml = '';
+      if (me.roommates && me.roommates.length) {
+        roommatesHtml = `
+        <div class="roommates-card ${genderCls}">
+          <div class="section-title">🤝 Your Roommates <span style="font-size:.75em;font-weight:500;color:var(--muted)">(${me.roommates.length})</span></div>
+          <div class="roommate-list">
+            ${me.roommates.map(name => `
+              <div class="roommate-chip">
+                <div class="roommate-avatar">${genderIcon}</div>
+                <span class="roommate-name">${esc(name)}</span>
+              </div>`).join('')}
+          </div>
+        </div>`;
+      }
+
+      // Full dormitory list
+      const rotation = list.currentRotation || [];
+      const girlsDorms = rotation.filter(dm => (dm.block || '').toLowerCase().includes('girl'));
+      const boysDorms  = rotation.filter(dm => (dm.block || '').toLowerCase().includes('boy'));
+      const otherDorms = rotation.filter(dm => !girlsDorms.includes(dm) && !boysDorms.includes(dm));
+
+      const gc = girlsDorms.reduce((s, dm) => s + (dm.residents || []).length, 0);
+      const bc = boysDorms.reduce((s, dm) =>  s + (dm.residents || []).length, 0);
+
+      function renderDormCard(dm, cls) {
+        const occ = (dm.residents || []).length;
+        const pct = dm.capacity ? Math.min(100, Math.round((occ / dm.capacity) * 100)) : 0;
+        const isMyRoom = dm.name === me.dormitory;
+        return `<div class="dorm-card ${cls}${isMyRoom ? ' highlight' : ''}">
+          <h3>${isMyRoom ? '⭐ ' : ''}${esc(dm.name)}</h3>
+          <div class="dorm-sub">Capacity: ${dm.capacity} · Occupied: ${occ}</div>
+          <div class="dorm-bar-bg"><div class="dorm-bar" style="width:${pct}%"></div></div>
+          <ul>
+            ${occ
+              ? (dm.residents || []).map((r, i) => `<li class="${r === me.name ? 'is-me' : ''}"><span class="li-num">${i+1}.</span>${esc(r)}${r === me.name ? ' ⭐' : ''}</li>`).join('')
+              : '<li style="opacity:.6;font-style:italic">No residents</li>'}
+          </ul>
+        </div>`;
+      }
+
+      let dormListHtml = '';
+      if (!rotation.length) {
+        dormListHtml = `<div class="empty-state"><span class="empty-icon">📋</span><p>No room assignments yet.</p></div>`;
+      } else {
+        if (girlsDorms.length) dormListHtml += `
+          <div class="dorm-list-section">
+            <div class="gender-header girls"><span>👧 Girls Dormitories</span><span style="font-size:.8em;font-weight:500;opacity:.8">${gc} residents · ${girlsDorms.length} rooms</span></div>
+            <div class="dorms-grid">${girlsDorms.map(dm => renderDormCard(dm, 'girls')).join('')}</div>
+          </div>`;
+        if (boysDorms.length) dormListHtml += `
+          <div class="dorm-list-section">
+            <div class="gender-header boys"><span>👦 Boys Dormitories</span><span style="font-size:.8em;font-weight:500;opacity:.8">${bc} residents · ${boysDorms.length} rooms</span></div>
+            <div class="dorms-grid">${boysDorms.map(dm => renderDormCard(dm, 'boys')).join('')}</div>
+          </div>`;
+        if (otherDorms.length) dormListHtml += `
+          <div class="dorm-list-section">
+            <div class="gender-header" style="background:rgba(139,92,246,0.3);border:1px solid rgba(139,92,246,0.3);border-bottom:none;"><span>🏢 Other Rooms</span></div>
+            <div class="dorms-grid">${otherDorms.map(dm => renderDormCard(dm, '')).join('')}</div>
+          </div>`;
+
+        dormListHtml += `<div class="summary-bar">
+          ${gc ? `<div class="sum-item"><div class="sum-val girls">${gc}</div><div class="sum-lbl">👧 Girls</div></div>` : ''}
+          ${bc ? `<div class="sum-item"><div class="sum-val boys">${bc}</div><div class="sum-lbl">👦 Boys</div></div>` : ''}
+          <div class="sum-item"><div class="sum-val total">${gc + bc}</div><div class="sum-lbl">Total</div></div>
+        </div>`;
+      }
+
+      document.getElementById('mainContent').innerHTML = `
+        ${myRoomHtml}
+        ${rotationHtml}
+        ${roommatesHtml}
+        <div style="font-family:Outfit,sans-serif;font-size:1.05em;font-weight:700;color:#fff;margin-bottom:16px">📋 Full Dormitory List</div>
+        ${dormListHtml}`;
+    }
+
+    function showError(msg) {
+      document.getElementById('mainContent').innerHTML = `
+        <div class="empty-state">
+          <span class="empty-icon">⚠️</span>
+          <p style="color:#fca5a5">${esc(msg)}</p>
+        </div>`;
+    }
+
+    const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+    // Load on boot
+    loadData();
+    // Auto-refresh every 5 minutes
+    setInterval(loadData, 300000);
+  </script>
+</body>
+</html>

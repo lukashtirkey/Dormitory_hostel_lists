@@ -1,7 +1,7 @@
 @echo off
-echo ====================================
-echo Hostel Dormitory Manager
-echo ====================================
+echo ====================================================
+echo  Don Bosco Hostel — Dormitory Manager v2.0
+echo ====================================================
 echo.
 echo Checking if Node.js is installed...
 where node >nul 2>nul
@@ -30,6 +30,9 @@ if not exist "node_modules" (
 echo Starting server...
 echo.
 echo Open your browser to: http://localhost:3000
+echo.
+echo  Admin login : admin / admin123
+echo  Student login: enter your name or ID
 echo.
 echo Press Ctrl+C to stop the server
 echo.

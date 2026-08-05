@@ -1,1008 +1,1317 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Don Bosco Dormitory Students Lists</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --blue:#1565C0;--blue-dark:#0D47A1;--blue-light:#1976D2;
-  --red:#C62828;--gold:#F9A825;--green:#2E7D32;
-  --girls-color:#c2185b;--boys-color:#1565C0;
-  --bg:#f0f4ff;--white:#fff;
-  --shadow:0 4px 24px rgba(0,0,0,.13);
-  --radius:14px;
-}
-body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);min-height:100vh;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Don Bosco Hostel — Dormitory Manager</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+  /* ─── RESET ─────────────────────────────────────── */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-/* ── LOGIN ─────────────────────────────── */
-#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;
-  background:linear-gradient(135deg,#0D47A1 0%,#1565C0 40%,#283593 100%);}
-.login-wrap{background:#fff;border-radius:24px;padding:44px 40px 36px;width:100%;
-  max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.35);text-align:center;
-  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
-@keyframes popIn{from{opacity:0;transform:scale(.88)}to{opacity:1;transform:scale(1)}}
-.login-logo{font-size:3.2em;margin-bottom:6px;}
-.login-wrap h1{font-size:1.35em;color:#0D47A1;font-weight:900;margin-bottom:2px;line-height:1.2;}
-.login-wrap .sub{font-size:.82em;color:#888;margin-bottom:24px;}
-.inp-wrap{position:relative;margin-bottom:13px;}
-.inp-wrap .ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:1em;}
-.login-wrap input{width:100%;padding:12px 14px 12px 38px;border:2px solid #e0e0e0;
-  border-radius:10px;font-size:.95em;transition:.25s;background:#fafafa;}
-.login-wrap input:focus{outline:none;border-color:#1565C0;background:#fff;
-  box-shadow:0 0 0 3px rgba(21,101,192,.12);}
-.login-btn{width:100%;padding:13px;background:linear-gradient(135deg,#1565C0,#283593);
-  color:#fff;border:none;border-radius:10px;font-size:1em;font-weight:700;
-  cursor:pointer;transition:.2s;margin-top:4px;letter-spacing:.3px;}
-.login-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(21,101,192,.4);}
-.login-err{color:#c62828;font-size:.83em;margin-top:8px;display:none;
-  padding:7px 12px;background:#ffebee;border-radius:8px;border:1px solid #ffcdd2;}
-.cred-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:18px;}
-.cred-btn{background:linear-gradient(135deg,#e3f2fd,#ede7f6);border:1.5px solid #c5cae9;
-  border-radius:10px;padding:10px 12px;cursor:pointer;text-align:left;transition:.2s;}
-.cred-btn:hover{border-color:#1565C0;transform:translateY(-2px);}
-.cred-btn .role{font-size:.68em;font-weight:800;text-transform:uppercase;color:#1565C0;margin-bottom:4px;}
-.cred-btn .row{display:flex;justify-content:space-between;font-size:.78em;margin-bottom:2px;}
-.cred-btn .lbl{color:#888;}.cred-btn .val{font-family:monospace;font-weight:700;
-  color:#1a1a2e;background:#fff;padding:1px 6px;border-radius:4px;}
-.login-hint{font-size:.72em;color:#bbb;margin-top:10px;}
-</style>
-<style>
-/* ── APP SHELL ──────────────────────────── */
-#appScreen{display:none;}
-.app{display:flex;min-height:100vh;}
+  :root{
+    --primary:#6366f1;--primary2:#818cf8;
+    --girls:#f43f5e;--girls2:#ec4899;
+    --girls-bg:rgba(244,63,94,.08);--girls-br:rgba(244,63,94,.25);
+    --boys:#3b82f6;--boys2:#6366f1;
+    --boys-bg:rgba(59,130,246,.08);--boys-br:rgba(59,130,246,.25);
+    --bg:#0d0f1a;--bg2:#13162a;
+    --surf:#1a1d35;--surf2:#1e2240;--surf3:#242848;
+    --bdr:rgba(255,255,255,.08);--bdr2:rgba(255,255,255,.13);
+    --txt:#e2e8f0;--muted:#94a3b8;--lite:#64748b;
+    --success:#10b981;--danger:#ef4444;--warn:#f59e0b;--info:#06b6d4;
+    --r:14px;--rs:10px;
+    --shadow:0 4px 24px rgba(0,0,0,.35);
+  }
 
-/* ── SIDEBAR ──────────────────────────── */
-.sidebar{width:220px;min-width:220px;background:linear-gradient(180deg,#0D47A1 0%,#1565C0 60%,#283593 100%);
-  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
-.sb-brand{padding:20px 16px 14px;border-bottom:1px solid rgba(255,255,255,.12);text-align:center;}
-.sb-brand .icon{font-size:2.2em;display:block;margin-bottom:4px;}
-.sb-brand h2{color:#fff;font-size:.95em;font-weight:900;line-height:1.25;}
-.sb-brand p{color:#90caf9;font-size:.7em;margin-top:2px;}
-.sb-user{padding:12px 16px;display:flex;align-items:center;gap:10px;
-  border-bottom:1px solid rgba(255,255,255,.1);}
-.sb-avatar{width:34px;height:34px;border-radius:50%;
-  background:linear-gradient(135deg,#F9A825,#F57F17);
-  display:flex;align-items:center;justify-content:center;
-  color:#fff;font-weight:900;font-size:.95em;flex-shrink:0;}
-.sb-uname{color:#fff;font-size:.84em;font-weight:700;}
-.sb-urole{color:#90caf9;font-size:.7em;}
-.sb-nav{flex:1;padding:10px 0;}
-.nav-item{display:flex;align-items:center;gap:9px;padding:11px 16px;
-  color:#90caf9;cursor:pointer;transition:.18s;font-size:.86em;font-weight:600;
-  border-left:3px solid transparent;user-select:none;}
-.nav-item:hover{color:#fff;background:rgba(255,255,255,.08);}
-.nav-item.active{color:#fff;background:rgba(255,255,255,.14);border-left-color:#F9A825;}
-.nav-item .ni{font-size:1.1em;width:20px;text-align:center;flex-shrink:0;}
-.sb-footer{padding:14px 16px;border-top:1px solid rgba(255,255,255,.1);}
-.rotation-box{background:rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;font-size:.75em;color:#90caf9;}
-.rotation-box strong{color:#fff;display:block;margin-bottom:3px;font-size:1em;}
-.rotation-box .days{font-size:1.5em;font-weight:900;color:#F9A825;display:block;margin:2px 0;}
-.rotation-box .days.overdue{color:#ef9a9a;}
-.sb-logout{width:100%;margin-top:10px;padding:9px;background:rgba(198,40,40,.18);
-  color:#ef9a9a;border:1px solid rgba(198,40,40,.3);border-radius:8px;
-  cursor:pointer;font-size:.82em;font-weight:700;transition:.2s;}
-.sb-logout:hover{background:rgba(198,40,40,.35);}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;font-size:14px;line-height:1.6}
 
-/* ── MAIN ──────────────────────────────── */
-.main{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg);}
-.topbar{background:#fff;padding:14px 24px;display:flex;align-items:center;
-  justify-content:space-between;position:sticky;top:0;z-index:100;
-  box-shadow:0 2px 12px rgba(0,0,0,.08);border-bottom:3px solid #F9A825;}
-.topbar-title{font-size:1.15em;font-weight:900;color:#0D47A1;}
-.topbar-actions{display:flex;align-items:center;gap:8px;}
-.content{padding:20px 24px;flex:1;}
-.page{display:none;animation:fadeUp .22s ease;}
-.page.active{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.page-title{font-size:1.3em;font-weight:900;color:#0D47A1;margin-bottom:18px;
-  display:flex;align-items:center;gap:8px;}
-</style>
-<style>
-/* ── CARDS / BUTTONS ────────────────────── */
-.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
-  padding:20px 22px;margin-bottom:18px;}
-.card-title{font-size:.95em;font-weight:800;color:#0D47A1;margin-bottom:14px;
-  display:flex;align-items:center;gap:7px;}
-.btn{padding:9px 18px;border:none;border-radius:9px;font-size:.86em;font-weight:700;
-  cursor:pointer;transition:.18s;font-family:inherit;display:inline-flex;align-items:center;gap:5px;}
-.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15);}
-.btn-primary{background:linear-gradient(135deg,#1565C0,#283593);color:#fff;}
-.btn-success{background:linear-gradient(135deg,#2E7D32,#388E3C);color:#fff;}
-.btn-danger{background:linear-gradient(135deg,#C62828,#D32F2F);color:#fff;}
-.btn-warning{background:linear-gradient(135deg,#F9A825,#F57F17);color:#fff;}
-.btn-info{background:linear-gradient(135deg,#0277BD,#0288D1);color:#fff;}
-.btn-ghost{background:#f5f5f5;color:#333;border:1.5px solid #e0e0e0;}
-.btn-sm{padding:6px 12px;font-size:.78em;}
-.btn-xs{padding:4px 9px;font-size:.72em;}
-.form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;}
-.fg{display:flex;flex-direction:column;gap:5px;flex:1;min-width:130px;}
-.fg label{font-size:.75em;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.4px;}
-.fg input,.fg select,.fg textarea{padding:9px 12px;border:2px solid #e0e0e0;border-radius:9px;
-  font-size:.9em;font-family:inherit;transition:.2s;}
-.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:#1565C0;
-  box-shadow:0 0 0 3px rgba(21,101,192,.12);}
-.fg textarea{resize:vertical;min-height:80px;}
-.badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.72em;font-weight:700;}
-.badge-girls{background:#fce4ec;color:#c2185b;}
-.badge-boys{background:#e3f2fd;color:#1565C0;}
-.badge-ok{background:#e8f5e9;color:#2E7D32;}
-.badge-warn{background:#fff3e0;color:#e65100;}
-.table-wrap{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:.86em;}
-thead th{background:#e3f2fd;color:#0D47A1;font-weight:800;font-size:.76em;
-  text-transform:uppercase;letter-spacing:.4px;padding:10px 12px;text-align:left;
-  border-bottom:2px solid #90caf9;}
-tbody td{padding:9px 12px;border-bottom:1px solid #f0f4ff;color:#333;}
-tbody tr:hover td{background:#f0f4ff;}
-.progress-bg{background:#e0e0e0;border-radius:4px;height:6px;overflow:hidden;}
-.progress-bar{height:6px;border-radius:4px;transition:width .4s;}
-.toast{position:fixed;bottom:20px;right:20px;padding:11px 18px;border-radius:9px;
-  box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:9999;font-size:.86em;font-weight:700;
-  color:#fff;display:none;animation:slideIn .28s ease;}
-@keyframes slideIn{from{transform:translateX(120%)}to{transform:translateX(0)}}
-.toast.success{background:#2E7D32;}.toast.error{background:#C62828;}
-.toast.info{background:#0277BD;}.toast.warn{background:#E65100;}
-.empty{text-align:center;padding:36px;color:#bbb;}
-.empty .ei{font-size:2.5em;display:block;margin-bottom:6px;}
-.info-box{background:#e3f2fd;border-left:4px solid #1565C0;border-radius:9px;
-  padding:11px 15px;font-size:.84em;color:#0D47A1;margin-bottom:14px;line-height:1.6;}
-</style>
-<style>
-/* ── DASHBOARD ──────────────────────────── */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:20px;}
-.stat-card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);
-  padding:18px;display:flex;align-items:center;gap:14px;}
-.stat-icon{width:46px;height:46px;border-radius:11px;display:flex;align-items:center;
-  justify-content:center;font-size:1.4em;flex-shrink:0;}
-.si-blue{background:#e3f2fd;}.si-pink{background:#fce4ec;}
-.si-green{background:#e8f5e9;}.si-orange{background:#fff3e0;}
-.si-purple{background:#f3e5f5;}.si-red{background:#ffebee;}
-.stat-val{font-size:2em;font-weight:900;color:#0D47A1;line-height:1;}
-.stat-lbl{font-size:.74em;color:#888;margin-top:2px;}
-.dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-@media(max-width:700px){.dash-grid{grid-template-columns:1fr;}}
-.countdown-banner{background:linear-gradient(135deg,#0D47A1,#1565C0);
-  border-radius:var(--radius);padding:18px 22px;margin-bottom:18px;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-.cb-left .cb-label{color:#90caf9;font-size:.78em;font-weight:700;text-transform:uppercase;}
-.cb-left .cb-days{color:#F9A825;font-size:2.6em;font-weight:900;line-height:1;}
-.cb-left .cb-sub{color:#fff;font-size:.82em;margin-top:2px;}
-.cb-right{text-align:right;}
-.cb-right .cb-date{color:#fff;font-size:.9em;font-weight:700;}
-.cb-right .cb-next{color:#90caf9;font-size:.78em;}
-.cb-overdue{background:linear-gradient(135deg,#B71C1C,#C62828);}
-.cb-overdue .cb-days{color:#fff;}
+  /* ─── LOGIN PAGE ─────────────────────────────────── */
+  #loginPage{
+    display:flex;align-items:center;justify-content:center;
+    min-height:100vh;position:relative;overflow:hidden;
+    background:var(--bg);
+  }
+  #loginPage::before{
+    content:'';position:fixed;inset:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 70% 60% at 15% 15%,rgba(99,102,241,.22) 0%,transparent 60%),
+      radial-gradient(ellipse 55% 70% at 85% 85%,rgba(244,63,94,.16) 0%,transparent 60%);
+  }
+  .login-wrap{position:relative;z-index:1;width:100%;max-width:900px;padding:24px}
+  .login-header{text-align:center;margin-bottom:40px}
+  .login-logo{display:inline-flex;align-items:center;gap:14px;margin-bottom:14px}
+  .login-logo-icon{width:54px;height:54px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 28px rgba(99,102,241,.45)}
+  .login-logo-text h1{font-family:'Outfit',sans-serif;font-size:1.75em;font-weight:800;background:linear-gradient(135deg,#a5b4fc,#fff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;text-align:left}
+  .login-logo-text p{color:var(--muted);font-size:.8em;text-align:left;margin-top:2px}
+  .login-sub{color:var(--muted);font-size:.88em}
 
-/* ── DORMITORY ASSIGNMENT DISPLAY ─────── */
-.dorm-header{background:linear-gradient(135deg,#0D47A1,#1976D2);
-  border-radius:14px;padding:14px 20px;margin-bottom:16px;
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
-.dorm-header h2{color:#fff;font-size:1.1em;font-weight:900;}
-.dorm-header .dh-meta{color:#90caf9;font-size:.82em;font-weight:600;}
-.gender-section{margin-bottom:28px;}
-.gender-hdr{border-radius:10px;padding:11px 18px;margin-bottom:14px;
-  display:flex;justify-content:space-between;align-items:center;font-weight:800;color:#fff;}
-.gh-girls{background:linear-gradient(90deg,#c2185b,#e91e63);}
-.gh-boys{background:linear-gradient(90deg,#1565C0,#1976D2);}
-.gh-other{background:linear-gradient(90deg,#4527A0,#512DA8);}
-.rooms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
-.room-card{border-radius:12px;overflow:hidden;box-shadow:0 3px 16px rgba(0,0,0,.1);background:#fff;}
-.room-card-header{padding:13px 16px 10px;display:flex;justify-content:space-between;align-items:center;}
-.room-card-header.girls{background:linear-gradient(135deg,#fce4ec,#f8bbd0);border-bottom:3px solid #c2185b;}
-.room-card-header.boys{background:linear-gradient(135deg,#e3f2fd,#bbdefb);border-bottom:3px solid #1565C0;}
-.room-card-header.other{background:linear-gradient(135deg,#ede7f6,#d1c4e9);border-bottom:3px solid #512DA8;}
-.room-name{font-weight:900;font-size:.92em;color:#1a1a2e;}
-.room-count{font-size:.75em;font-weight:800;padding:3px 9px;border-radius:10px;}
-.rc-girls{background:#c2185b;color:#fff;}.rc-boys{background:#1565C0;color:#fff;}
-.rc-other{background:#512DA8;color:#fff;}
-.room-bar{height:5px;background:#e0e0e0;}
-.room-bar-fill{height:5px;transition:width .4s;}
-.rb-girls{background:linear-gradient(90deg,#c2185b,#e91e63);}
-.rb-boys{background:linear-gradient(90deg,#1565C0,#1976D2);}
-.rb-full{background:#C62828;}
-.room-residents{max-height:320px;overflow-y:auto;padding:8px 0;}
-.resident-row{display:flex;align-items:center;gap:8px;padding:5px 14px;
-  border-bottom:1px solid #f5f5f5;font-size:.83em;color:#333;}
-.resident-row:last-child{border:none;}
-.res-num{color:#bbb;font-size:.75em;min-width:20px;font-weight:700;}
-.res-name{flex:1;}
-.res-leader{color:#F9A825;font-size:.68em;font-weight:800;background:#0D47A1;
-  padding:1px 6px;border-radius:4px;margin-left:4px;}
-.summary-bar{display:flex;gap:12px;flex-wrap:wrap;background:#fff;
-  border-radius:var(--radius);padding:16px 20px;box-shadow:var(--shadow);margin-top:16px;}
-.sum-item{flex:1;text-align:center;min-width:80px;}
-.sum-val{font-size:2em;font-weight:900;line-height:1;}
-.sv-girls{color:#c2185b;}.sv-boys{color:#1565C0;}.sv-total{color:#2E7D32;}
-.sum-lbl{font-size:.72em;color:#888;margin-top:3px;}
-</style>
-<style>
-/* ── NOTIFICATION PANEL ─────────────────── */
-.notif-btn{position:relative;background:none;border:none;font-size:1.3em;cursor:pointer;padding:6px;}
-.notif-badge{position:absolute;top:2px;right:2px;width:16px;height:16px;background:#C62828;
-  border-radius:50%;font-size:.6em;color:#fff;display:flex;align-items:center;
-  justify-content:center;font-weight:900;}
-.notif-panel{position:absolute;top:56px;right:16px;width:320px;background:#fff;
-  border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.2);z-index:500;display:none;}
-.notif-panel.open{display:block;}
-.np-head{padding:14px 16px;border-bottom:1px solid #f0f0f0;display:flex;
-  justify-content:space-between;align-items:center;}
-.np-head strong{font-size:.9em;color:#0D47A1;}
-.notif-list{max-height:300px;overflow-y:auto;}
-.notif-item{display:flex;gap:10px;padding:10px 14px;border-bottom:1px solid #f9f9f9;align-items:flex-start;}
-.ni-icon{font-size:1.2em;flex-shrink:0;}
-.ni-text{font-size:.82em;color:#333;line-height:1.4;}
-.ni-time{font-size:.72em;color:#bbb;margin-top:2px;}
-.no-notif{padding:20px;text-align:center;color:#ccc;font-size:.85em;}
-/* ── DROP ZONE ─────────── */
-.drop-zone{border:2.5px dashed #90caf9;border-radius:12px;padding:28px;text-align:center;
-  background:#f0f4ff;cursor:pointer;transition:.2s;}
-.drop-zone:hover,.drop-zone.over{border-color:#1565C0;background:#e3f2fd;}
-.drop-zone .dz-icon{font-size:2.2em;margin-bottom:6px;}
-/* ── MODAL ─────────────── */
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;
-  display:none;align-items:center;justify-content:center;}
-.modal-bg.open{display:flex;}
-.modal{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:460px;
-  box-shadow:0 20px 60px rgba(0,0,0,.3);animation:popIn .25s ease;}
-.modal h3{color:#0D47A1;font-size:1.1em;margin-bottom:18px;}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;}
-/* ── HISTORY ─────────────── */
-.hist-bar{display:flex;justify-content:space-between;align-items:center;
-  background:#e3f2fd;border-radius:9px;padding:9px 14px;margin-bottom:8px;
-  cursor:pointer;border:1px solid #90caf9;}
-.hist-bar:hover{background:#bbdefb;}
-.hist-body{display:none;}.hist-body.open{display:block;}
-/* ── RESPONSIVE ─────────── */
-@media(max-width:768px){
-  .sidebar{display:none;}.content{padding:12px;}.stats-grid{grid-template-columns:repeat(2,1fr);}
-  .rooms-grid{grid-template-columns:1fr;}
-}
-</style>
+  .login-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  @media(max-width:620px){.login-grid{grid-template-columns:1fr}}
+
+  .login-card{
+    background:rgba(255,255,255,.04);
+    backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    border:1px solid var(--bdr);border-radius:22px;padding:32px 28px;
+    position:relative;overflow:hidden;
+    transition:transform .25s,box-shadow .25s;
+  }
+  .login-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .login-card.admin::before{background:linear-gradient(90deg,#6366f1,#a855f7)}
+  .login-card.student::before{background:linear-gradient(90deg,#f43f5e,#ec4899)}
+  .login-card:hover{transform:translateY(-4px);box-shadow:0 20px 55px rgba(0,0,0,.4)}
+
+  .lc-icon{width:58px;height:58px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:18px}
+  .admin .lc-icon{background:rgba(99,102,241,.2);box-shadow:0 0 18px rgba(99,102,241,.3)}
+  .student .lc-icon{background:rgba(244,63,94,.2);box-shadow:0 0 18px rgba(244,63,94,.3)}
+  .lc-title{font-family:'Outfit',sans-serif;font-size:1.3em;font-weight:700;color:#fff;margin-bottom:6px}
+  .lc-desc{color:var(--muted);font-size:.8em;margin-bottom:24px;line-height:1.5}
+
+  .fg{display:flex;flex-direction:column;margin-bottom:14px}
+  .fg label{font-size:.72em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+  .fg input,.fg select{
+    background:rgba(255,255,255,.07);border:1px solid var(--bdr);
+    border-radius:11px;color:var(--txt);
+    font-family:'Inter',sans-serif;font-size:.88em;
+    padding:11px 14px;outline:none;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .fg input:focus,.fg select:focus{border-color:rgba(255,255,255,.25);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+  .fg input::placeholder{color:rgba(148,163,184,.5)}
+
+  .btn-login{
+    width:100%;padding:13px;border:none;border-radius:11px;
+    font-family:'Outfit',sans-serif;font-size:.95em;font-weight:700;
+    cursor:pointer;margin-top:4px;
+    transition:transform .18s,box-shadow .18s,opacity .18s;
+    position:relative;
+  }
+  .btn-login:hover{transform:translateY(-1px)}
+  .btn-login:active{transform:translateY(0)}
+  .btn-login:disabled{opacity:.6;cursor:not-allowed;transform:none}
+  .admin .btn-login{background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff}
+  .student .btn-login{background:linear-gradient(135deg,#f43f5e,#ec4899);color:#fff}
+
+  .err-msg{display:none;color:#fca5a5;font-size:.78em;margin-top:9px;text-align:center;padding:7px 12px;background:rgba(239,68,68,.1);border-radius:8px;border:1px solid rgba(239,68,68,.2)}
+
+  .lc-badges{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap}
+  .lc-badge{font-size:.7em;padding:3px 9px;border-radius:20px;font-weight:600}
+  .admin .lc-badge{background:rgba(99,102,241,.18);color:#a5b4fc}
+  .student .lc-badge{background:rgba(244,63,94,.18);color:#fda4af}
+
+  .login-footer{text-align:center;color:var(--lite);font-size:.72em;margin-top:36px;opacity:.6}
+
+  /* ─── SPINNER ────────────────────────────────────── */
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ─── APP ────────────────────────────────────────── */
+  #app{display:none;min-height:100vh;flex-direction:column}
+
+  /* ── TOPBAR ── */
+  .topbar{
+    background:var(--surf);border-bottom:1px solid var(--bdr);
+    padding:0 20px;height:56px;display:flex;align-items:center;
+    justify-content:space-between;gap:10px;position:sticky;top:0;z-index:80;
+    box-shadow:0 2px 16px rgba(0,0,0,.2);
+  }
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .tb-logo{width:34px;height:34px;background:linear-gradient(135deg,#6366f1,#a855f7);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .tb-title{font-family:'Outfit',sans-serif;font-weight:700;color:#fff;font-size:1em;line-height:1.1}
+  .tb-sub{font-size:.68em;color:var(--muted)}
+  .topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+  /* ── NAV TABS ── */
+  .nav-tabs{
+    background:var(--surf);border-bottom:1px solid var(--bdr);
+    display:flex;overflow-x:auto;padding:0 12px;gap:2px;
+    position:sticky;top:56px;z-index:79;
+  }
+  .nav-tabs::-webkit-scrollbar{height:3px}
+  .nav-tabs::-webkit-scrollbar-track{background:transparent}
+  .nav-tabs::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:3px}
+  .nav-tab{
+    padding:12px 16px;font-size:.82em;font-weight:600;color:var(--muted);
+    cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;
+    transition:color .15s,border-color .15s;user-select:none;
+  }
+  .nav-tab:hover{color:var(--txt)}
+  .nav-tab.active{color:#fff;border-bottom-color:#6366f1}
+
+  /* ── CONTENT ── */
+  .content-area{flex:1;padding:20px;max-width:1300px;margin:0 auto;width:100%}
+  .page{display:none;animation:fadeIn .22s ease}
+  .page.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+  /* ── CARDS ── */
+  .card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 20px;margin-bottom:16px;box-shadow:var(--shadow)}
+  .card-title{font-family:'Outfit',sans-serif;font-size:.97em;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+  /* ── STATS GRID ── */
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:12px;margin-bottom:16px}
+  .stat-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:15px 17px;display:flex;align-items:center;gap:12px;transition:transform .18s}
+  .stat-card:hover{transform:translateY(-2px)}
+  .stat-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+  .si-pu{background:rgba(139,92,246,.2)} .si-bl{background:rgba(59,130,246,.2)}
+  .si-pk{background:rgba(236,72,153,.2)} .si-gr{background:rgba(16,185,129,.2)}
+  .si-or{background:rgba(245,158,11,.2)} .si-cy{background:rgba(6,182,212,.2)}
+  .stat-val{font-family:'Outfit',sans-serif;font-size:1.55em;font-weight:800;color:#fff;line-height:1}
+  .stat-lbl{font-size:.72em;color:var(--muted);margin-top:2px}
+
+  /* ── GENDER OVERVIEW ── */
+  .gender-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  .gender-big{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 22px;display:flex;align-items:center;gap:14px;transition:transform .18s}
+  .gender-big:hover{transform:translateY(-2px)}
+  .gender-big.girls{border-color:var(--girls-br);background:var(--girls-bg)}
+  .gender-big.boys{border-color:var(--boys-br);background:var(--boys-bg)}
+  .gb-icon{font-size:2em}
+  .gb-count{font-family:'Outfit',sans-serif;font-size:2em;font-weight:800;line-height:1}
+  .girls .gb-count{color:var(--girls)} .boys .gb-count{color:var(--boys)}
+  .gb-lbl{font-size:.78em;color:var(--muted);margin-top:3px}
+
+  /* ── DASH LOWER ── */
+  .dash-lower{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  @media(max-width:700px){.dash-lower,.gender-row{grid-template-columns:1fr}}
+
+  /* ── ROTATION BANNER ── */
+  .rotation-banner{
+    background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.22);
+    border-radius:var(--r);padding:14px 18px;margin-bottom:16px;
+    display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+  .rb-period-label{font-size:.72em;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+  .rb-period{font-size:1.02em;font-weight:700;color:#fff}
+  .rb-countdown{font-family:'Outfit',sans-serif;font-size:1.7em;font-weight:800}
+  .rb-countdown.ok{color:#6ee7b7} .rb-countdown.soon{color:#fde68a} .rb-countdown.over{color:#fca5a5}
+
+  /* ── GENDER SECTIONS ── */
+  .gender-section{margin-bottom:18px}
+  .gender-hdr{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 18px;border-radius:var(--r) var(--r) 0 0;
+    font-family:'Outfit',sans-serif;font-weight:700;font-size:.96em;color:#fff;
+  }
+  .gender-hdr.girls{background:linear-gradient(135deg,rgba(244,63,94,.32),rgba(236,72,153,.24));border:1px solid var(--girls-br);border-bottom:none}
+  .gender-hdr.boys{background:linear-gradient(135deg,rgba(59,130,246,.32),rgba(99,102,241,.24));border:1px solid var(--boys-br);border-bottom:none}
+  .gh-meta{font-size:.76em;font-weight:500;opacity:.8}
+
+  /* ── TABLES ── */
+  .table-wrap{overflow-x:auto;border-radius:0 0 var(--rs) var(--rs)}
+  .girls-section .table-wrap{background:var(--girls-bg);border:1px solid var(--girls-br);border-top:none;border-radius:0 0 var(--r) var(--r)}
+  .boys-section  .table-wrap{background:var(--boys-bg); border:1px solid var(--boys-br); border-top:none;border-radius:0 0 var(--r) var(--r)}
+  table{width:100%;border-collapse:collapse;font-size:.83em}
+  thead{background:var(--surf3)}
+  thead th{padding:9px 13px;text-align:left;font-size:.73em;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--bdr)}
+  tbody tr{border-bottom:1px solid var(--bdr);transition:background .14s}
+  tbody tr:last-child{border-bottom:none}
+  tbody tr:hover{background:rgba(255,255,255,.03)}
+  td{padding:9px 13px;vertical-align:middle}
+  .girls-section tbody tr:hover{background:rgba(244,63,94,.05)}
+  .boys-section  tbody tr:hover{background:rgba(59,130,246,.05)}
+
+  /* ── DORM GRID (assignments) ── */
+  .assign-section{margin-bottom:22px}
+  .assign-hdr{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:13px 20px;border-radius:var(--r) var(--r) 0 0;
+    font-family:'Outfit',sans-serif;font-weight:700;font-size:1em;color:#fff;
+  }
+  .assign-hdr.girls{background:linear-gradient(135deg,#be185d,#9d174d)}
+  .assign-hdr.boys{background:linear-gradient(135deg,#1d4ed8,#1e40af)}
+  .assign-hdr.other{background:linear-gradient(135deg,#5b21b6,#4c1d95)}
+  .dorms-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+    gap:12px;padding:14px;
+    background:var(--surf2);border:1px solid var(--bdr);
+    border-top:none;border-radius:0 0 var(--r) var(--r);
+  }
+  .dorm-card{
+    background:var(--surf3);border:1px solid var(--bdr);border-radius:12px;
+    padding:14px;transition:transform .18s,box-shadow .18s;
+  }
+  .dorm-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .dorm-card.girls{border-color:var(--girls-br)} .dorm-card.boys{border-color:var(--boys-br)}
+  .dorm-card h3{font-family:'Outfit',sans-serif;font-size:.88em;font-weight:700;color:#fff;margin-bottom:4px}
+  .dm-sub{font-size:.72em;color:var(--muted);margin-bottom:8px}
+  .dorm-bar-bg{height:4px;background:rgba(255,255,255,.08);border-radius:4px;margin-bottom:9px}
+  .dorm-bar{height:4px;border-radius:4px;transition:width .5s ease}
+  .dorm-card.girls .dorm-bar{background:linear-gradient(90deg,var(--girls),var(--girls2))}
+  .dorm-card.boys  .dorm-bar{background:linear-gradient(90deg,var(--boys),var(--boys2))}
+  .dorm-card.other .dorm-bar{background:linear-gradient(90deg,#7c3aed,#6d28d9)}
+  .dorm-card ul{list-style:none}
+  .dorm-card li{font-size:.79em;padding:3px 0;border-bottom:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:5px;color:var(--txt)}
+  .dorm-card li:last-child{border-bottom:none}
+  .li-num{color:var(--muted);font-size:.82em;min-width:16px}
+
+  /* ── SUMMARY BAR ── */
+  .summary-bar{display:flex;gap:18px;background:var(--surf);border:1px solid var(--bdr);border-radius:var(--r);padding:16px 22px;margin-top:14px;flex-wrap:wrap}
+  .sum-item{text-align:center}
+  .sum-val{font-family:'Outfit',sans-serif;font-size:1.7em;font-weight:800;line-height:1}
+  .sum-val.girls{color:var(--girls)} .sum-val.boys{color:var(--boys)} .sum-val.total{color:var(--primary2)}
+  .sum-lbl{font-size:.72em;color:var(--muted);margin-top:3px}
+
+  /* ── BUTTONS ── */
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:var(--rs);font-family:'Inter',sans-serif;font-size:.82em;font-weight:600;cursor:pointer;transition:transform .16s,box-shadow .16s;white-space:nowrap;text-decoration:none}
+  .btn:hover{transform:translateY(-1px)} .btn:active{transform:translateY(0)}
+  .btn-sm{padding:6px 12px;font-size:.78em}
+  .btn-xs{padding:4px 9px;font-size:.74em}
+  .btn-primary{background:var(--primary);color:#fff} .btn-primary:hover{box-shadow:0 4px 14px rgba(99,102,241,.4)}
+  .btn-success{background:var(--success);color:#fff} .btn-success:hover{box-shadow:0 4px 14px rgba(16,185,129,.4)}
+  .btn-danger{background:var(--danger);color:#fff}   .btn-danger:hover{box-shadow:0 4px 14px rgba(239,68,68,.4)}
+  .btn-warn{background:var(--warn);color:#0f172a}    .btn-warn:hover{box-shadow:0 4px 14px rgba(245,158,11,.4)}
+  .btn-info{background:var(--info);color:#fff}       .btn-info:hover{box-shadow:0 4px 14px rgba(6,182,212,.4)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--bdr)} .btn-ghost:hover{background:rgba(255,255,255,.05);color:var(--txt)}
+  .btn-girls{background:linear-gradient(135deg,var(--girls),var(--girls2));color:#fff} .btn-girls:hover{box-shadow:0 4px 14px rgba(244,63,94,.4)}
+  .btn-boys{background:linear-gradient(135deg,var(--boys),var(--boys2));color:#fff}   .btn-boys:hover{box-shadow:0 4px 14px rgba(59,130,246,.4)}
+  .btn-logout{padding:6px 14px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);border-radius:8px;color:#fca5a5;font-size:.78em;font-weight:600;cursor:pointer;transition:background .2s}
+  .btn-logout:hover{background:rgba(239,68,68,.2)}
+
+  /* ── BADGES ── */
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:.74em;font-weight:600}
+  .badge-girls{background:rgba(244,63,94,.15);color:#fb7185;border:1px solid rgba(244,63,94,.2)}
+  .badge-boys{background:rgba(59,130,246,.15);color:#60a5fa;border:1px solid rgba(59,130,246,.2)}
+  .badge-gen{background:rgba(139,92,246,.15);color:#a78bfa;border:1px solid rgba(139,92,246,.2)}
+  .cnt{background:rgba(255,255,255,.1);color:var(--muted);padding:2px 7px;border-radius:20px;font-size:.77em;margin-left:4px}
+
+  /* ── FORMS ── */
+  .form-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:4px}
+  .form-row .fg{flex:1;min-width:120px;margin-bottom:0}
+  input,select,textarea{
+    background:var(--surf3);border:1px solid var(--bdr2);border-radius:var(--rs);
+    color:var(--txt);font-family:'Inter',sans-serif;font-size:.87em;
+    padding:9px 12px;outline:none;width:100%;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(99,102,241,.14)}
+  input::placeholder,textarea::placeholder{color:#475569}
+  select option{background:var(--surf2)}
+  textarea{resize:vertical;min-height:90px}
+
+  .filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+  .filter-select{max-width:190px}
+
+  /* ── ACTIONS ── */
+  .action-bar{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .action-cell{display:flex;gap:6px}
+
+  /* ── PROGRESS ── */
+  .prog-bg{height:6px;background:rgba(255,255,255,.08);border-radius:6px;overflow:hidden}
+  .prog-bar{height:100%;border-radius:6px;transition:width .4s ease}
+
+  /* ── INFO BOX ── */
+  .info-box{background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.18);border-radius:var(--rs);padding:11px 15px;font-size:.81em;color:#a5f3fc;margin-bottom:14px;line-height:1.6}
+  .info-box code{background:rgba(0,0,0,.25);padding:1px 5px;border-radius:4px}
+
+  /* ── DROP ZONE ── */
+  .drop-zone{border:2px dashed var(--bdr2);border-radius:var(--r);padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;color:var(--muted)}
+  .drop-zone:hover,.drop-zone.over{border-color:var(--primary);background:rgba(99,102,241,.05)}
+  .dz-icon{font-size:2.2em;margin-bottom:8px}
+  .drop-zone p{font-weight:600;font-size:.88em;color:var(--txt)}
+
+  /* ── EMPTY ── */
+  .empty{text-align:center;padding:28px 14px;color:var(--muted)}
+  .e-icon{font-size:2.2em;display:block;margin-bottom:9px}
+  .empty p{font-size:.86em}
+
+  /* ── HISTORY ── */
+  .hist-entry{margin-bottom:10px;border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}
+  .hist-bar{padding:11px 16px;background:var(--surf2);display:flex;align-items:center;justify-content:space-between;cursor:pointer;font-size:.84em;font-weight:600;color:var(--txt);transition:background .14s}
+  .hist-bar:hover{background:var(--surf3)}
+  .hist-body{display:none;padding:14px;background:var(--surf)}
+  .hist-body.open{display:block}
+
+  /* ── PREVIEW ── */
+  .prev-new{color:#34d399;font-weight:600} .prev-dup{color:#fbbf24;font-weight:600}
+
+  /* ── TOAST ── */
+  .toast{display:none;position:fixed;bottom:22px;right:22px;z-index:9999;padding:11px 18px;border-radius:11px;font-size:.86em;font-weight:600;animation:toastIn .28s ease;max-width:310px;box-shadow:var(--shadow)}
+  @keyframes toastIn{from{transform:translateY(18px);opacity:0}to{transform:none;opacity:1}}
+  .toast.success{background:rgba(16,185,129,.92);color:#fff}
+  .toast.error{background:rgba(239,68,68,.92);color:#fff}
+  .toast.info{background:rgba(6,182,212,.92);color:#fff}
+  .toast.warn{background:rgba(245,158,11,.92);color:#0f172a}
+
+  /* ── MODAL ── */
+  .modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+  .modal-ov.open{display:flex}
+  .modal-box{background:var(--surf);border:1px solid var(--bdr2);border-radius:20px;width:100%;max-width:440px;margin:16px;box-shadow:var(--shadow);animation:modalIn .22s ease}
+  @keyframes modalIn{from{transform:scale(.95) translateY(8px);opacity:0}to{transform:none;opacity:1}}
+  .modal-hdr{padding:18px 22px 0;font-family:'Outfit',sans-serif;font-size:1.1em;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:space-between}
+  .modal-close{cursor:pointer;color:var(--muted);font-size:1.15em;transition:color .14s}
+  .modal-close:hover{color:#fff}
+  .modal-body{padding:18px 22px 22px}
+
+  /* ── STUDENT VIEW ── */
+  .my-room-card{background:var(--surf);border:1px solid var(--bdr);border-radius:20px;padding:26px 28px;margin-bottom:18px;position:relative;overflow:hidden}
+  .my-room-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
+  .my-room-card.girls::before{background:linear-gradient(90deg,var(--girls),var(--girls2))}
+  .my-room-card.boys::before{background:linear-gradient(90deg,var(--boys),var(--boys2))}
+  .mrc-label{font-size:.72em;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:7px}
+  .mrc-name{font-family:'Outfit',sans-serif;font-size:1.9em;font-weight:800;color:#fff;margin-bottom:8px}
+  .mrc-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-top:16px}
+  .meta-tile{background:var(--surf3);border:1px solid var(--bdr);border-radius:10px;padding:12px 14px}
+  .mt-lbl{font-size:.7em;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
+  .mt-val{font-size:1em;font-weight:700;color:#fff}
+  .roommates-wrap{background:var(--surf);border:1px solid var(--bdr);border-radius:16px;padding:20px 22px;margin-bottom:16px}
+  .rm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:9px;margin-top:12px}
+  .rm-chip{display:flex;align-items:center;gap:9px;background:var(--surf3);border:1px solid var(--bdr);border-radius:10px;padding:9px 13px}
+  .rm-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+  .girls .rm-av{background:rgba(244,63,94,.2)} .boys .rm-av{background:rgba(59,130,246,.2)}
+  .rm-name{font-size:.81em;font-weight:600;color:var(--txt)}
+
+  @media(max-width:600px){
+    .topbar-right .btn{display:none}
+    .stats-grid{grid-template-columns:repeat(2,1fr)}
+    .form-row{flex-direction:column}
+  }
+  </style>
 </head>
 <body>
 
-<!-- ════════ LOGIN ════════ -->
-<div id="loginScreen">
+<!-- ══════════════ LOGIN PAGE ══════════════ -->
+<div id="loginPage">
   <div class="login-wrap">
-    <span class="login-logo">🏠</span>
-    <h1>Don Bosco Dormitory<br>Students Lists</h1>
-    <p class="sub">Skill Mission — Student Dormitory System</p>
-    <div class="inp-wrap"><span class="ico">👤</span>
-      <input id="lUser" type="text" placeholder="Username" autocomplete="username"
-        onkeydown="if(event.key==='Enter')document.getElementById('lPass').focus()">
-    </div>
-    <div class="inp-wrap"><span class="ico">🔒</span>
-      <input id="lPass" type="password" placeholder="Password"
-        onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <button class="login-btn" onclick="doLogin()">🚀 Sign In</button>
-    <div id="lErr" class="login-err">❌ Invalid username or password</div>
-    <div class="cred-grid">
-      <div class="cred-btn" onclick="fillLogin('admin','admin123')">
-        <div class="role">👑 Admin</div>
-        <div class="row"><span class="lbl">User</span><span class="val">admin</span></div>
-        <div class="row"><span class="lbl">Pass</span><span class="val">admin123</span></div>
+    <div class="login-header">
+      <div class="login-logo">
+        <div class="login-logo-icon">🏠</div>
+        <div class="login-logo-text">
+          <h1>Don Bosco Hostel</h1>
+          <p>Dormitory Management System</p>
+        </div>
       </div>
-      <div class="cred-btn" onclick="fillLogin('staff','staff123')">
-        <div class="role">🧑‍💼 Staff</div>
-        <div class="row"><span class="lbl">User</span><span class="val">staff</span></div>
-        <div class="row"><span class="lbl">Pass</span><span class="val">staff123</span></div>
+      <p class="login-sub">Select your role to continue</p>
+    </div>
+
+    <div class="login-grid">
+      <!-- Admin -->
+      <div class="login-card admin">
+        <div class="lc-icon">🛡️</div>
+        <div class="lc-title">Admin Login</div>
+        <div class="lc-desc">Full access to manage rooms, residents, assignments and rotation settings.</div>
+        <div class="fg"><label>Username</label><input type="text" id="aUser" value="admin" autocomplete="username"></div>
+        <div class="fg"><label>Password</label><input type="password" id="aPass" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')loginAdmin()"></div>
+        <button class="btn-login" id="aBtn" onclick="loginAdmin()">Login as Admin</button>
+        <div class="err-msg" id="aErr"></div>
+        <div class="lc-badges">
+          <span class="lc-badge">📊 Dashboard</span>
+          <span class="lc-badge">➕ Add Members</span>
+          <span class="lc-badge">🔄 Rotations</span>
+        </div>
+      </div>
+
+      <!-- Student -->
+      <div class="login-card student">
+        <div class="lc-icon">🎓</div>
+        <div class="lc-title">Student Login</div>
+        <div class="lc-desc">View your room assignment and the full dormitory list for the current period.</div>
+        <div class="fg"><label>Your Name or ID</label><input type="text" id="sName" placeholder="e.g. Priyanka or STU-001" onkeydown="if(event.key==='Enter')loginStudent()"></div>
+        <button class="btn-login" id="sBtn" onclick="loginStudent()">View My Room</button>
+        <div class="err-msg" id="sErr"></div>
+        <div class="lc-badges">
+          <span class="lc-badge">🛏️ My Room</span>
+          <span class="lc-badge">👥 Dorm List</span>
+          <span class="lc-badge">📅 Period</span>
+        </div>
       </div>
     </div>
-    <p class="login-hint">💡 Click a card to auto-fill</p>
+    <div class="login-footer">© 2026 Don Bosco Skill Mission · Dormitory Management System</div>
   </div>
 </div>
 
-<!-- ════════ APP ════════ -->
-<div id="appScreen">
-<div class="app">
-
-<!-- SIDEBAR -->
-<aside class="sidebar">
-  <div class="sb-brand">
-    <span class="icon">🏠</span>
-    <h2>Don Bosco Dormitory Students Lists</h2>
-    <p>Skill Mission</p>
-  </div>
-  <div class="sb-user">
-    <div class="sb-avatar" id="avatarInitial">A</div>
-    <div><div class="sb-uname" id="sideUser">Admin</div>
-      <div class="sb-urole" id="sideRole">Administrator</div></div>
-  </div>
-  <nav class="sb-nav">
-    <div class="nav-item active" onclick="showPage('dashboard',this)">
-      <span class="ni">📊</span> Dashboard</div>
-    <div class="nav-item" onclick="showPage('assignments',this)">
-      <span class="ni">📋</span> Dormitory Lists</div>
-    <div class="nav-item" onclick="showPage('rooms',this)">
-      <span class="ni">🏢</span> Rooms</div>
-    <div class="nav-item" onclick="showPage('residents',this)">
-      <span class="ni">👥</span> Students</div>
-    <div class="nav-item" onclick="showPage('upload',this)">
-      <span class="ni">📂</span> Import List</div>
-    <div class="nav-item" onclick="showPage('history',this)">
-      <span class="ni">🕒</span> History</div>
-    <div class="nav-item" onclick="showPage('share',this)">
-      <span class="ni">🔗</span> Share & QR</div>
-    <div class="nav-item" onclick="showPage('settings',this)">
-      <span class="ni">⚙️</span> Settings</div>
-  </nav>
-  <div class="sb-footer">
-    <div class="rotation-box">
-      <strong>⏳ Next Rotation</strong>
-      <span class="days" id="sbDays">—</span>
-      <span id="sbNextDate" style="font-size:.72em;display:block;color:#90caf9">Not set</span>
-    </div>
-    <button class="sb-logout" onclick="doLogout()">🚪 Logout</button>
-  </div>
-</aside>
-
-<!-- MAIN -->
-<div class="main">
-  <div class="topbar" style="position:relative;">
-    <div class="topbar-title" id="topbarTitle">📊 Dashboard</div>
-    <div class="topbar-actions">
-      <button class="btn btn-warning btn-sm" onclick="rotateNow()">🔄 Rotate Now</button>
-      <button class="btn btn-success btn-sm" onclick="showPage('assignments',document.querySelector('.nav-item:nth-child(2)'))">📋 View Lists</button>
-      <button class="notif-btn" onclick="toggleNotif()">🔔
-        <span class="notif-badge" id="notifCount">0</span></button>
-    </div>
-    <div class="notif-panel" id="notifPanel">
-      <div class="np-head"><strong>🔔 Notifications</strong>
-        <button class="btn btn-ghost btn-xs" onclick="clearNotifs()">Clear</button></div>
-      <div class="notif-list" id="notifList"></div>
-    </div>
-  </div>
-
-  <div class="content">
-
-  <!-- DASHBOARD PAGE -->
-  <div class="page active" id="page-dashboard">
-    <div class="page-title">📊 Dashboard</div>
-    <div id="countdownBanner"></div>
-    <div class="stats-grid" id="statsGrid"></div>
-    <div class="dash-grid">
-      <div class="card"><div class="card-title">🏢 Room Occupancy</div><div id="dashOcc"></div></div>
-      <div class="card"><div class="card-title">📅 Rotation Info</div><div id="dashRot"></div></div>
-    </div>
-  </div>
-
-  <!-- ASSIGNMENTS PAGE -->
-  <div class="page" id="page-assignments">
-    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px;">
-      <div class="page-title" style="margin:0">📋 Dormitory Students Lists</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-primary btn-sm" onclick="autoAssign()">🚀 Auto-Assign All</button>
-        <button class="btn btn-warning btn-sm" onclick="rotateNow()">🔄 Rotate Now</button>
-        <button class="btn btn-info btn-sm" onclick="printAssign()">🖨️ Print</button>
-        <button class="btn btn-success btn-sm" onclick="downloadCSV()">📥 CSV</button>
+<!-- ══════════════ MAIN APP ══════════════ -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="tb-logo">🏠</div>
+      <div>
+        <div class="tb-title">Don Bosco Hostel</div>
+        <div class="tb-sub" id="tbSub">Admin Dashboard</div>
       </div>
     </div>
-    <div id="assignView"></div>
-  </div>
-
-  <!-- ROOMS PAGE -->
-  <div class="page" id="page-rooms">
-    <div class="page-title">🏢 Rooms Management</div>
-    <div class="card">
-      <div class="card-title">➕ Add New Room</div>
-      <div class="form-row">
-        <div class="fg"><label>Room Name</label><input id="rName" placeholder="e.g. Block A-101"></div>
-        <div class="fg" style="max-width:100px"><label>Capacity</label>
-          <input id="rCap" type="number" min="1" placeholder="12"></div>
-        <div class="fg" style="max-width:140px"><label>Gender Block</label>
-          <select id="rBlock"><option value="">General</option>
-            <option value="Girls">Girls</option><option value="Boys">Boys</option></select></div>
-        <div><button class="btn btn-primary" onclick="addRoom()">➕ Add Room</button></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">All Rooms <span id="roomsCount" style="font-size:.78em;color:#888;font-weight:400"></span></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>#</th><th>Room</th><th>Block</th><th>Capacity</th>
-          <th>Occupied</th><th>Free</th><th>Fill</th><th>Actions</th></tr></thead>
-        <tbody id="roomsTbody"></tbody>
-      </table></div>
+    <div class="topbar-right">
+      <span id="tbUser" style="font-size:.8em;color:var(--muted);font-weight:600"></span>
+      <button class="btn btn-girls btn-sm" id="btnAddMember" onclick="openModal('member')">➕ Add Member</button>
+      <button class="btn btn-boys btn-sm" id="btnAddRoom" onclick="openModal('room')">🏢 Add Room</button>
+      <button class="btn btn-logout" onclick="doLogout()">🚪 Logout</button>
     </div>
   </div>
 
-  <!-- STUDENTS PAGE -->
-  <div class="page" id="page-residents">
-    <div class="page-title">👥 Students</div>
-    <div class="card">
-      <div class="card-title">➕ Add Student</div>
-      <div class="form-row">
-        <div class="fg"><label>Full Name</label>
-          <input id="resName" placeholder="Student name" onkeydown="if(event.key==='Enter')addResident()"></div>
-        <div class="fg" style="max-width:140px"><label>Roll No / ID</label>
-          <input id="resId" placeholder="Optional"></div>
-        <div class="fg" style="max-width:130px"><label>Gender</label>
-          <select id="resGender"><option value="">—</option>
-            <option value="Girls">Female</option><option value="Boys">Male</option></select></div>
-        <div><button class="btn btn-primary" onclick="addResident()">➕ Add</button></div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title" style="flex-wrap:wrap;gap:8px;">
-        Students <span id="resCount2" style="font-size:.78em;color:#888;font-weight:400"></span>
-        <span style="margin-left:auto;display:flex;gap:6px;">
-          <select id="filterGender" onchange="renderResidentsTable()"
-            style="padding:5px 9px;border:1.5px solid #e0e0e0;border-radius:7px;font-size:.8em;">
-            <option value="">All</option><option value="Girls">Girls</option><option value="Boys">Boys</option>
-          </select>
-          <select id="filterRoom" onchange="renderResidentsTable()"
-            style="padding:5px 9px;border:1.5px solid #e0e0e0;border-radius:7px;font-size:.8em;">
-            <option value="">All Rooms</option></select>
-        </span>
-      </div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>#</th><th>Name</th><th>ID</th><th>Gender</th>
-          <th>Room</th><th>Joined</th><th>Actions</th></tr></thead>
-        <tbody id="resTbody"></tbody>
-      </table></div>
-    </div>
+  <div class="nav-tabs" id="navTabs">
+    <!-- filled by JS -->
   </div>
 
-  <!-- UPLOAD PAGE -->
-  <div class="page" id="page-upload">
-    <div class="page-title">📂 Import Student List</div>
-    <div class="info-box">Upload a <strong>.csv</strong> or <strong>.txt</strong> file, or paste names below.
-      Format: <code>Name</code> or <code>Name, ID</code> — one per line.</div>
-    <div class="card">
-      <div class="card-title">⚙️ Options</div>
-      <div class="form-row">
-        <div class="fg" style="max-width:180px"><label>Gender of list</label>
-          <select id="impBlock"><option value="">Auto</option>
-            <option value="Girls">Girls</option><option value="Boys">Boys</option></select></div>
-      </div>
-    </div>
-    <div class="card"><div class="card-title">📁 Upload File</div>
-      <div class="drop-zone" id="dropZone"
-        onclick="document.getElementById('fileInput').click()"
-        ondragover="event.preventDefault();this.classList.add('over')"
-        ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
-        <input type="file" id="fileInput" accept=".csv,.txt" style="display:none" onchange="handleFile(event)">
-        <div class="dz-icon">📁</div>
-        <p><strong>Click to browse</strong> or drag & drop</p>
-        <small style="color:#888">.csv or .txt — one name per line</small>
-      </div>
-    </div>
-    <div class="card"><div class="card-title">✏️ Paste Names</div>
-      <div class="fg" style="margin-bottom:12px">
-        <textarea id="pasteArea" rows="8" placeholder="John Smith&#10;Mary Jane, STU-001&#10;One name per line"></textarea>
-      </div>
-      <button class="btn btn-info" onclick="parsePaste()">🔍 Preview</button>
-    </div>
-    <div class="card" id="previewCard" style="display:none">
-      <div class="card-title">👁️ Preview <span id="previewCount" style="font-size:.78em;color:#888;font-weight:400"></span></div>
-      <div class="table-wrap"><table>
-        <thead><tr><th>#</th><th>Name</th><th>ID</th><th>Status</th></tr></thead>
-        <tbody id="previewBody"></tbody>
-      </table></div>
-      <div style="display:flex;gap:8px;margin-top:12px;">
-        <button class="btn btn-success" onclick="importNames()">✅ Import & Auto-Assign</button>
-        <button class="btn btn-ghost" onclick="clearPreview()">✖ Clear</button>
-      </div>
-    </div>
-  </div>
+  <div class="content-area">
 
-  <!-- HISTORY PAGE -->
-  <div class="page" id="page-history">
-    <div class="page-title">🕒 Rotation History</div>
-    <div class="card"><div id="historyView"></div></div>
-  </div>
+    <!-- ── DASHBOARD ── -->
+    <div class="page" id="page-dashboard">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="gender-row">
+        <div class="gender-big girls"><div class="gb-icon">👧</div><div><div class="gb-count" id="dashGirls">0</div><div class="gb-lbl">Girls Residents</div></div></div>
+        <div class="gender-big boys"> <div class="gb-icon">👦</div><div><div class="gb-count" id="dashBoys">0</div><div class="gb-lbl">Boys Residents</div></div></div>
+      </div>
+      <div class="dash-lower">
+        <div class="card"><div class="card-title">🏢 Room Occupancy</div><div id="dashOccupancy"></div></div>
+        <div class="card"><div class="card-title">📅 Rotation Status</div><div id="dashRotation"></div></div>
+      </div>
+    </div>
 
-  <!-- SHARE PAGE -->
-  <div class="page" id="page-share">
-    <div class="page-title">🔗 Share & QR Code</div>
-    <div class="card">
-      <div class="card-title">📱 QR Code</div>
-      <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
-        <div style="flex:1;min-width:200px;">
-          <p style="font-size:.85em;color:#555;margin-bottom:14px;">
-            Generate a QR — anyone who scans it sees the full dormitory list.</p>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-            <button class="btn btn-primary" onclick="generateViewerQR()">📱 Generate QR</button>
-            <button class="btn btn-success" onclick="downloadViewerHTML()">📥 Download Viewer</button>
-            <button class="btn btn-info btn-sm" onclick="printQRCode()">🖨️ Print QR</button>
+    <!-- ── ROOMS ── -->
+    <div class="page" id="page-rooms">
+      <div class="card">
+        <div class="card-title">➕ Add New Room</div>
+        <div class="form-row">
+          <div class="fg"><label>Room Name</label><input id="dormName" placeholder="e.g. Mamma Margaret 101"></div>
+          <div class="fg" style="max-width:110px"><label>Capacity</label><input id="dormCap" type="number" min="1" placeholder="12"></div>
+          <div class="fg" style="max-width:155px"><label>Gender Block</label>
+            <select id="dormBlock"><option value="">General</option><option value="Girls">👧 Girls</option><option value="Boys">👦 Boys</option></select>
           </div>
-          <div id="qrStatus" style="display:none;font-size:.83em;padding:10px 13px;
-            border-radius:8px;background:#e8f5e9;border-left:3px solid #2E7D32;line-height:1.6;"></div>
-        </div>
-        <div id="qrBox" style="background:#fff;border:2px solid #e0e0e0;border-radius:14px;
-          padding:16px;text-align:center;min-width:250px;box-shadow:var(--shadow);">
-          <div style="color:#ccc;padding:40px 20px;font-size:.85em;">
-            <div style="font-size:2.5em">📱</div>Click Generate QR</div>
+          <div style="padding-bottom:1px"><button class="btn btn-primary" onclick="addRoom()">➕ Add Room</button></div>
         </div>
       </div>
-    </div>
-    <div class="card" id="shareLinkCard" style="display:none;">
-      <div class="card-title">🔗 Shareable Link</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <input id="shareLinkInput" readonly style="flex:1;padding:9px 13px;border:2px solid #e0e0e0;
-          border-radius:9px;font-size:.82em;min-width:200px;">
-        <button class="btn btn-primary btn-sm" onclick="copyLink()">📋 Copy</button>
-        <button class="btn btn-success btn-sm" onclick="openLink()">🌐 Open</button>
+      <!-- Girls rooms -->
+      <div class="gender-section girls-section">
+        <div class="gender-hdr girls"><span>👧 Girls Rooms</span><span class="gh-meta" id="gRoomCount">0 rooms</span></div>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>Room Name</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Fill</th><th>Actions</th></tr></thead><tbody id="girlsRoomTbody"></tbody></table></div>
+      </div>
+      <!-- Boys rooms -->
+      <div class="gender-section boys-section">
+        <div class="gender-hdr boys"><span>👦 Boys Rooms</span><span class="gh-meta" id="bRoomCount">0 rooms</span></div>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>Room Name</th><th>Capacity</th><th>Occupied</th><th>Available</th><th>Fill</th><th>Actions</th></tr></thead><tbody id="boysRoomTbody"></tbody></table></div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">📤 Share Options</div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-success" onclick="shareWhatsApp()">💬 WhatsApp</button>
-        <button class="btn btn-info" onclick="shareEmail()">📧 Email</button>
-        <button class="btn btn-primary" onclick="copyShareLink()">🔗 Copy Link</button>
-        <button class="btn btn-warning" onclick="shareNative()">📤 Share</button>
-      </div>
-    </div>
-  </div>
 
-  <!-- SETTINGS PAGE -->
-  <div class="page" id="page-settings">
-    <div class="page-title">⚙️ Settings</div>
-    <div class="card">
-      <div class="card-title">📅 Rotation Settings</div>
-      <div class="form-row" style="margin-bottom:12px;">
-        <div class="fg" style="max-width:200px"><label>Interval (days)</label>
-          <input id="rotInt" type="number" min="1" value="15"></div>
-        <div><button class="btn btn-primary" onclick="saveSettings()">💾 Save</button></div>
+    <!-- ── RESIDENTS ── -->
+    <div class="page" id="page-residents">
+      <div class="card">
+        <div class="card-title">➕ Add New Member</div>
+        <div class="form-row">
+          <div class="fg"><label>Full Name</label><input id="resName" placeholder="Student full name" onkeydown="if(event.key==='Enter')addResident()"></div>
+          <div class="fg" style="max-width:155px"><label>ID / Roll No.</label><input id="resId" placeholder="STU-001"></div>
+          <div class="fg" style="max-width:145px"><label>Gender</label>
+            <select id="resBlock"><option value="">— Select —</option><option value="Girls">👧 Female</option><option value="Boys">👦 Male</option></select>
+          </div>
+          <div style="padding-bottom:1px"><button class="btn btn-primary" onclick="addResident()">➕ Add Member</button></div>
+        </div>
       </div>
-      <div class="info-box" style="margin-bottom:0">
-        Auto-rotation runs every hour. Students rotate within their gender block —
-        girls stay in girls' rooms, boys in boys' rooms.
+      <div class="filter-bar">
+        <span style="font-size:.78em;font-weight:600;color:var(--muted)">Filter Room:</span>
+        <select id="filterDorm" class="filter-select" onchange="renderResidents()"><option value="">All Rooms</option></select>
+      </div>
+      <!-- Girls residents -->
+      <div class="gender-section girls-section">
+        <div class="gender-hdr girls"><span>👧 Girls Residents</span><span class="gh-meta" id="gResCount">0</span></div>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>ID</th><th>Room</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="girlsResTbody"></tbody></table></div>
+      </div>
+      <!-- Boys residents -->
+      <div class="gender-section boys-section">
+        <div class="gender-hdr boys"><span>👦 Boys Residents</span><span class="gh-meta" id="bResCount">0</span></div>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>ID</th><th>Room</th><th>Joined</th><th>Actions</th></tr></thead><tbody id="boysResTbody"></tbody></table></div>
       </div>
     </div>
-    <div class="card">
-      <div class="card-title">🔄 Reset Data</div>
-      <p style="font-size:.84em;color:#555;margin-bottom:12px;">
-        Reload the default 95-student list with all rooms fully assigned.</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button class="btn btn-success" onclick="resetToDefaultData()">🔄 Reset to 95 Students</button>
-        <button class="btn btn-danger" onclick="clearAllData()">🗑️ Clear All Data</button>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">👤 Manage Accounts</div>
-      <div class="form-row" style="margin-bottom:12px;">
-        <div class="fg"><label>Username</label><input id="aUser" placeholder="Username"></div>
-        <div class="fg"><label>Password</label><input id="aPass" type="password" placeholder="Password"></div>
-        <div class="fg" style="max-width:120px"><label>Role</label>
-          <select id="aRole"><option value="admin">Admin</option><option value="staff">Staff</option></select></div>
-        <div><button class="btn btn-success" onclick="addAccount()">➕ Add</button></div>
-      </div>
-      <div id="accountsList"></div>
-    </div>
-  </div>
 
-  </div><!-- /content -->
-</div><!-- /main -->
+    <!-- ── ASSIGNMENTS ── -->
+    <div class="page" id="page-assignments">
+      <div class="action-bar" id="assignActions">
+        <button class="btn btn-primary" onclick="autoAssign()">🚀 Auto-Assign All</button>
+        <button class="btn btn-warn" onclick="rotateNow()">🔄 Rotate Now</button>
+      </div>
+      <div id="assignView"></div>
+    </div>
+
+    <!-- ── IMPORT ── -->
+    <div class="page" id="page-import">
+      <div class="info-box">
+        <strong>Bulk Import:</strong> Paste names (one per line) or upload a <strong>.csv / .txt</strong>.<br>
+        Format: <code>Name</code> or <code>Name, ID</code>. Duplicates are skipped automatically.
+      </div>
+      <div class="card">
+        <div class="card-title">⚙️ Import Options</div>
+        <div class="form-row">
+          <div class="fg" style="max-width:200px"><label>Gender of this list</label>
+            <select id="impBlock"><option value="">Auto / General</option><option value="Girls">👧 Girls</option><option value="Boys">👦 Boys</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📁 Upload File</div>
+        <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInp').click()"
+          ondragover="event.preventDefault();this.classList.add('over')"
+          ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
+          <input type="file" id="fileInp" accept=".csv,.txt" style="display:none" onchange="handleFile(event)">
+          <div class="dz-icon">📁</div>
+          <p><strong>Click to browse</strong> or drag &amp; drop</p>
+          <small style="display:block;margin-top:5px;font-size:.78em">.csv or .txt — one name per line</small>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">✏️ Paste Names</div>
+        <div class="fg" style="margin-bottom:12px"><textarea id="pasteArea" placeholder="Priyanka&#10;Darathi, STU-002&#10;Aihun Ryngkhlem"></textarea></div>
+        <button class="btn btn-info" onclick="previewNames()">🔍 Preview</button>
+      </div>
+      <div class="card" id="previewCard" style="display:none">
+        <div class="card-title">👁️ Preview <span class="cnt" id="prevCount">0</span></div>
+        <div class="table-wrap"><table><thead><tr><th>#</th><th>Name</th><th>ID</th><th>Status</th></tr></thead><tbody id="prevBody"></tbody></table></div>
+        <div style="display:flex;gap:9px;margin-top:12px;flex-wrap:wrap">
+          <button class="btn btn-success" onclick="importNames()">✅ Import &amp; Auto-Assign</button>
+          <button class="btn btn-ghost" onclick="clearPreview()">✖ Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── HISTORY ── -->
+    <div class="page" id="page-history">
+      <div class="card"><div class="card-title">🕒 Rotation History</div><div id="histView"></div></div>
+    </div>
+
+    <!-- ── SETTINGS ── -->
+    <div class="page" id="page-settings">
+      <div class="card">
+        <div class="card-title">📅 Rotation Settings</div>
+        <div class="form-row" style="margin-bottom:12px">
+          <div class="fg" style="max-width:210px"><label>Rotation interval (days)</label><input id="rotIntv" type="number" min="1" value="15"></div>
+          <div style="padding-bottom:1px"><button class="btn btn-primary" onclick="saveSettings()">💾 Save</button></div>
+        </div>
+        <div class="info-box" style="margin-bottom:0">
+          The student list changes automatically every <strong id="intvLabel">15</strong> days.
+          The system checks every time the page is opened and will trigger rotation when due.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔐 Change Admin Password</div>
+        <div class="form-row">
+          <div class="fg" style="max-width:250px"><label>New Password</label><input type="password" id="newPass" placeholder="Min 4 characters"></div>
+          <div style="padding-bottom:1px"><button class="btn btn-primary" onclick="changePass()">🔐 Update</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🗑️ Danger Zone</div>
+        <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All Data</button>
+        <p style="margin-top:9px;font-size:.8em;color:var(--muted)">Deletes all rooms, residents, assignments and history. Cannot be undone.</p>
+      </div>
+    </div>
+
+    <!-- ── MY ROOM (student) ── -->
+    <div class="page" id="page-myroom">
+      <div id="myRoomView"></div>
+    </div>
+
+  </div><!-- /content-area -->
 </div><!-- /app -->
-</div><!-- /appScreen -->
-
-<!-- MODAL -->
-<div class="modal-bg" id="editModal">
-  <div class="modal">
-    <h3 id="modalTitle">Edit</h3>
-    <div id="modalBody"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary btn-sm" onclick="saveModal()">Save</button>
-    </div>
-  </div>
-</div>
 
 <div id="toast" class="toast"></div>
 
-<script>
-// ════ STORAGE ════
-const K='dbsl_v3',AK='dbsl_auth',SK='dbsl_session',NK='dbsl_notifs';
-const load=()=>{try{return JSON.parse(localStorage.getItem(K))||defState();}catch{return defState();}};
-const save=d=>localStorage.setItem(K,JSON.stringify(d));
-const defState=()=>({dormitories:[],residents:[],currentRotation:null,
-  lastRotationDate:null,nextRotationDate:null,rotationInterval:15,history:[],rotationCount:0});
-const loadAccounts=()=>{const r=localStorage.getItem(AK);if(r)return JSON.parse(r);
-  const d=[{username:'admin',password:'admin123',role:'admin'},{username:'staff',password:'staff123',role:'staff'}];
-  localStorage.setItem(AK,JSON.stringify(d));return d;};
-const saveAccounts=l=>localStorage.setItem(AK,JSON.stringify(l));
-const loadNotifs=()=>{try{return JSON.parse(localStorage.getItem(NK))||[];}catch{return[];}};
-const saveNotifs=n=>localStorage.setItem(NK,JSON.stringify(n));
-function addNotif(icon,text){const n=loadNotifs();n.unshift({icon,text,time:new Date().toISOString()});
-  if(n.length>40)n.pop();saveNotifs(n);renderNotifBadge();}
-
-// ════ HELPERS ════
-const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const escQ=s=>String(s).replace(/'/g,"\\'");
-const fmtD=iso=>new Date(iso).toLocaleDateString();
-const fmtDT=iso=>new Date(iso).toLocaleString();
-const addDays=(iso,n)=>{const d=new Date(iso);d.setDate(d.getDate()+n);return d.toISOString();};
-const daysLeft=iso=>Math.ceil((new Date(iso)-new Date())/86400000);
-const dateStr=()=>new Date().toISOString().slice(0,10);
-const timeAgo=iso=>{const s=Math.floor((Date.now()-new Date(iso))/1000);
-  if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';
-  if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';};
-function toast(msg,type='success'){const el=document.getElementById('toast');
-  el.textContent=msg;el.className='toast '+type;el.style.display='block';
-  clearTimeout(el._t);el._t=setTimeout(()=>el.style.display='none',3800);}
-
-// ════ AUTH ════
-function doLogin(){
-  const u=document.getElementById('lUser').value.trim();
-  const p=document.getElementById('lPass').value;
-  const acc=loadAccounts().find(a=>a.username===u&&a.password===p);
-  if(!acc){document.getElementById('lErr').style.display='block';
-    document.getElementById('lPass').value='';return;}
-  sessionStorage.setItem(SK,JSON.stringify({username:acc.username,role:acc.role}));
-  document.getElementById('lErr').style.display='none';
-  launchApp(acc);
-}
-function fillLogin(u,p){document.getElementById('lUser').value=u;
-  document.getElementById('lPass').value=p;
-  document.getElementById('lErr').style.display='none';}
-function doLogout(){sessionStorage.removeItem(SK);
-  document.getElementById('appScreen').style.display='none';
-  document.getElementById('loginScreen').style.display='flex';
-  document.getElementById('lUser').value='';document.getElementById('lPass').value='';}
-function launchApp(u){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('appScreen').style.display='block';
-  document.getElementById('sideUser').textContent=u.username;
-  document.getElementById('sideRole').textContent=u.role==='admin'?'Administrator':'Staff';
-  document.getElementById('avatarInitial').textContent=u.username[0].toUpperCase();
-  checkAutoRotation();renderAll();}
-function checkSession(){const s=sessionStorage.getItem(SK);
-  if(!s)return;try{launchApp(JSON.parse(s));}catch(e){}}
-
-// ════ NAVIGATION ════
-const pageTitles={dashboard:'📊 Dashboard',assignments:'📋 Dormitory Students Lists',
-  rooms:'🏢 Rooms',residents:'👥 Students',upload:'📂 Import List',
-  history:'🕒 Rotation History',share:'🔗 Share & QR',settings:'⚙️ Settings'};
-function showPage(name,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  if(el)el.classList.add('active');
-  document.getElementById('topbarTitle').textContent=pageTitles[name]||name;
-  if(name==='assignments')renderAssignments();
-  if(name==='history')renderHistory();
-  if(name==='dashboard')renderDashboard();
-  if(name==='rooms')renderRoomsTable();
-  if(name==='residents')renderResidentsTable();
-  if(name==='settings'){renderAccounts();document.getElementById('rotInt').value=load().rotationInterval||15;}
-  if(name==='share')setTimeout(generateViewerQR,200);
-}
-function renderAll(){renderDashboard();renderRoomsTable();renderResidentsTable();renderAssignments();updateRoomFilter();}
-
-// ════ NOTIFICATIONS ════
-function renderNotifBadge(){const n=loadNotifs();
-  document.getElementById('notifCount').textContent=n.length>9?'9+':n.length;}
-function toggleNotif(){const p=document.getElementById('notifPanel');
-  p.classList.toggle('open');if(p.classList.contains('open'))renderNotifPanel();}
-function renderNotifPanel(){const n=loadNotifs(),el=document.getElementById('notifList');
-  if(!n.length){el.innerHTML='<div class="no-notif">No notifications</div>';return;}
-  el.innerHTML=n.map(x=>`<div class="notif-item"><span class="ni-icon">${x.icon}</span>
-    <div><div class="ni-text">${x.text}</div><div class="ni-time">${timeAgo(x.time)}</div></div></div>`).join('');}
-function clearNotifs(){saveNotifs([]);renderNotifBadge();
-  document.getElementById('notifList').innerHTML='<div class="no-notif">No notifications</div>';}
-document.addEventListener('click',e=>{
-  if(!e.target.closest('.notif-btn')&&!e.target.closest('.notif-panel'))
-    document.getElementById('notifPanel').classList.remove('open');});
-</script>
+<!-- Modal -->
+<div class="modal-ov" id="modalOv" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-hdr" id="modalHdr"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
 
 <script>
-// ════ PRELOAD — EXACT 95 STUDENTS FROM SCREENSHOT ════
-function preloadData(){
-  const existing=load();
-  const STUDENT_COUNT=95;
-  if(existing.residents.length===STUDENT_COUNT&&existing.currentRotation)return;
+/* ══════════════════════════════════════════════
+   DON BOSCO HOSTEL — All-in-one app.js
+   Data stored in localStorage
+   ══════════════════════════════════════════════ */
 
-  const rooms=[
-    {name:'Mamma Margaret Mansion:101',capacity:12,block:'Girls'},
-    {name:'Mamma Margaret Mansion:104',capacity:10,block:'Girls'},
-    {name:'Rayanna:306',               capacity:14,block:'Girls'},
-    {name:'Velunaachi:307',            capacity:14,block:'Girls'},
-    {name:'Thiruvalluvar:304',         capacity:10,block:'Boys'},
-    {name:'Sitarama:305',              capacity:10,block:'Boys'},
-    {name:'Krishnadevaraya:302',       capacity:14,block:'Boys'},
-    {name:'Kuriakose:303',             capacity:14,block:'Boys'},
-    {name:'215',                       capacity:13,block:'Boys'}
-  ];
+// ── STORAGE ──────────────────────────────────────────────────────
+const DB_KEY   = 'dbHostel_data';
+const HIST_KEY = 'dbHostel_history';
+const AUTH_KEY = 'dbHostel_auth';
+const SESS_KEY = 'dbHostel_session';
 
-  const byRoom={
-    'Mamma Margaret Mansion:101':[
-      'Priyanka','Darathi','Aihun Ryngkhlem','Merlin',
-      'Aiphrinda Nongrum','Emideimaya Dkhar','Mahadharshini',
-      'Daphishisha Lyngdoh','Baiamomlang lamare','Banasha kurkalang',
-      'Peacefull lyngdoh','Judith susngi'
-    ],
-    'Mamma Margaret Mansion:104':[
-      'Rakshana','Jancy','Ibadawanshwa Shylla','Sabitha Nayaki',
-      'Ibalahun Wahlang','Jacinta Susngi','Arockia Jenifer',
-      'Kasarika Lynthong','Lapynbiang Khyriem','Keerthana'
-    ],
-    'Rayanna:306':[
-      'Amala Rakkini','Afrin Banu','Pysnsngewbha Shylla','Monaliza Dkhar Sawian',
-      'Roslin','Medarita Iawram','Ramyowon Siro','Amalin Mary',
-      'Rinmichan Siro','Jamila','Risolda Nongrum','Sathya Jothi',
-      'Sincerity Shabong','Saini Chyrmang'
-    ],
-    'Velunaachi:307':[
-      'Serene','Swathi','Jenifer Jones','Skillfully Rynghang',
-      'Kaviyadharshini R','Stacy Reamei','Vanesa Mukhim','Viccuna L. Kadete'
-    ],
-    'Thiruvalluvar:304':[
-      'Rohith','Benadict','Robertstar Kharkongor','Balaji',
-      'Perfectson Marthong','Joel','Montfort','Syed Farhan',
-      'Syed Sameeruddin','Ribok Nongspung'
-    ],
-    'Sitarama:305':[
-      'Sam','Ram Charan','Don Bosco','Ryngkatborlang Sohtun',
-      'Tejas MA','Edwin Amburose','Subith','Praveen Samuel','Visazoto Savi'
-    ],
-    'Krishnadevaraya:302':[
-      'Santhosh','Pavankalyan','Carmellus Lakashiang','Veeramani',
-      'Allwinson Lyngdoh','Diago Armando Lamin'
-    ],
-    'Kuriakose:303':[
-      'Tamilmani','Iniyan C','Dijoy Marak','I. Ignatius Kadete',
-      'Arish Paston C','Michealraj','Gothandam','Arun Kumar',
-      'Hendry Thomas','Surendhiran','Hameisha Tyngkan',
-      'Rohith T','Vimal arul francis','Arun Vineeth'
-    ],
-    '215':[
-      'Haarris Augusta','Kingsly','Jeffery','Windston',
-      'Asrar Ahamed','Lanka','Ajay Kumar','Vishwa S',
-      'Jeron','Sonu Joseph S','Felix Raja','Madhavan'
-    ]
-  };
+function dbRead()    { try { return JSON.parse(localStorage.getItem(DB_KEY))   || defaultData(); }  catch { return defaultData(); } }
+function dbWrite(d)  { localStorage.setItem(DB_KEY, JSON.stringify(d)); }
+function histRead()  { try { return JSON.parse(localStorage.getItem(HIST_KEY)) || { history:[] }; } catch { return { history:[] }; } }
+function histWrite(h){ localStorage.setItem(HIST_KEY, JSON.stringify(h)); }
+function authRead()  { try { return JSON.parse(localStorage.getItem(AUTH_KEY)) || defaultAuth(); } catch { return defaultAuth(); } }
+function authWrite(a){ localStorage.setItem(AUTH_KEY, JSON.stringify(a)); }
+function sessRead()  { try { return JSON.parse(localStorage.getItem(SESS_KEY)) || null; }          catch { return null; } }
+function sessWrite(s){ localStorage.setItem(SESS_KEY, JSON.stringify(s)); }
+function sessClear() { localStorage.removeItem(SESS_KEY); }
 
-  const d=defState();
-  d.dormitories=rooms;
-  d.rotationInterval=15;
-  const now=new Date().toISOString();
-  const rotation=[];
+function defaultData() {
+  return { dormitories:[], residents:[], currentRotation:null,
+           lastRotationDate:null, nextRotationDate:null,
+           rotationInterval:15, rotationCount:0 };
+}
+function defaultAuth() { return { username:'admin', password:'admin123' }; }
 
-  rooms.forEach(room=>{
-    const names=byRoom[room.name]||[];
-    const entry={name:room.name,capacity:room.capacity,block:room.block,residents:[]};
-    names.forEach(name=>{
-      d.residents.push({name,id:'',block:room.block,dormitory:room.name,joinedDate:now});
-      entry.residents.push(name);
-    });
-    rotation.push(entry);
-  });
+function addDays(iso, n) { const d = new Date(iso); d.setDate(d.getDate()+n); return d.toISOString(); }
 
-  d.currentRotation=rotation;
-  d.lastRotationDate=existing.lastRotationDate||now;
-  d.nextRotationDate=existing.nextRotationDate||addDays(now,15);
-  d.rotationCount=existing.rotationCount||1;
-  d.history=existing.history||[];
-  save(d);
-
-  const total=d.residents.length;
-  const girls=d.residents.filter(r=>r.block==='Girls').length;
-  const boys=d.residents.filter(r=>r.block==='Boys').length;
-  addNotif('🏠',`Don Bosco loaded: ${total} students (Girls:${girls} Boys:${boys}) — 9 rooms — next rotation ${fmtD(d.nextRotationDate)}`);
+// ── AUTH / LOGIN ──────────────────────────────────────────────────
+function loginAdmin() {
+  const user = $v('aUser'), pass = $v('aPass');
+  if (!user || !pass) return showErr('aErr','Enter username and password');
+  const auth = authRead();
+  if (user === auth.username && pass === auth.password) {
+    sessWrite({ role:'admin', username:user });
+    hideErr('aErr');
+    startApp();
+  } else showErr('aErr','Invalid credentials');
 }
 
-function resetToDefaultData(){
-  if(!confirm('Reset to default 95-student data? Current data will be replaced.'))return;
-  const d=defState();save(d);preloadData();renderAll();
-  toast('✅ 95 students loaded!');
+function loginStudent() {
+  const name = $v('sName').trim();
+  if (!name) return showErr('sErr','Enter your name or ID');
+  const d = dbRead();
+  const res = d.residents.find(r =>
+    r.name.toLowerCase() === name.toLowerCase() ||
+    (r.id && r.id.toLowerCase() === name.toLowerCase())
+  );
+  if (!res) return showErr('sErr','Student not found. Ask admin to add you first.');
+  sessWrite({ role:'student', studentName: res.name });
+  hideErr('sErr');
+  startApp();
 }
-function clearAllData(){
-  if(!confirm('Delete ALL data? This cannot be undone.'))return;
-  save(defState());renderAll();addNotif('🗑️','All data cleared');toast('Cleared','info');}
-</script>
 
-<script>
-// ════ DASHBOARD ════
-function renderDashboard(){
-  const d=load();
-  const girls=d.residents.filter(r=>r.block==='Girls');
-  const boys=d.residents.filter(r=>r.block==='Boys');
-  const unassigned=d.residents.filter(r=>!r.dormitory);
-  const occupied=d.residents.filter(r=>r.dormitory).length;
-  const days=d.nextRotationDate?daysLeft(d.nextRotationDate):null;
+function doLogout() {
+  sessClear();
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('aPass').value='';
+  document.getElementById('sName').value='';
+}
 
-  // Countdown banner
-  let banner='';
-  if(days!==null){
-    const cls=days<=0?'cb-overdue':'';
-    const txt=days<=0?'⚠️ ROTATION OVERDUE!':days===0?'⏰ Rotation TODAY!':days+' days';
-    banner=`<div class="countdown-banner ${cls}">
-      <div class="cb-left">
-        <div class="cb-label">⏳ Next Rotation In</div>
-        <div class="days ${days<=0?'overdue':''}">${txt}</div>
-        <div class="cb-sub">Rotation #${d.rotationCount||1} · Every ${d.rotationInterval} days</div>
-      </div>
-      <div class="cb-right">
-        <div class="cb-date">📅 ${d.nextRotationDate?fmtD(d.nextRotationDate):'—'}</div>
-        <div class="cb-next">Last: ${d.lastRotationDate?fmtD(d.lastRotationDate):'Never'}</div>
-        <button class="btn btn-warning btn-sm" style="margin-top:8px" onclick="rotateNow()">🔄 Rotate Now</button>
-      </div>
-    </div>`;
+function showErr(id,msg){ const e=document.getElementById(id); e.textContent='⚠️ '+msg; e.style.display='block'; }
+function hideErr(id)    { document.getElementById(id).style.display='none'; }
+
+// ── ROTATION CHECK ────────────────────────────────────────────────
+function checkAutoRotation() {
+  const d = dbRead();
+  if (!d.nextRotationDate) return;
+  if (new Date() >= new Date(d.nextRotationDate)) {
+    performRotation(true);
+    toast('🔄 Room list auto-rotated (15-day cycle)!','info');
   }
-  document.getElementById('countdownBanner').innerHTML=banner;
+}
 
-  // Stats
-  document.getElementById('statsGrid').innerHTML=`
-    <div class="stat-card"><div class="stat-icon si-blue">🏢</div><div>
-      <div class="stat-val">${d.dormitories.length}</div><div class="stat-lbl">Total Rooms</div></div></div>
-    <div class="stat-card"><div class="stat-icon si-purple">👥</div><div>
-      <div class="stat-val">${d.residents.length}</div><div class="stat-lbl">Total Students</div></div></div>
-    <div class="stat-card"><div class="stat-icon si-pink">👧</div><div>
-      <div class="stat-val">${girls.length}</div><div class="stat-lbl">Girls</div></div></div>
-    <div class="stat-card"><div class="stat-icon si-blue">👦</div><div>
-      <div class="stat-val">${boys.length}</div><div class="stat-lbl">Boys</div></div></div>
-    <div class="stat-card"><div class="stat-icon si-green">✅</div><div>
-      <div class="stat-val">${occupied}</div><div class="stat-lbl">Assigned</div></div></div>
-    <div class="stat-card"><div class="stat-icon si-orange">⚠️</div><div>
-      <div class="stat-val">${unassigned.length}</div><div class="stat-lbl">Unassigned</div></div></div>`;
+function performRotation(auto=false) {
+  const d = dbRead();
+  if (!d.residents.length || !d.dormitories.length) return false;
+  if (d.currentRotation) {
+    const h = histRead();
+    h.history.unshift({ date: d.lastRotationDate||new Date().toISOString(), rotation: JSON.parse(JSON.stringify(d.currentRotation)), auto });
+    if (h.history.length>50) h.history=h.history.slice(0,50);
+    histWrite(h);
+  }
+  const names = d.dormitories.map(x=>x.name);
+  d.residents.forEach(r=>{
+    const ci = names.indexOf(r.dormitory);
+    r.dormitory = names[(ci+1)%names.length];
+  });
+  const dorms = d.dormitories.map(dm=>({...dm, residents:[]}));
+  d.residents.forEach(r=>{ const dm=dorms.find(x=>x.name===r.dormitory); if(dm)dm.residents.push(r.name); });
+  const now = new Date().toISOString();
+  d.currentRotation=dorms; d.lastRotationDate=now;
+  d.nextRotationDate=addDays(now,d.rotationInterval);
+  d.rotationCount=(d.rotationCount||0)+1;
+  dbWrite(d);
+  return true;
+}
+
+function buildRotation(residents, dormitories) {
+  const dorms = dormitories.map(dm=>({...dm, residents:[]}));
+  residents.forEach((r,i)=>{
+    let t = dorms.find(dm=>(dm.block||'').toLowerCase()===(r.block||'').toLowerCase() && dm.residents.length<dm.capacity);
+    if(!t) t=dorms.find(dm=>dm.residents.length<dm.capacity);
+    if(!t) t=dorms[i%dorms.length];
+    r.dormitory=t.name; t.residents.push(r.name);
+  });
+  return { residents, rotation:dorms };
+}
+
+// ── APP BOOT ──────────────────────────────────────────────────────
+let SESSION = null;
+let CURRENT_PAGE = '';
+
+const ADMIN_TABS = [
+  {id:'dashboard',label:'📊 Dashboard'},
+  {id:'rooms',label:'🏢 Rooms'},
+  {id:'residents',label:'👥 Residents'},
+  {id:'assignments',label:'📋 Assignments'},
+  {id:'import',label:'📂 Import'},
+  {id:'history',label:'🕒 History'},
+  {id:'settings',label:'⚙️ Settings'},
+];
+const STUDENT_TABS = [
+  {id:'myroom',label:'🛏️ My Room'},
+  {id:'assignments',label:'📋 Dorm List'},
+];
+
+function startApp() {
+  SESSION = sessRead();
+  checkAutoRotation();
+  document.getElementById('loginPage').style.display='none';
+  document.getElementById('app').style.display='flex';
+
+  if (SESSION.role==='admin') {
+    document.getElementById('tbSub').textContent='Admin Dashboard';
+    document.getElementById('tbUser').textContent='👤 '+SESSION.username;
+    document.getElementById('btnAddMember').style.display='';
+    document.getElementById('btnAddRoom').style.display='';
+    buildTabs(ADMIN_TABS);
+    showPage('dashboard');
+  } else {
+    document.getElementById('tbSub').textContent='Student Portal';
+    document.getElementById('tbUser').textContent='👤 '+SESSION.studentName;
+    document.getElementById('btnAddMember').style.display='none';
+    document.getElementById('btnAddRoom').style.display='none';
+    buildTabs(STUDENT_TABS);
+    // hide assign actions for students
+    document.getElementById('assignActions').style.display='none';
+    showPage('myroom');
+  }
+}
+
+function buildTabs(tabs) {
+  const nav = document.getElementById('navTabs');
+  nav.innerHTML = tabs.map(t=>
+    `<div class="nav-tab" id="tab-${t.id}" onclick="showPage('${t.id}')">${t.label}</div>`
+  ).join('');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  const pg = document.getElementById('page-'+name);
+  if(pg) pg.classList.add('active');
+  const tb = document.getElementById('tab-'+name);
+  if(tb) tb.classList.add('active');
+  CURRENT_PAGE = name;
+  renderPage(name);
+}
+
+function renderPage(name) {
+  switch(name) {
+    case 'dashboard':   renderDashboard();   break;
+    case 'rooms':       renderRooms();       break;
+    case 'residents':   renderResidents();   break;
+    case 'assignments': renderAssignments(); break;
+    case 'history':     renderHistory();     break;
+    case 'settings':    renderSettings();    break;
+    case 'myroom':      renderMyRoom();      break;
+  }
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────
+function renderDashboard() {
+  const d=dbRead();
+  const girls=d.residents.filter(r=>(r.block||'').toLowerCase().includes('girl'));
+  const boys=d.residents.filter(r=>(r.block||'').toLowerCase().includes('boy'));
+  const unassigned=d.residents.filter(r=>!r.dormitory);
+  document.getElementById('dashGirls').textContent=girls.length;
+  document.getElementById('dashBoys').textContent=boys.length;
+
+  $id('statsGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-icon si-pu">🏢</div><div><div class="stat-val">${d.dormitories.length}</div><div class="stat-lbl">Total Rooms</div></div></div>
+    <div class="stat-card"><div class="stat-icon si-bl">👥</div><div><div class="stat-val">${d.residents.length}</div><div class="stat-lbl">Total Residents</div></div></div>
+    <div class="stat-card"><div class="stat-icon si-gr">✅</div><div><div class="stat-val">${d.residents.length-unassigned.length}</div><div class="stat-lbl">Assigned</div></div></div>
+    <div class="stat-card"><div class="stat-icon si-or">⚠️</div><div><div class="stat-val">${unassigned.length}</div><div class="stat-lbl">Unassigned</div></div></div>
+    <div class="stat-card"><div class="stat-icon si-cy">🔄</div><div><div class="stat-val">${d.rotationCount||0}</div><div class="stat-lbl">Rotations Done</div></div></div>`;
 
   // Occupancy
-  const oEl=document.getElementById('dashOcc');
-  if(!d.dormitories.length){oEl.innerHTML='<div class="empty"><span class="ei">🏢</span><p>No rooms yet</p></div>';return;}
+  const oEl=$id('dashOccupancy');
+  if(!d.dormitories.length){oEl.innerHTML=empty('🏢','No rooms yet');return;}
   oEl.innerHTML=d.dormitories.map(dm=>{
     const rot=(d.currentRotation||[]).find(x=>x.name===dm.name);
     const cnt=rot?(rot.residents||[]).length:0;
-    const pct=Math.min(100,Math.round(cnt/dm.capacity*100));
-    const col=pct>=90?'#C62828':pct>=70?'#E65100':'#2E7D32';
-    const bCls=dm.block==='Girls'?'badge-girls':dm.block==='Boys'?'badge-boys':'badge-warn';
-    return `<div style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;font-size:.83em;margin-bottom:4px">
-        <span><strong>${esc(dm.name)}</strong> <span class="badge ${bCls}">${dm.block||'—'}</span></span>
-        <span style="font-weight:800;color:${col}">${cnt}/${dm.capacity}</span>
+    const pct=Math.round((cnt/dm.capacity)*100);
+    const col=pct>=90?'#ef4444':pct>=70?'#f59e0b':'#10b981';
+    const isG=(dm.block||'').toLowerCase().includes('girl');
+    const isB=(dm.block||'').toLowerCase().includes('boy');
+    const barGrad=isG?'linear-gradient(90deg,#f43f5e,#ec4899)':isB?'linear-gradient(90deg,#3b82f6,#6366f1)':'linear-gradient(90deg,#7c3aed,#6d28d9)';
+    return `<div style="margin-bottom:11px">
+      <div style="display:flex;justify-content:space-between;font-size:.81em;margin-bottom:4px">
+        <span><strong style="color:#fff">${esc(dm.name)}</strong> <span style="color:var(--muted);font-size:.85em">${dm.block?'('+dm.block+')':''}</span></span>
+        <span style="font-weight:700;color:${col}">${cnt}/${dm.capacity}</span>
       </div>
-      <div class="progress-bg"><div class="progress-bar" style="width:${pct}%;background:${col}"></div></div>
+      <div class="prog-bg"><div class="prog-bar" style="width:${pct}%;background:${barGrad}"></div></div>
     </div>`;
   }).join('');
 
   // Rotation info
-  document.getElementById('dashRot').innerHTML=`
-    <div style="margin-bottom:10px"><span style="font-size:.75em;color:#888;text-transform:uppercase;font-weight:700">Last Rotation</span>
-      <div style="font-weight:800;color:#1565C0">${d.lastRotationDate?fmtDT(d.lastRotationDate):'Never'}</div></div>
-    <div style="margin-bottom:10px"><span style="font-size:.75em;color:#888;text-transform:uppercase;font-weight:700">Next Rotation</span>
-      <div style="font-weight:800;color:#1565C0">${d.nextRotationDate?fmtDT(d.nextRotationDate):'Not scheduled'}</div></div>
-    <div style="margin-bottom:10px"><span style="font-size:.75em;color:#888;text-transform:uppercase;font-weight:700">Interval</span>
-      <div style="font-weight:800">${d.rotationInterval} days</div></div>
-    <div><span style="font-size:.75em;color:#888;text-transform:uppercase;font-weight:700">Rotations Done</span>
-      <div style="font-weight:800">${d.rotationCount||0}</div></div>`;
-
-  // Sidebar countdown
-  updateSidebar();
+  const days=d.nextRotationDate?daysLeft(d.nextRotationDate):null;
+  let periodBanner='';
+  if(d.lastRotationDate&&d.nextRotationDate){
+    periodBanner=`<div style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.2);border-radius:10px;padding:9px 13px;margin-bottom:12px;font-size:.81em">
+      <span style="color:#a5b4fc;font-weight:700">📅 Current Period:</span>
+      <span style="color:#fff;margin-left:6px">${fmtDate(d.lastRotationDate)} — ${fmtDate(d.nextRotationDate)}</span>
+    </div>`;
+  }
+  $id('dashRotation').innerHTML=`
+    ${periodBanner}
+    <div style="margin-bottom:9px"><span style="color:var(--muted);font-size:.72em;text-transform:uppercase;font-weight:700">Last Rotation</span>
+      <div style="font-weight:700;color:#a5b4fc">${d.lastRotationDate?fmtDateTime(d.lastRotationDate):'Never'}</div></div>
+    <div style="margin-bottom:9px"><span style="color:var(--muted);font-size:.72em;text-transform:uppercase;font-weight:700">Next Rotation</span>
+      <div style="font-weight:700;color:#a5b4fc">${d.nextRotationDate?fmtDateTime(d.nextRotationDate):'Not scheduled'}</div></div>
+    <div style="margin-bottom:12px"><span style="color:var(--muted);font-size:.72em;text-transform:uppercase;font-weight:700">Interval</span>
+      <div style="font-weight:700;color:#fff">${d.rotationInterval} days</div></div>
+    ${days!==null?`<div style="display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:20px;font-size:.81em;font-weight:700;background:${days<=0?'rgba(239,68,68,.14)':days<=3?'rgba(245,158,11,.14)':'rgba(16,185,129,.14)'};color:${days<=0?'#fca5a5':days<=3?'#fde68a':'#6ee7b7'};border:1px solid ${days<=0?'rgba(239,68,68,.3)':days<=3?'rgba(245,158,11,.3)':'rgba(16,185,129,.3)'}">
+      ${days<=0?'⚠️ Rotation overdue!':'⏳ '+days+' day'+(days!==1?'s':'')+' until next rotation'}
+    </div>`:''}`;
 }
 
-function updateSidebar(){
-  const d=load();
-  const cd=document.getElementById('sbDays');
-  const nd=document.getElementById('sbNextDate');
-  if(!d.nextRotationDate){cd.textContent='—';nd.textContent='Not set';return;}
-  const dl=daysLeft(d.nextRotationDate);
-  cd.textContent=dl<=0?'⚠️ Overdue':dl+(dl===1?' day':' days');
-  cd.className='days'+(dl<=0?' overdue':'');
-  nd.textContent=fmtD(d.nextRotationDate);
+// ── ROOMS ─────────────────────────────────────────────────────────
+function addRoom() {
+  const name=$v('dormName'), cap=$v('dormCap'), block=$v('dormBlock');
+  if(!name) return toast('Enter a room name','error');
+  if(!cap)  return toast('Enter capacity','error');
+  const d=dbRead();
+  if(d.dormitories.some(x=>x.name.toLowerCase()===name.toLowerCase())) return toast('Room already exists','error');
+  d.dormitories.push({name:name.trim(),capacity:parseInt(cap),block:block||''});
+  dbWrite(d);
+  $set('dormName',''); $set('dormCap',''); $set('dormBlock','');
+  toast('Room "'+name+'" added!');
+  renderRooms();
 }
-</script>
 
-<script>
-// ════ ASSIGNMENTS RENDER ════
-function renderAssignments(){
-  const d=load();const el=document.getElementById('assignView');
+function deleteRoom(name) {
+  if(!confirm('Delete room "'+name+'"? Residents will become unassigned.')) return;
+  const d=dbRead();
+  d.dormitories=d.dormitories.filter(x=>x.name!==name);
+  d.residents=d.residents.map(r=>{if(r.dormitory===name)r.dormitory=null;return r;});
+  if(d.currentRotation) d.currentRotation=d.currentRotation.filter(x=>x.name!==name);
+  dbWrite(d); toast('Room deleted','info'); renderRooms();
+}
+
+function renderRooms() {
+  const d=dbRead();
+  const girls=d.dormitories.filter(dm=>(dm.block||'').toLowerCase().includes('girl'));
+  const boys=d.dormitories.filter(dm=>(dm.block||'').toLowerCase().includes('boy'));
+  $id('gRoomCount').textContent=girls.length+' room'+(girls.length!==1?'s':'');
+  $id('bRoomCount').textContent=boys.length+' room'+(boys.length!==1?'s':'');
+  $id('girlsRoomTbody').innerHTML=roomRows(girls,d);
+  $id('boysRoomTbody').innerHTML=roomRows(boys,d);
+}
+
+function roomRows(list,d) {
+  if(!list.length) return `<tr><td colspan="7">${empty('🏢','No rooms in this section')}</td></tr>`;
+  return list.map((dm,i)=>{
+    const rot=(d.currentRotation||[]).find(x=>x.name===dm.name);
+    const occ=rot?(rot.residents||[]).length:0;
+    const avail=Math.max(0,dm.capacity-occ);
+    const pct=Math.round((occ/dm.capacity)*100);
+    const col=pct>=90?'#ef4444':pct>=70?'#f59e0b':'#10b981';
+    return `<tr>
+      <td>${i+1}</td><td><strong style="color:#fff">${esc(dm.name)}</strong></td>
+      <td>${dm.capacity}</td><td>${occ}</td>
+      <td style="color:${avail?'#34d399':'#ef4444'};font-weight:700">${avail}</td>
+      <td><div class="prog-bg" style="width:72px"><div class="prog-bar" style="width:${pct}%;background:${col}"></div></div> <span style="font-size:.77em;color:var(--muted)">${pct}%</span></td>
+      <td><div class="action-cell"><button class="btn btn-danger btn-xs" onclick="deleteRoom('${esc(dm.name)}')">🗑️</button></div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── RESIDENTS ─────────────────────────────────────────────────────
+function addResident() {
+  const name=$v('resName'), id=$v('resId'), block=$v('resBlock');
+  if(!name) return toast('Enter a name','error');
+  const d=dbRead();
+  if(d.residents.some(r=>r.name.toLowerCase()===name.toLowerCase())) return toast('Resident already exists','error');
+  d.residents.push({name:name.trim(),id:(id||'').trim(),block:block||'',dormitory:null,joinedDate:new Date().toISOString()});
+  dbWrite(d);
+  $set('resName',''); $set('resId',''); $set('resBlock','');
+  toast('"'+name+'" added!'); renderResidents();
+}
+
+function deleteResident(name) {
+  if(!confirm('Remove "'+name+'"?')) return;
+  const d=dbRead();
+  d.residents=d.residents.filter(r=>r.name!==name);
+  if(d.currentRotation) d.currentRotation.forEach(dm=>{ dm.residents=(dm.residents||[]).filter(r=>r!==name); });
+  dbWrite(d); toast('Resident removed','info'); renderResidents();
+}
+
+function renderResidents() {
+  const d=dbRead();
+  const fd=$v('filterDorm');
+  // Populate filter
+  const sel=$id('filterDorm');
+  if(sel){
+    const cur=sel.value;
+    sel.innerHTML='<option value="">All Rooms</option>'+d.dormitories.map(dm=>`<option value="${esc(dm.name)}"${cur===dm.name?' selected':''}>${esc(dm.name)}</option>`).join('');
+  }
+  let rows=d.residents;
+  if(fd) rows=rows.filter(r=>r.dormitory===fd);
+  const girls=rows.filter(r=>(r.block||'').toLowerCase().includes('girl'));
+  const boys=rows.filter(r=>(r.block||'').toLowerCase().includes('boy'));
+  $id('gResCount').textContent=girls.length+' resident'+(girls.length!==1?'s':'');
+  $id('bResCount').textContent=boys.length+' resident'+(boys.length!==1?'s':'');
+  $id('girlsResTbody').innerHTML=resRows(girls);
+  $id('boysResTbody').innerHTML=resRows(boys);
+}
+
+function resRows(list) {
+  if(!list.length) return `<tr><td colspan="6">${empty('👥','No residents in this section')}</td></tr>`;
+  return list.map((r,i)=>`<tr>
+    <td>${i+1}</td>
+    <td><strong style="color:#fff">${esc(r.name)}</strong></td>
+    <td><span style="color:var(--muted)">${esc(r.id||'—')}</span></td>
+    <td>${r.dormitory||'<span style="color:var(--danger)">Unassigned</span>'}</td>
+    <td><span style="color:var(--muted);font-size:.83em">${r.joinedDate?fmtDate(r.joinedDate):'—'}</span></td>
+    <td><div class="action-cell"><button class="btn btn-danger btn-xs" onclick="deleteResident('${esc(r.name)}')">🗑️</button></div></td>
+  </tr>`).join('');
+}
+
+// ── ASSIGNMENTS ───────────────────────────────────────────────────
+function autoAssign() {
+  const d=dbRead();
+  if(!d.residents.length) return toast('Add residents first','error');
+  if(!d.dormitories.length) return toast('Add rooms first','error');
+  if(d.currentRotation){
+    const h=histRead();
+    h.history.unshift({date:new Date().toISOString(),rotation:JSON.parse(JSON.stringify(d.currentRotation)),auto:false});
+    histWrite(h);
+  }
+  const {residents,rotation}=buildRotation(d.residents,d.dormitories);
+  const now=new Date().toISOString();
+  d.residents=residents; d.currentRotation=rotation;
+  d.lastRotationDate=now; d.nextRotationDate=addDays(now,d.rotationInterval);
+  d.rotationCount=(d.rotationCount||0)+1;
+  dbWrite(d); toast('✅ All residents assigned!'); renderAssignments();
+}
+
+function rotateNow() {
+  const d=dbRead();
+  if(!d.currentRotation) return toast('Run Auto-Assign first','warn');
+  if(!confirm('Rotate all residents to new rooms now?')) return;
+  if(performRotation(false)) { toast('🔄 Rotation complete!','info'); renderAssignments(); }
+  else toast('Nothing to rotate','error');
+}
+
+function renderAssignments() {
+  const d=dbRead();
+  const el=$id('assignView');
   if(!d.currentRotation||!d.currentRotation.length){
-    el.innerHTML=`<div class="card"><div class="empty"><span class="ei">📋</span>
-      <p>No assignments yet. <button class="btn btn-primary btn-sm" onclick="autoAssign()">🚀 Auto-Assign All</button></p></div></div>`;return;}
-  const girls=d.currentRotation.filter(dm=>dm.block==='Girls');
-  const boys=d.currentRotation.filter(dm=>dm.block==='Boys');
-  const other=d.currentRotation.filter(dm=>dm.block!=='Girls'&&dm.block!=='Boys');
+    el.innerHTML=`<div class="card">${empty('📋','No assignments yet. Add rooms & residents, then click 🚀 Auto-Assign All')}</div>`;
+    return;
+  }
+  const girls=d.currentRotation.filter(dm=>(dm.block||'').toLowerCase().includes('girl'));
+  const boys=d.currentRotation.filter(dm=>(dm.block||'').toLowerCase().includes('boy'));
+  const other=d.currentRotation.filter(dm=>!girls.includes(dm)&&!boys.includes(dm));
   const gc=girls.reduce((s,dm)=>s+(dm.residents||[]).length,0);
   const bc=boys.reduce((s,dm)=>s+(dm.residents||[]).length,0);
   const oc=other.reduce((s,dm)=>s+(dm.residents||[]).length,0);
+  const days=d.nextRotationDate?daysLeft(d.nextRotationDate):null;
+
   let html='';
-  // Header
-  html+=`<div class="dorm-header">
-    <h2>🏠 Don Bosco Dormitory Students Lists</h2>
-    <span class="dh-meta">📅 ${fmtD(d.lastRotationDate||new Date().toISOString())} · Rotation #${d.rotationCount||1} · Next: ${d.nextRotationDate?fmtD(d.nextRotationDate):'—'}</span>
-  </div>`;
-  if(girls.length)html+=buildGenderSection('👧 Girls Section','gh-girls',girls,'girls',gc);
-  if(boys.length) html+=buildGenderSection('👦 Boys Section','gh-boys',boys,'boys',bc);
-  if(other.length)html+=buildGenderSection('🏢 Other Rooms','gh-other',other,'other',oc);
-  // Summary
+  if(d.lastRotationDate&&d.nextRotationDate){
+    const dCls=days<=0?'over':days<=3?'soon':'ok';
+    const dTxt=days<=0?'⚠️ Overdue!':days+' days';
+    html+=`<div class="rotation-banner">
+      <div>
+        <div class="rb-period-label">📅 Current Rotation Period</div>
+        <div class="rb-period">${fmtDate(d.lastRotationDate)} — ${fmtDate(d.nextRotationDate)}</div>
+        <div style="font-size:.75em;color:var(--muted);margin-top:3px">Rooms change every ${d.rotationInterval} days automatically</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:.75em;color:var(--muted);margin-bottom:2px">Next change in</div>
+        <div class="rb-countdown ${dCls}">${dTxt}</div>
+      </div>
+    </div>`;
+  }
+  if(girls.length) html+=assignSection('girls','👧 Girls Section',gc,girls.length,girls,'girls');
+  if(boys.length)  html+=assignSection('boys','👦 Boys Section',bc,boys.length,boys,'boys');
+  if(other.length) html+=assignSection('other','🏢 Other Rooms',oc,other.length,other,'other');
   html+=`<div class="summary-bar">
-    ${gc?`<div class="sum-item"><div class="sum-val sv-girls">${gc}</div><div class="sum-lbl">👧 Girls</div></div>`:''}
-    ${bc?`<div class="sum-item"><div class="sum-val sv-boys">${bc}</div><div class="sum-lbl">👦 Boys</div></div>`:''}
-    ${oc?`<div class="sum-item"><div class="sum-val" style="color:#512DA8">${oc}</div><div class="sum-lbl">Other</div></div>`:''}
-    <div class="sum-item"><div class="sum-val sv-total">${gc+bc+oc}</div><div class="sum-lbl">Total</div></div>
-    <div class="sum-item"><div class="sum-val" style="color:#555;font-size:1.6em">${d.dormitories.length}</div><div class="sum-lbl">🏢 Rooms</div></div>
+    ${gc?`<div class="sum-item"><div class="sum-val girls">${gc}</div><div class="sum-lbl">👧 Girls</div></div>`:''}
+    ${bc?`<div class="sum-item"><div class="sum-val boys">${bc}</div><div class="sum-lbl">👦 Boys</div></div>`:''}
+    ${oc?`<div class="sum-item"><div class="sum-val" style="color:#a78bfa">${oc}</div><div class="sum-lbl">🏢 Other</div></div>`:''}
+    <div class="sum-item"><div class="sum-val total">${gc+bc+oc}</div><div class="sum-lbl">Total</div></div>
+    <div class="sum-item"><div class="sum-val" style="color:var(--muted);font-size:1.4em">${d.dormitories.length}</div><div class="sum-lbl">Rooms</div></div>
   </div>`;
   el.innerHTML=html;
 }
 
-function buildGenderSection(label,hdrCls,list,type,count){
-  return `<div class="gender-section">
-    <div class="gender-hdr ${hdrCls}">
+function assignSection(id,label,count,rooms,list,cls){
+  return `<div class="assign-section">
+    <div class="assign-hdr ${cls}">
       <span>${label}</span>
-      <span style="font-size:.82em;opacity:.9">${count} students · ${list.length} rooms</span>
+      <span style="font-size:.78em;font-weight:500;opacity:.8">${count} resident${count!==1?'s':''} · ${rooms} room${rooms!==1?'s':''}</span>
     </div>
-    <div class="rooms-grid">${list.map(dm=>buildRoomCard(dm,type)).join('')}</div>
+    <div class="dorms-grid">${list.map(dm=>dormCard(dm,cls)).join('')}</div>
   </div>`;
 }
 
-function buildRoomCard(dm,type){
-  const cnt=(dm.residents||[]).length;
-  const cap=dm.capacity||cnt||1;
-  const pct=Math.min(100,Math.round(cnt/cap*100));
-  const full=cnt>=cap;
-  const hCls=type==='girls'?'girls':type==='boys'?'boys':'other';
-  const cntCls=type==='girls'?'rc-girls':type==='boys'?'rc-boys':'rc-other';
-  const barCls=full?'rb-full':type==='girls'?'rb-girls':type==='boys'?'rb-boys':'rb-girls';
-  const rows=(dm.residents||[]).map((r,i)=>`
-    <div class="resident-row">
-      <span class="res-num">${i+1}.</span>
-      <span class="res-name">${esc(r)}</span>
-      ${i===0?'<span class="res-leader">Leader</span>':''}
-      ${i===1?'<span class="res-leader" style="background:#c2185b">Ass.</span>':''}
-    </div>`).join('');
-  return `<div class="room-card">
-    <div class="room-card-header ${hCls}">
-      <span class="room-name">🏢 ${esc(dm.name)}</span>
-      <span class="room-count ${cntCls}">${cnt}/${cap}</span>
-    </div>
-    <div class="room-bar"><div class="room-bar-fill ${barCls}" style="width:${pct}%"></div></div>
-    <div class="room-residents">${rows||'<div class="resident-row" style="color:#ccc;font-style:italic">No residents</div>'}</div>
+function dormCard(dm,cls,myName=''){
+  const occ=(dm.residents||[]).length;
+  const pct=dm.capacity?Math.min(100,Math.round((occ/dm.capacity)*100)):0;
+  return `<div class="dorm-card ${cls}">
+    <h3>🏢 ${esc(dm.name)}</h3>
+    <div class="dm-sub">Capacity: ${dm.capacity} · Occupied: ${occ}</div>
+    <div class="dorm-bar-bg"><div class="dorm-bar" style="width:${pct}%"></div></div>
+    <ul>${occ?(dm.residents||[]).map((r,i)=>fmtHMItem(r,i,myName)).join(''):'<li style="opacity:.6;font-style:italic">No residents</li>'}</ul>
   </div>`;
 }
 
-// ════ AUTO-ASSIGN ════
-function autoAssign(){
-  const d=load();
-  if(!d.dormitories.length)return toast('Add rooms first','error');
-  if(!d.residents.length)return toast('Add students first','error');
-  if(d.currentRotation)d.history.unshift({date:d.lastRotationDate||new Date().toISOString(),
-    rotation:JSON.parse(JSON.stringify(d.currentRotation))});
-  const dorms=d.dormitories.map(dm=>({...dm,residents:[]}));
-  d.residents.forEach((r,i)=>{
-    let t=dorms.find(dm=>r.block&&(dm.block||'')===r.block&&dm.residents.length<dm.capacity);
+function fmtHMItem(r,i,myName=''){
+  const isL=r.includes(' - Leader');
+  const isAL=r.includes(' - Ass. Leader');
+  const isMe=r===myName;
+  if(isL){
+    const n=r.replace(' - Leader','');
+    return `<li${isMe?' style="color:#a5b4fc;font-weight:700"':''}><span class="li-num">${i+1}.</span><strong style="color:#f43f5e">${esc(n)}</strong> <span style="font-size:.75em;color:#f43f5e;font-weight:700">— Leader</span>${isMe?' ⭐':''}</li>`;
+  }
+  if(isAL){
+    const n=r.replace(' - Ass. Leader','');
+    return `<li${isMe?' style="color:#a5b4fc;font-weight:700"':''}><span class="li-num">${i+1}.</span><strong style="color:#6366f1">${esc(n)}</strong> <span style="font-size:.75em;color:#6366f1;font-weight:700">— Ass. Leader</span>${isMe?' ⭐':''}</li>`;
+  }
+  return `<li${isMe?' style="color:#a5b4fc;font-weight:700"':''}><span class="li-num">${i+1}.</span>${esc(r)}${isMe?' ⭐':''}</li>`;
+}
+
+// ── HISTORY ───────────────────────────────────────────────────────
+function renderHistory() {
+  const h=histRead();
+  const el=$id('histView');
+  if(!h.history.length){el.innerHTML=empty('🕒','No rotation history yet');return;}
+  el.innerHTML=h.history.map((entry,i)=>{
+    const hid='hb'+i;
+    const girls=(entry.rotation||[]).filter(dm=>(dm.block||'').toLowerCase().includes('girl'));
+    const boys=(entry.rotation||[]).filter(dm=>(dm.block||'').toLowerCase().includes('boy'));
+    const other=(entry.rotation||[]).filter(dm=>!girls.includes(dm)&&!boys.includes(dm));
+    return `<div class="hist-entry">
+      <div class="hist-bar" onclick="toggleHist('${hid}')">
+        <span>Rotation #${h.history.length-i} — ${fmtDateTime(entry.date)}</span>
+        <small style="color:var(--muted)">${entry.auto?'🤖 Auto':'👆 Manual'}</small>
+      </div>
+      <div class="hist-body" id="${hid}">
+        <div class="dorms-grid" style="margin-bottom:10px">
+          ${girls.map(dm=>dormCard(dm,'girls')).join('')}
+          ${boys.map(dm=>dormCard(dm,'boys')).join('')}
+          ${other.map(dm=>dormCard(dm,'other')).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleHist(id){ $id(id).classList.toggle('open'); }
+
+// ── SETTINGS ──────────────────────────────────────────────────────
+function renderSettings() {
+  const d=dbRead();
+  $set('rotIntv',d.rotationInterval||15);
+  $id('intvLabel').textContent=d.rotationInterval||15;
+}
+function saveSettings() {
+  const v=parseInt($v('rotIntv'));
+  if(!v||v<1) return toast('Enter a valid interval','error');
+  const d=dbRead();
+  d.rotationInterval=v;
+  if(d.lastRotationDate) d.nextRotationDate=addDays(d.lastRotationDate,v);
+  dbWrite(d); toast('Interval set to '+v+' days'); renderSettings();
+}
+function changePass() {
+  const p=document.getElementById('newPass').value;
+  if(p.length<4) return toast('Password must be at least 4 characters','error');
+  const a=authRead(); a.password=p; authWrite(a);
+  document.getElementById('newPass').value='';
+  toast('Password updated!');
+}
+function clearAll() {
+  if(!confirm('⚠️ Delete ALL data? This CANNOT be undone.')) return;
+  dbWrite(defaultData()); histWrite({history:[]}); toast('All data cleared','info');
+  renderDashboard();
+}
+
+// ── MY ROOM (student) ─────────────────────────────────────────────
+function renderMyRoom() {
+  const d=dbRead();
+  const name=SESSION.studentName;
+  const me=d.residents.find(r=>r.name===name);
+  if(!me){$id('myRoomView').innerHTML=`<div class="card">${empty('👤','Your account was not found. Please contact admin.')}</div>`;return;}
+  const isG=(me.block||'').toLowerCase().includes('girl');
+  const isB=(me.block||'').toLowerCase().includes('boy');
+  const cls=isG?'girls':isB?'boys':'';
+  const icon=isG?'👧':isB?'👦':'👤';
+  const room=me.dormitory?(d.currentRotation||[]).find(dm=>dm.name===me.dormitory):null;
+  const roommates=room?(room.residents||[]).filter(r=>r!==name):[];
+  const days=d.nextRotationDate?daysLeft(d.nextRotationDate):null;
+
+  let html=`<div class="my-room-card ${cls}">
+    <div class="mrc-label">Your Current Room</div>
+    <div class="mrc-name">${me.dormitory?'🛏️ '+esc(me.dormitory):'Not Assigned Yet'}</div>
+    ${me.dormitory?`<span class="badge badge-${cls}">${icon} ${me.block||'General'}</span>`:'' }
+    <div class="mrc-meta">
+      <div class="meta-tile"><div class="mt-lbl">Name</div><div class="mt-val">${esc(me.name)}</div></div>
+      ${me.id?`<div class="meta-tile"><div class="mt-lbl">Student ID</div><div class="mt-val">${esc(me.id)}</div></div>`:''}
+      ${d.lastRotationDate?`<div class="meta-tile"><div class="mt-lbl">Period Start</div><div class="mt-val">${fmtDate(d.lastRotationDate)}</div></div>`:''}
+      ${d.nextRotationDate?`<div class="meta-tile"><div class="mt-lbl">Period End</div><div class="mt-val">${fmtDate(d.nextRotationDate)}</div></div>`:''}
+    </div>
+  </div>`;
+
+  if(days!==null){
+    const dCls=days<=0?'over':days<=3?'soon':'ok';
+    html+=`<div class="rotation-banner">
+      <div>
+        <div class="rb-period-label">📅 Current Rotation Period</div>
+        <div class="rb-period">${d.lastRotationDate?fmtDate(d.lastRotationDate):'—'} — ${d.nextRotationDate?fmtDate(d.nextRotationDate):'—'}</div>
+        <div style="font-size:.75em;color:var(--muted);margin-top:3px">Rooms change every ${d.rotationInterval||15} days automatically</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:.75em;color:var(--muted);margin-bottom:2px">Next change in</div>
+        <div class="rb-countdown ${dCls}">${days<=0?'⚠️ Overdue!':days+' days'}</div>
+      </div>
+    </div>`;
+  }
+
+  if(roommates.length){
+    html+=`<div class="roommates-wrap ${cls}">
+      <div style="font-family:Outfit,sans-serif;font-weight:700;color:#fff;font-size:.97em">🤝 Your Roommates <span class="cnt">${roommates.length}</span></div>
+      <div class="rm-grid">${roommates.map(r=>`<div class="rm-chip"><div class="rm-av">${icon}</div><span class="rm-name">${esc(r)}</span></div>`).join('')}</div>
+    </div>`;
+  }
+  $id('myRoomView').innerHTML=html;
+}
+
+// ── IMPORT ────────────────────────────────────────────────────────
+let parsedList=[];
+function handleDrop(e){ e.preventDefault(); $id('dropZone').classList.remove('over'); readFile(e.dataTransfer.files[0]); }
+function handleFile(e){ readFile(e.target.files[0]); }
+function readFile(file){
+  if(!file)return;
+  const ext=file.name.split('.').pop().toLowerCase();
+  if(!['csv','txt'].includes(ext))return toast('Only .csv or .txt','error');
+  const reader=new FileReader();
+  reader.onload=e=>{ $id('pasteArea').value=e.target.result; previewNames(); };
+  reader.readAsText(file);
+}
+function previewNames(){
+  const raw=$id('pasteArea').value;
+  parsedList=raw.split(/\r?\n/).map(l=>l.trim()).filter(l=>l).reduce((acc,line,i)=>{
+    if(i===0&&/^(name|s\.?n|no\.|sno)/i.test(line.split(',')[0]))return acc;
+    const parts=line.split(',').map(p=>p.trim().replace(/^"|"$/g,''));
+    if(parts[0])acc.push({name:parts[0],id:parts[1]||''});
+    return acc;
+  },[]);
+  if(!parsedList.length)return toast('No names found','error');
+  const existing=new Set(dbRead().residents.map(r=>r.name.toLowerCase()));
+  $id('prevCount').textContent=parsedList.length;
+  $id('prevBody').innerHTML=parsedList.map((r,i)=>{
+    const dup=existing.has(r.name.toLowerCase());
+    return `<tr><td>${i+1}</td><td>${esc(r.name)}</td><td>${esc(r.id||'—')}</td><td class="${dup?'prev-dup':'prev-new'}">${dup?'⚠️ Duplicate':'✅ New'}</td></tr>`;
+  }).join('');
+  $id('previewCard').style.display='block';
+}
+function importNames(){
+  if(!parsedList.length)return toast('Nothing to import','error');
+  const d=dbRead();
+  if(!d.dormitories.length)return toast('Add at least one room first','warn');
+  const block=$v('impBlock');
+  let added=0,skipped=0;
+  parsedList.forEach(r=>{
+    if(d.residents.some(x=>x.name.toLowerCase()===r.name.toLowerCase())){skipped++;return;}
+    d.residents.push({name:r.name,id:r.id,block:block||'',dormitory:null,joinedDate:new Date().toISOString()});
+    added++;
+  });
+  // auto-assign
+  const unassigned=d.residents.filter(r=>!r.dormitory);
+  const dorms=d.dormitories.map(dm=>{
+    const ex=(d.currentRotation||[]).find(x=>x.name===dm.name);
+    return {...dm,residents:ex?[...(ex.residents||[])]:[]};
+  });
+  unassigned.forEach(r=>{
+    let t=dorms.find(dm=>(!block||(dm.block||'').toLowerCase()===block.toLowerCase())&&dm.residents.length<dm.capacity);
     if(!t)t=dorms.find(dm=>dm.residents.length<dm.capacity);
-    if(!t)t=dorms[i%dorms.length];
-    r.dormitory=t.name;t.residents.push(r.name);
+    if(!t)return;
+    r.dormitory=t.name; t.residents.push(r.name);
   });
   const now=new Date().toISOString();
-  d.currentRotation=dorms;d.lastRotationDate=now;
+  d.currentRotation=dorms; d.lastRotationDate=now;
   d.nextRotationDate=addDays(now,d.rotationInterval);
   d.rotationCount=(d.rotationCount||0)+1;
-  save(d);renderAssignments();renderDashboard();
-  addNotif('🚀',`Auto-assigned ${d.residents.length} students to ${d.dormitories.length} rooms`);
-  toast(`✅ ${d.residents.length} students assigned!`);
+  dbWrite(d);
+  let msg='✅ '+added+' added';
+  if(skipped)msg+=', '+skipped+' duplicate(s) skipped';
+  toast(msg); clearPreview(); showPage('assignments');
+}
+function clearPreview(){
+  parsedList=[]; $id('previewCard').style.display='none';
+  $id('pasteArea').value=''; $id('fileInp').value='';
 }
 
-// ════ ROTATION ════
-function checkAutoRotation(){
-  const d=load();if(!d.nextRotationDate)return;
-  if(new Date()>=new Date(d.nextRotationDate))doRotate(true);}
-function rotateNow(){
-  const d=load();if(!d.currentRotation)return toast('Run Auto-Assign first','error');
-  if(!confirm('Rotate all students to new rooms now?'))return;doRotate(false);}
-function doRotate(auto){
-  const d=load();if(!d.residents.length||!d.dormitories.length)return;
-  if(d.currentRotation){d.history.unshift({date:d.lastRotationDate||new Date().toISOString(),
-    rotation:JSON.parse(JSON.stringify(d.currentRotation))});if(d.history.length>30)d.history.pop();}
-  const gR=d.dormitories.filter(dm=>dm.block==='Girls').map(dm=>dm.name);
-  const bR=d.dormitories.filter(dm=>dm.block==='Boys').map(dm=>dm.name);
-  const oR=d.dormitories.filter(dm=>dm.block!=='Girls'&&dm.block!=='Boys').map(dm=>dm.name);
-  const shift=(names,r)=>{if(!names.length)return r.dormitory;
-    const ci=names.indexOf(r.dormitory);return names[(ci+1)%names.length];};
-  d.residents.forEach(r=>{
-    if(r.block==='Girls')r.dormitory=shift(gR,r);
-    else if(r.block==='Boys')r.dormitory=shift(bR,r);
-    else r.dormitory=shift(oR.length?oR:[...gR,...bR],r);});
-  const dorms=d.dormitories.map(dm=>({...dm,residents:[]}));
-  d.residents.forEach(r=>{const dm=dorms.find(x=>x.name===r.dormitory);if(dm)dm.residents.push(r.name);});
-  const now=new Date().toISOString();
-  d.currentRotation=dorms;d.lastRotationDate=now;
-  d.nextRotationDate=addDays(now,d.rotationInterval);
-  d.rotationCount=(d.rotationCount||0)+1;
-  save(d);renderAssignments();renderDashboard();updateSidebar();
-  addNotif('🔄',`Rotation #${d.rotationCount} ${auto?'(auto)':'(manual)'} — next ${fmtD(d.nextRotationDate)}`);
-  toast(auto?'🔄 Auto-rotation done!':'🔄 Rotation complete!','info');}
+// ── QUICK ADD MODAL ───────────────────────────────────────────────
+function openModal(type){
+  const hdr=$id('modalHdr'), body=$id('modalBody');
+  if(type==='member'){
+    hdr.innerHTML=`<span>➕ Add New Member</span><span class="modal-close" onclick="closeModal()">✕</span>`;
+    body.innerHTML=`
+      <div class="fg"><label>Full Name</label><input id="qName" placeholder="Student full name"></div>
+      <div class="fg"><label>ID / Roll No.</label><input id="qId" placeholder="STU-001"></div>
+      <div class="fg"><label>Gender</label><select id="qBlock"><option value="">— Select —</option><option value="Girls">👧 Female</option><option value="Boys">👦 Male</option></select></div>
+      <div style="display:flex;gap:9px;justify-content:flex-end;margin-top:8px">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="quickAddMember()">➕ Add Member</button>
+      </div>`;
+  } else {
+    hdr.innerHTML=`<span>🏢 Add New Room</span><span class="modal-close" onclick="closeModal()">✕</span>`;
+    body.innerHTML=`
+      <div class="fg"><label>Room Name</label><input id="qRName" placeholder="e.g. Rayanna 306"></div>
+      <div class="fg"><label>Capacity</label><input id="qRCap" type="number" min="1" placeholder="14"></div>
+      <div class="fg"><label>Gender Block</label><select id="qRBlock"><option value="">General</option><option value="Girls">👧 Girls</option><option value="Boys">👦 Boys</option></select></div>
+      <div style="display:flex;gap:9px;justify-content:flex-end;margin-top:8px">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="quickAddRoom()">🏢 Add Room</button>
+      </div>`;
+  }
+  $id('modalOv').classList.add('open');
+}
+function closeModal(){ $id('modalOv').classList.remove('open'); }
+
+function quickAddMember(){
+  const name=(document.getElementById('qName')||{}).value?.trim()||'';
+  const id=(document.getElementById('qId')||{}).value?.trim()||'';
+  const block=(document.getElementById('qBlock')||{}).value||'';
+  if(!name)return toast('Enter a name','error');
+  const d=dbRead();
+  if(d.residents.some(r=>r.name.toLowerCase()===name.toLowerCase()))return toast('Resident already exists','error');
+  d.residents.push({name,id,block,dormitory:null,joinedDate:new Date().toISOString()});
+  dbWrite(d); toast('"'+name+'" added!'); closeModal();
+  if(CURRENT_PAGE==='residents')renderResidents();
+  else if(CURRENT_PAGE==='dashboard')renderDashboard();
+}
+function quickAddRoom(){
+  const name=(document.getElementById('qRName')||{}).value?.trim()||'';
+  const cap=(document.getElementById('qRCap')||{}).value||'';
+  const block=(document.getElementById('qRBlock')||{}).value||'';
+  if(!name)return toast('Enter a room name','error');
+  if(!cap)return toast('Enter capacity','error');
+  const d=dbRead();
+  if(d.dormitories.some(x=>x.name.toLowerCase()===name.toLowerCase()))return toast('Room already exists','error');
+  d.dormitories.push({name,capacity:parseInt(cap),block:block||''});
+  dbWrite(d); toast('Room "'+name+'" added!'); closeModal();
+  if(CURRENT_PAGE==='rooms')renderRooms();
+  else if(CURRENT_PAGE==='dashboard')renderDashboard();
+}
+
+// ── HELPERS ───────────────────────────────────────────────────────
+const $id  = id => document.getElementById(id);
+const $v   = id => ($id(id)||{}).value?.trim()||'';
+const $set = (id,v)=>{ const e=$id(id); if(e)e.value=v; };
+const esc  = s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmtDate     = iso=>new Date(iso).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+const fmtDateTime = iso=>new Date(iso).toLocaleString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+const daysLeft    = iso=>Math.ceil((new Date(iso)-new Date())/86400000);
+const empty       = (icon,msg)=>`<div class="empty"><span class="e-icon">${icon}</span><p>${msg}</p></div>`;
+
+function toast(msg,type='success'){
+  const el=$id('toast');
+  el.textContent=msg; el.className='toast '+type; el.style.display='block';
+  clearTimeout(el._t); el._t=setTimeout(()=>el.style.display='none',3800);
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded',()=>{
+  // Check for existing session
+  const s=sessRead();
+  if(s){
+    SESSION=s;
+    // Run rotation check
+    checkAutoRotation();
+    startApp();
+  }
+});
 </script>
+</body>
+</html>
