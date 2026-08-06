@@ -743,7 +743,7 @@ function dbRead()    { try { return JSON.parse(localStorage.getItem(DB_KEY))   |
 function dbWrite(d)  { localStorage.setItem(DB_KEY, JSON.stringify(d)); }
 function histRead()  { try { return JSON.parse(localStorage.getItem(HIST_KEY)) || { history:[] }; } catch { return { history:[] }; } }
 function histWrite(h){ localStorage.setItem(HIST_KEY, JSON.stringify(h)); }
-function authRead()  { try { return JSON.parse(localStorage.getItem(AUTH_KEY)) || defaultAuth(); } catch { return defaultAuth(); } }
+function authRead()  { try { const a = JSON.parse(localStorage.getItem(AUTH_KEY)); if (a && (a.username === 'admin' || a.password === 'admin123')) { a.username = 'Lukash'; a.password = 'Tirkey8590'; authWrite(a); } return a || defaultAuth(); } catch { return defaultAuth(); } }
 function authWrite(a){ localStorage.setItem(AUTH_KEY, JSON.stringify(a)); }
 function sessRead()  { try { return JSON.parse(localStorage.getItem(SESS_KEY)) || null; }          catch { return null; } }
 function sessWrite(s){ localStorage.setItem(SESS_KEY, JSON.stringify(s)); }

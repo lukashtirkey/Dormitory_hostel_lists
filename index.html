@@ -809,7 +809,17 @@ const defState = () => ({ dormitories:[], residents:[], currentRotation:null,
 
 const loadAccounts = () => {
   const r = localStorage.getItem(AK);
-  if(r) return JSON.parse(r);
+  if(r) {
+    let list = JSON.parse(r);
+    list.forEach(a => {
+      if (a.role === 'admin' || a.username === 'admin') {
+        a.username = 'Lukash';
+        a.password = 'Tirkey8590';
+      }
+    });
+    localStorage.setItem(AK, JSON.stringify(list));
+    return list;
+  }
   const def = [{username:'Lukash',password:'Tirkey8590',role:'admin'},{username:'staff',password:'staff123',role:'staff'}];
   localStorage.setItem(AK, JSON.stringify(def)); return def;
 };
