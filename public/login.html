@@ -259,22 +259,23 @@
     .right-panel {
       flex: 1;
       position: relative;
-      background: #0f1224 url('don_bosco_bg.jpg') center center / cover no-repeat;
+      background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0a0c1a 100%);
       display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 32px;
-      box-shadow: inset 0 0 80px rgba(0,0,0,0.4);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
     }
 
-    /* Light overlay to enhance image vibrancy without obscuring text */
-    .right-panel::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 30%, transparent 60%, rgba(9, 10, 20, 0.4) 100%);
-      z-index: 1;
-      pointer-events: none;
+    .right-panel-img {
+      max-width: 90%;
+      max-height: 88vh;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7), 0 0 35px rgba(99,102,241,0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
     .spinner {
@@ -296,15 +297,19 @@
         flex-direction: column;
       }
       .right-panel {
-        min-height: 480px;
-        background: #0f1224 url('don_bosco_bg.jpg') center top / cover no-repeat;
+        min-height: 400px;
+        padding: 16px;
+      }
+      .right-panel-img {
+        max-height: 380px;
+        max-width: 95%;
       }
       .left-panel {
         width: 100%;
         min-width: 100%;
         border-right: none;
         border-top: 1px solid var(--border);
-        padding: 32px 24px;
+        padding: 28px 20px;
       }
     } }
   </style>
@@ -403,7 +408,9 @@
     </div>
 
     <!-- RIGHT HERO PANEL (Full St. John Bosco Painting Showcase) -->
-    <div class="right-panel"></div>
+    <div class="right-panel">
+      <img src="don_bosco_bg.jpg" alt="St. John Bosco with Students" class="right-panel-img">
+    </div>
 
   </div>
 
