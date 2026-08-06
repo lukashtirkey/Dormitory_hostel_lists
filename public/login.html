@@ -262,24 +262,24 @@
       padding-top: 16px;
     }
 
-    /* Right Hero Panel showcasing the St. John Bosco artwork */
+    /* Right Hero Panel showcasing the St. John Bosco artwork - Bigger & Grander Scale */
     .right-panel {
       flex: 1;
       position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 28px;
+      padding: 10px;
       overflow: hidden;
       background: #090b16;
     }
 
-    /* Ambient blurred backdrop fills the entire right side - No dark empty void! */
+    /* Ambient blurred backdrop fills the entire right side */
     .right-panel-bg {
       position: absolute;
       inset: -20px;
       background: url('don_bosco_bg.jpg') center center / cover no-repeat;
-      filter: blur(35px) brightness(0.5) saturate(1.2);
+      filter: blur(35px) brightness(0.55) saturate(1.2);
       transform: scale(1.12);
       z-index: 1;
     }
@@ -288,22 +288,22 @@
     .right-panel-overlay {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 40%, rgba(251, 191, 36, 0.2) 0%, rgba(9, 11, 22, 0.75) 100%);
+      background: radial-gradient(circle at 50% 40%, rgba(251, 191, 36, 0.22) 0%, rgba(9, 11, 22, 0.7) 100%);
       z-index: 2;
       pointer-events: none;
     }
 
-    /* Main High-Definition Framed Painting */
+    /* Main High-Definition Framed Painting - Bigger Scale */
     .right-panel-img {
       position: relative;
       z-index: 3;
-      max-width: 92%;
-      max-height: 90vh;
       width: auto;
-      height: auto;
+      height: 97vh;
+      max-width: 98%;
+      max-height: 97vh;
       object-fit: contain;
-      border-radius: 24px;
-      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85), 0 0 50px rgba(245, 158, 11, 0.25);
+      border-radius: 20px;
+      box-shadow: 0 25px 85px rgba(0, 0, 0, 0.88), 0 0 60px rgba(245, 158, 11, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.25);
       transition: transform 0.3s ease;
     }
