@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Room — Don Bosco Hostel</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -550,7 +551,32 @@
         ${rotationHtml}
         ${roommatesHtml}
         <div style="font-family:Outfit,sans-serif;font-size:1.05em;font-weight:700;color:#fff;margin-bottom:16px">📋 Full Dormitory List</div>
-        ${dormListHtml}`;
+        ${dormListHtml}
+        
+        <!-- DBSM Skill Mission Showcase in Student View -->
+        <div class="dbsm-hero" style="margin-top:32px;">
+          <div class="dbsm-hero-header">
+            <div>
+              <div class="dbsm-hero-title">🎓 Don Bosco Skill Mission (DBSM)</div>
+              <p style="color:#c7d2fe;font-size:0.95em;margin-top:4px;">Non-profit skill development &amp; training center equipping students &amp; job seekers with career skills.</p>
+            </div>
+            <div class="dbsm-rating-pill">⭐ 4.5/5 (223+ reviews)</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:16px;">
+            <div style="background:rgba(255,255,255,0.06);padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+              <strong style="color:#fff;display:block;font-size:0.85em;">📚 Courses Offered</strong>
+              <span style="font-size:0.8em;color:#c7d2fe;">Cloud, Networking, EV Tech, Hospitality, Digital &amp; Soft Skills</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.06);padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+              <strong style="color:#fff;display:block;font-size:0.85em;">📍 Address</strong>
+              <span style="font-size:0.8em;color:#c7d2fe;">2127/81/2D/1, Kothanur Rd, Bannerghatta Rd, Bengaluru – 560076</span>
+            </div>
+            <div style="background:rgba(255,255,255,0.06);padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+              <strong style="color:#fff;display:block;font-size:0.85em;">📞 Contact &amp; Hours</strong>
+              <span style="font-size:0.8em;color:#c7d2fe;">+91 80316 73253 | Mon-Sat 9AM-5PM</span>
+            </div>
+          </div>
+        </div>`;
     }
 
     function showError(msg) {

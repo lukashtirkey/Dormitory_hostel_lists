@@ -18,7 +18,7 @@ function initFiles() {
   }
   if (!fs.existsSync(AUTH_FILE)) {
     fs.writeFileSync(AUTH_FILE, JSON.stringify({
-      admin: { username: 'admin', password: 'admin123' },
+      admin: { username: 'Lukash', password: 'Tirkey8590' },
       sessions: {}
     }, null, 2));
   }
@@ -213,7 +213,7 @@ function writeHistory(h) {
 
 function readAuth() {
   try { return JSON.parse(fs.readFileSync(AUTH_FILE, 'utf8')); }
-  catch { return { admin: { username: 'admin', password: 'admin123' }, sessions: {} }; }
+  catch { return { admin: { username: 'Lukash', password: 'Tirkey8590' }, sessions: {} }; }
 }
 
 function writeAuth(a) {
@@ -666,6 +666,6 @@ setInterval(checkAutoRotation, 3600000);
 
 server.listen(PORT, () => {
   console.log(`\n🏠 Hostel Dormitory Manager running at http://localhost:${PORT}`);
-  console.log('   Admin login: admin / admin123');
+  console.log('   Admin login: Lukash / Tirkey8590');
   console.log('   Data initialized with 9 dormitories and 95 residents across 2 sections (Girls & Boys).\n');
 });

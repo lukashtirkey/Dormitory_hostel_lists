@@ -34,11 +34,23 @@ A comprehensive hostel dormitory management system with **automatic rotation eve
 2. **Open your browser:**
    - Go to: http://localhost:3000
 
+## Credentials
+
+- **Admin Username:** `Lukash`
+- **Admin Password:** `Tirkey8590`
+
+## Don Bosco Skill Mission (DBSM)
+
+Don Bosco Skill Mission (DBSM) is a non-profit skill development and training center that equips students and job seekers with practical, industry-ready skills and career support to help them secure employment.
+
+- **Courses:** Cloud Computing, Networking, EV Technology, Hospitality, Digital Skills, Employability & Soft Skills
+- **Contact:** +91 80316 73253 | 2127/81/2D/1, Kothanur Road, Bannerghatta Road, Bengaluru, Karnataka – 560076
+
 3. **Set up your hostel:**
-   - Add dormitories (e.g., "Dorm A", "Dorm B", etc.) with capacity
-   - Add residents
-   - Click "Initialize First Assignment" to distribute residents
-   - The system will automatically rotate every 15 days!
+   - Login with `Lukash` / `Tirkey8590`
+   - Add dormitories with capacity limits
+   - Add residents & track room assignments
+   - The system automatically rotates rooms every 15 days!
 
 ## How Automatic Rotation Works
 

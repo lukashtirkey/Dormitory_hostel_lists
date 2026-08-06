@@ -31,7 +31,7 @@ echo Starting server...
 echo.
 echo Open your browser to: http://localhost:3000
 echo.
-echo  Admin login : admin / admin123
+echo  Admin login : Lukash / Tirkey8590
 echo  Student login: enter your name or ID
 echo.
 echo Press Ctrl+C to stop the server

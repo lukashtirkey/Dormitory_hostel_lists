@@ -78,6 +78,7 @@ const PAGE_TITLES = {
   import:      '📂 Bulk Import',
   history:     '🕒 Rotation History',
   settings:    '⚙️ Settings',
+  dbsm:        '🎓 Don Bosco Skill Mission (DBSM)'
 };
 
 let currentPage = 'dashboard';
@@ -104,6 +105,7 @@ function renderCurrentPage() {
     case 'download':    break;
     case 'history':     renderHistory();     break;
     case 'settings':    renderSettings();    break;
+    case 'dbsm':        break;
   }
 }
 
