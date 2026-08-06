@@ -61,7 +61,7 @@
         <span id="sideCountdown" class="countdown">—</span>
         <span class="side-date" id="sideNextDate">Not scheduled</span>
       </div>
-      <button class="btn-logout" onclick="confirmLogout()">🚪 Logout</button>
+      <button class="btn-logout" type="button" onclick="confirmLogout(); if(window.confirm('Do you want to log out?')){ logout(); }">🚪 Logout</button>
     </div>
   </aside>
 
@@ -77,7 +77,7 @@
         <button class="btn btn-girls btn-sm admin-only" onclick="openQuickAdd('member')">➕ Add Member</button>
         <button class="btn btn-boys btn-sm admin-only" onclick="openQuickAdd('room')">🏢 Add Room</button>
         <button class="btn btn-warning btn-sm admin-only" onclick="rotateNow()">🔄 Rotate Now</button>
-        <button class="btn btn-danger btn-sm btn-topbar-logout" onclick="confirmLogout()" style="background:#ef4444!important;color:#fff!important;font-weight:700!important;display:inline-flex!important;">🚪 Logout</button>
+        <button class="btn btn-danger btn-sm btn-topbar-logout" type="button" onclick="confirmLogout(); if(window.confirm('Do you want to log out?')){ logout(); }" style="background:#ef4444!important;color:#fff!important;font-weight:700!important;display:inline-flex!important;cursor:pointer!important;">🚪 Logout</button>
       </div>
     </div>
 
