@@ -257,11 +257,12 @@
       padding-top: 16px;
     }
 
-    /* Right Hero Panel with Background Image */
+    /* Right Hero Panel with Don Bosco & Students Background Image */
     .right-panel {
       flex: 1;
       position: relative;
-      background: url('don_bosco_bg.jpg') center top / cover no-repeat;
+      background: url('don_bosco_bg.jpg') center right / cover no-repeat;
+      filter: brightness(1.15) contrast(1.1);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -273,7 +274,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(9, 10, 20, 0.1) 0%, rgba(9, 10, 20, 0.25) 50%, rgba(9, 10, 20, 0.85) 100%);
+      background: linear-gradient(180deg, rgba(9, 10, 20, 0.05) 0%, rgba(9, 10, 20, 0.2) 50%, rgba(9, 10, 20, 0.75) 100%);
       z-index: 1;
       pointer-events: none;
     }

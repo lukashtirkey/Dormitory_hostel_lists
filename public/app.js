@@ -62,6 +62,7 @@ async function api(url, method = 'GET', body = null) {
 function confirmLogout() {
   const modal = document.getElementById('logoutConfirmModal');
   if (modal) {
+    modal.classList.add('open');
     modal.style.display = 'flex';
   } else if (confirm('Do you want to log out?')) {
     logout();
@@ -70,7 +71,10 @@ function confirmLogout() {
 
 function closeLogoutConfirmModal() {
   const modal = document.getElementById('logoutConfirmModal');
-  if (modal) modal.style.display = 'none';
+  if (modal) {
+    modal.classList.remove('open');
+    modal.style.display = 'none';
+  }
 }
 
 function logout() {

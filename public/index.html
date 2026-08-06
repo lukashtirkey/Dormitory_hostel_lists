@@ -72,8 +72,6 @@
         <div class="topbar-title" id="topbarTitle">📊 Dashboard</div>
       </div>
       <div class="topbar-actions" id="topbarActions">
-        <button class="btn btn-ghost btn-sm" onclick="window.location.href='/login'">🔑 Login Page</button>
-        <button class="btn btn-ghost btn-sm" onclick="window.location.href='/student'">🎓 Student View</button>
         <button class="btn btn-info btn-sm" onclick="openQrCodeModal()">📱 View QR Code</button>
         <button class="btn btn-primary btn-sm" id="btnAdminLoginModal" onclick="openAdminLoginModal()">🔐 Admin Login</button>
         <button class="btn btn-girls btn-sm admin-only" onclick="openQuickAdd('member')">➕ Add Member</button>
@@ -709,7 +707,7 @@
     </div>
   </div>
 <!-- Logout Confirmation Modal -->
-<div class="modal-overlay" id="logoutConfirmModal" style="display:none;">
+<div class="modal-overlay" id="logoutConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;">
   <div class="modal-box" style="max-width:400px;text-align:center;">
     <div class="modal-header" style="justify-content:center;">
       <span>🚪 Logout Confirmation</span>
@@ -719,8 +717,8 @@
         Do you want to log out?
       </p>
       <div style="display:flex;gap:12px;justify-content:center;">
-        <button class="btn btn-danger" style="flex:1;padding:12px;font-size:0.95em;" onclick="logout()">YES, LOG OUT</button>
-        <button class="btn btn-ghost" style="flex:1;padding:12px;font-size:0.95em;background:rgba(255,255,255,0.1);color:#fff;" onclick="closeLogoutConfirmModal()">NO, CANCEL</button>
+        <button class="btn btn-danger" style="flex:1;padding:12px;font-size:0.95em;cursor:pointer;" onclick="logout()">YES, LOG OUT</button>
+        <button class="btn btn-ghost" style="flex:1;padding:12px;font-size:0.95em;background:rgba(255,255,255,0.1);color:#fff;cursor:pointer;" onclick="closeLogoutConfirmModal()">NO, CANCEL</button>
       </div>
     </div>
   </div>
