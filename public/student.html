@@ -362,7 +362,9 @@
       </div>
       <div class="tnav-right">
         <span class="tnav-user" id="navUserName">👤 Loading...</span>
-        <button style="padding:7px 14px;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.3);border-radius:8px;color:#38bdf8;font-size:0.78em;font-weight:600;cursor:pointer;" onclick="openScannerModal()">📷 Live Scanner</button>
+        <button style="padding:7px 12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;color:#fff;font-size:0.78em;font-weight:600;cursor:pointer;" onclick="window.location.href='/login'">🔑 Login Page</button>
+        <button style="padding:7px 12px;background:rgba(99,102,241,0.2);border:1px solid rgba(99,102,241,0.35);border-radius:8px;color:#a5b4fc;font-size:0.78em;font-weight:600;cursor:pointer;" onclick="window.location.href='/admin'">📊 Admin</button>
+        <button style="padding:7px 14px;background:rgba(56,189,248,0.15);border:1px solid rgba(56,189,248,0.3);border-radius:8px;color:#38bdf8;font-size:0.78em;font-weight:600;cursor:pointer;" onclick="openQrCodeModal()">📱 Hostel QR Code</button>
         <button class="btn-logout" onclick="confirmLogout()">🚪 Logout</button>
       </div>
     </div>
@@ -625,159 +627,67 @@
       </div>
     </div>
   </div>
-  <!-- Live Camera & Code Scanner Modal -->
-  <div class="modal-overlay" id="scannerModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999;align-items:center;justify-content:center;padding:20px;">
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;width:100%;max-width:520px;text-align:center;box-shadow:0 15px 50px rgba(0,0,0,0.6);">
+  <!-- Live Hostel QR Code Modal -->
+  <div class="modal-overlay" id="qrCodeModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;width:100%;max-width:440px;text-align:center;box-shadow:0 15px 50px rgba(0,0,0,0.6);">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.15em;color:#fff;">📷 Live Barcode &amp; QR Scanner</span>
-        <span style="cursor:pointer;font-size:1.2em;color:var(--muted);" onclick="closeScannerModal()">✕</span>
+        <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:1.15em;color:#fff;">📱 Live Hostel QR Code</span>
+        <span style="cursor:pointer;font-size:1.2em;color:var(--muted);" onclick="closeQrCodeModal()">✕</span>
       </div>
-      <p style="color:var(--muted);font-size:0.85em;margin-bottom:14px;">
-        Point your camera at a Hostel QR code or type a Student ID / Room Name below.
+      <p style="color:var(--muted);font-size:0.85em;margin-bottom:16px;">
+        Scan this QR Code with any mobile phone to view live Don Bosco Skill Mission dormitory lists &amp; 15-day rotation schedule!
       </p>
 
-      <!-- Viewfinder Video Feed with Laser Scanner Overlay -->
-      <div style="position:relative;background:#05070e;border:1px solid rgba(255,255,255,0.15);border-radius:16px;overflow:hidden;min-height:220px;display:flex;align-items:center;justify-content:center;">
-        <video id="scannerVideo" autoplay playsinline style="width:100%;height:100%;object-fit:cover;"></video>
-        <div style="position:absolute;inset:25px;border:2px dashed #38bdf8;border-radius:14px;pointer-events:none;box-shadow:0 0 0 9999px rgba(0,0,0,0.55);"></div>
-        <div style="position:absolute;left:10%;right:10%;height:3px;background:linear-gradient(90deg,transparent,#10b981,transparent);top:35%;box-shadow:0 0 15px #10b981;animation:laserScan 2s ease-in-out infinite alternate;pointer-events:none;"></div>
+      <div style="background:#fff;padding:20px;border-radius:20px;display:inline-block;box-shadow:0 10px 30px rgba(0,0,0,0.5);margin-bottom:16px;">
+        <img id="modalQrImage" src="" alt="Hostel QR Code" style="width:200px;height:200px;display:block;">
+        <span style="color:#0f172a;font-size:0.75em;font-weight:800;display:block;margin-top:6px;">Don Bosco Skill Mission Hostel</span>
       </div>
 
-      <div id="scannerStatus" style="margin-top:12px;font-size:0.85em;color:#a5b4fc;font-weight:600;">⚡ Live Scanner Active. Scanning feed...</div>
-
-      <!-- Instant ID / Code Search Input -->
-      <div style="margin-top:16px;display:flex;gap:8px;">
-        <input type="text" id="scanSearchInput" placeholder="Enter Student ID, Name, or Room (e.g. STU-001 or GIRL-01)..." 
-          style="flex:1;padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:10px;color:#fff;font-size:0.88em;outline:none;"
-          onkeydown="if(event.key==='Enter') performLiveScanLookup()">
-        <button style="padding:10px 16px;background:linear-gradient(135deg,#6366f1,#a855f7);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;" onclick="performLiveScanLookup()">🎯 Scan &amp; Lookup</button>
+      <div style="margin-bottom:14px;text-align:left;">
+        <label style="font-size:0.75em;color:var(--muted);font-weight:600;">Shareable Link URL</label>
+        <input id="modalQrUrlInput" readonly style="font-family:monospace;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:10px;color:#fff;padding:10px 14px;font-size:0.88em;width:100%;">
       </div>
 
-      <!-- Quick Test Chips -->
-      <div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:10px;">
-        <span style="font-size:0.75em;color:var(--muted);align-self:center;">Try demo scan:</span>
-        <button style="padding:3px 10px;font-size:0.75em;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;cursor:pointer;" onclick="performLiveScanLookup('STU-001')">STU-001</button>
-        <button style="padding:3px 10px;font-size:0.75em;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;cursor:pointer;" onclick="performLiveScanLookup('Priyanka')">Priyanka</button>
-        <button style="padding:3px 10px;font-size:0.75em;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;cursor:pointer;" onclick="performLiveScanLookup('Girl\'s Room 1')">Girl's Room 1</button>
-      </div>
-
-      <!-- Scan Result Area -->
-      <div id="scannerResult" style="display:none;"></div>
-
-      <div style="margin-top:16px;text-align:right;">
-        <button style="padding:8px 16px;background:rgba(255,255,255,0.1);border:none;border-radius:8px;color:#fff;cursor:pointer;" onclick="closeScannerModal()">Close</button>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button style="padding:10px 16px;background:linear-gradient(135deg,#6366f1,#a855f7);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;" onclick="copyModalQrLink()">📋 Copy Link</button>
+        <a id="downloadQrBtn" href="" download="Don_Bosco_Hostel_QR.png" style="padding:10px 16px;background:linear-gradient(135deg,#f43f5e,#ec4899);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;text-decoration:none;">📥 Download QR</a>
+        <button style="padding:10px 16px;background:rgba(255,255,255,0.1);border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;" onclick="closeQrCodeModal()">Close</button>
       </div>
     </div>
   </div>
 
   <script>
-    let scannerStream = null;
     let PUBLIC_DATA = null;
 
-    async function openScannerModal() {
-      const modal = document.getElementById('scannerModal');
-      const video = document.getElementById('scannerVideo');
-      const status = document.getElementById('scannerStatus');
-      const resultContainer = document.getElementById('scannerResult');
-      if (resultContainer) resultContainer.style.display = 'none';
+    function openQrCodeModal() {
+      const modal = document.getElementById('qrCodeModal');
+      const shareUrl = window.location.origin + '/student';
+      const input = document.getElementById('modalQrUrlInput');
+      const img = document.getElementById('modalQrImage');
+      const dlBtn = document.getElementById('downloadQrBtn');
+
+      if (input) input.value = shareUrl;
+      const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(shareUrl)}`;
+      if (img) img.src = qrApiUrl;
+      if (dlBtn) dlBtn.href = qrApiUrl;
+
       if (modal) modal.style.display = 'flex';
-
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        try {
-          scannerStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-          if (video) video.srcObject = scannerStream;
-          if (status) status.textContent = '🎥 Camera active. Point at barcode/QR code or enter ID below.';
-        } catch (e) {
-          if (status) status.textContent = '⚡ Live Scanner Active. Use instant lookup or camera below.';
-        }
-      } else {
-        if (status) status.textContent = '⚡ Live Scanner Active. Use instant lookup below.';
-      }
     }
 
-    function closeScannerModal() {
-      const modal = document.getElementById('scannerModal');
-      const video = document.getElementById('scannerVideo');
+    function closeQrCodeModal() {
+      const modal = document.getElementById('qrCodeModal');
       if (modal) modal.style.display = 'none';
-      if (scannerStream) {
-        scannerStream.getTracks().forEach(track => track.stop());
-        scannerStream = null;
-      }
-      if (video) video.srcObject = null;
     }
 
-    function performLiveScanLookup(overrideQuery) {
-      const input = document.getElementById('scanSearchInput');
-      const query = (overrideQuery || (input ? input.value : '')).trim().toLowerCase();
-      const status = document.getElementById('scannerStatus');
-      const result = document.getElementById('scannerResult');
-
-      if (!query) {
-        if (status) status.textContent = '⚠️ Enter a student ID, name, or room code to scan!';
-        return;
-      }
-
-      const d = PUBLIC_DATA || {};
-      const dormitories = d.dormitories || [];
-      const currentRotation = d.currentRotation || [];
-      
-      let foundStudent = null;
-      let foundRoomName = null;
-
-      currentRotation.forEach(dm => {
-        (dm.residents || []).forEach(rName => {
-          if (rName.toLowerCase().includes(query) || (query.startsWith('stu-') && rName.toLowerCase().includes(query.replace('stu-0','').replace('stu-','')))) {
-            foundStudent = { name: rName, room: dm.name, block: dm.block };
-          }
+    function copyModalQrLink() {
+      const input = document.getElementById('modalQrUrlInput');
+      if (input) {
+        input.select();
+        navigator.clipboard.writeText(input.value).then(() => {
+          alert('📋 Hostel link copied to clipboard!');
+        }).catch(() => {
+          alert('Link: ' + input.value);
         });
-        if (dm.name && dm.name.toLowerCase().includes(query)) {
-          foundRoomName = dm;
-        }
-      });
-
-      if (foundStudent) {
-        const rot = currentRotation.find(x => x.name === foundStudent.room);
-        const roommates = rot ? (rot.residents || []).filter(n => n !== foundStudent.name) : [];
-        if (result) {
-          result.style.display = 'block';
-          result.innerHTML = `
-            <div style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.35);border-radius:14px;padding:16px;text-align:left;color:#fff;margin-top:14px;box-shadow:0 8px 25px rgba(16,185,129,0.25);">
-              <div style="font-weight:700;font-size:1.05em;color:#34d399;">✅ Student Verified</div>
-              <div style="font-size:1.2em;font-weight:800;margin-top:4px;">👤 ${esc(foundStudent.name)}</div>
-              <div style="margin-top:8px;font-size:0.9em;color:#e2e8f0;line-height:1.6;">
-                🏢 <strong>Room:</strong> ${esc(foundStudent.room)}<br>
-                🏷️ <strong>Section:</strong> ${esc(foundStudent.block || 'General')}<br>
-                🤝 <strong>Roommates:</strong> ${roommates.length ? roommates.join(', ') : 'None'}<br>
-                📅 <strong>15-Day Rotation:</strong> Active Cycle
-              </div>
-            </div>`;
-        }
-        if (status) status.textContent = '🎉 Code Matched!';
-      } else if (foundRoomName) {
-        const assigned = foundRoomName.residents || [];
-        if (result) {
-          result.style.display = 'block';
-          result.innerHTML = `
-            <div style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);border-radius:14px;padding:16px;text-align:left;color:#fff;margin-top:14px;box-shadow:0 8px 25px rgba(59,130,246,0.25);">
-              <div style="font-weight:700;font-size:1.05em;color:#60a5fa;">🏢 Room Verified</div>
-              <div style="font-size:1.2em;font-weight:800;margin-top:4px;">🛏️ ${esc(foundRoomName.name)}</div>
-              <div style="margin-top:8px;font-size:0.9em;color:#e2e8f0;line-height:1.6;">
-                🏷️ <strong>Section:</strong> ${esc(foundRoomName.block || 'General')}<br>
-                📊 <strong>Occupancy:</strong> ${assigned.length} / ${foundRoomName.capacity}<br>
-                👥 <strong>Residents:</strong> ${assigned.length ? assigned.join(', ') : 'Empty'}
-              </div>
-            </div>`;
-        }
-        if (status) status.textContent = '🎉 Code Matched!';
-      } else {
-        if (result) {
-          result.style.display = 'block';
-          result.innerHTML = `
-            <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:14px;text-align:center;color:#fca5a5;margin-top:14px;">
-              ❌ No record found matching "<strong>${esc(query)}</strong>". Try typing a valid Student Name or Room Code.
-            </div>`;
-        }
-        if (status) status.textContent = '❌ Code not found';
       }
     }
   </script>

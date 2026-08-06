@@ -772,108 +772,35 @@ function copyShareLink() {
   }
 }
 
-let scannerStream = null;
-async function openScannerModal() {
-  const modal = document.getElementById('scannerModal');
-  const video = document.getElementById('scannerVideo');
-  const status = document.getElementById('scannerStatus');
-  const resultContainer = document.getElementById('scannerResult');
-  if (resultContainer) resultContainer.style.display = 'none';
+function openQrCodeModal() {
+  const modal = document.getElementById('qrCodeModal');
+  const shareUrl = window.location.origin + '/student';
+  const input = document.getElementById('modalQrUrlInput');
+  const img = document.getElementById('modalQrImage');
+  const dlBtn = document.getElementById('downloadQrBtn');
+
+  if (input) input.value = shareUrl;
+  const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(shareUrl)}`;
+  if (img) img.src = qrApiUrl;
+  if (dlBtn) dlBtn.href = qrApiUrl;
+
   if (modal) modal.classList.add('open');
-
-  if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-    try {
-      scannerStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
-      if (video) video.srcObject = scannerStream;
-      if (status) status.textContent = '🎥 Camera active. Point at barcode/QR code or enter ID below.';
-    } catch (e) {
-      if (status) status.textContent = '⚡ Live Scanner Active. Use instant lookup or camera below.';
-    }
-  } else {
-    if (status) status.textContent = '⚡ Live Scanner Active. Use instant lookup below.';
-  }
 }
 
-function closeScannerModal() {
-  const modal = document.getElementById('scannerModal');
-  const video = document.getElementById('scannerVideo');
+function closeQrCodeModal() {
+  const modal = document.getElementById('qrCodeModal');
   if (modal) modal.classList.remove('open');
-  if (scannerStream) {
-    scannerStream.getTracks().forEach(track => track.stop());
-    scannerStream = null;
-  }
-  if (video) video.srcObject = null;
 }
 
-function performLiveScanLookup(overrideQuery) {
-  const input = document.getElementById('scanSearchInput');
-  const query = (overrideQuery || (input ? input.value : '')).trim().toLowerCase();
-  const status = document.getElementById('scannerStatus');
-  const result = document.getElementById('scannerResult');
-
-  if (!query) {
-    if (status) status.textContent = '⚠️ Enter a student ID, name, or room code to scan!';
-    return;
-  }
-
-  const d = STATE || {};
-  const residents = d.residents || [];
-  const dormitories = d.dormitories || [];
-  const currentRotation = d.currentRotation || [];
-
-  const res = residents.find(r => 
-    (r.name && r.name.toLowerCase().includes(query)) || 
-    (r.id && r.id.toLowerCase().includes(query))
-  );
-
-  const dorm = dormitories.find(dm => dm.name && dm.name.toLowerCase().includes(query));
-
-  if (res) {
-    const rot = currentRotation.find(x => x.name === res.dormitory);
-    const roommates = rot ? (rot.residents || []).filter(n => n !== res.name) : [];
-    if (result) {
-      result.style.display = 'block';
-      result.innerHTML = `
-        <div style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.35);border-radius:14px;padding:16px;text-align:left;color:#fff;margin-top:14px;box-shadow:0 8px 25px rgba(16,185,129,0.25);">
-          <div style="font-weight:700;font-size:1.05em;color:#34d399;">✅ Student Verified</div>
-          <div style="font-size:1.2em;font-weight:800;margin-top:4px;">👤 ${esc(res.name)} ${res.id ? `<span style="font-size:0.8em;color:var(--muted)">(${esc(res.id)})</span>` : ''}</div>
-          <div style="margin-top:8px;font-size:0.9em;color:#e2e8f0;line-height:1.6;">
-            🏢 <strong>Room:</strong> ${res.dormitory ? esc(res.dormitory) : '<span style="color:#fca5a5">Not assigned</span>'}<br>
-            🏷️ <strong>Section:</strong> ${esc(res.block || 'General')}<br>
-            🤝 <strong>Roommates:</strong> ${roommates.length ? roommates.join(', ') : 'None'}<br>
-            📅 <strong>15-Day Rotation:</strong> Active Cycle
-          </div>
-        </div>`;
-    }
-    if (status) status.textContent = '🎉 Code Matched!';
-    toast('✅ Scanned Student: ' + res.name, 'info');
-  } else if (dorm) {
-    const rot = currentRotation.find(x => x.name === dorm.name);
-    const assigned = rot ? (rot.residents || []) : [];
-    if (result) {
-      result.style.display = 'block';
-      result.innerHTML = `
-        <div style="background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);border-radius:14px;padding:16px;text-align:left;color:#fff;margin-top:14px;box-shadow:0 8px 25px rgba(59,130,246,0.25);">
-          <div style="font-weight:700;font-size:1.05em;color:#60a5fa;">🏢 Room Verified</div>
-          <div style="font-size:1.2em;font-weight:800;margin-top:4px;">🛏️ ${esc(dorm.name)}</div>
-          <div style="margin-top:8px;font-size:0.9em;color:#e2e8f0;line-height:1.6;">
-            🏷️ <strong>Section:</strong> ${esc(dorm.block || 'General')}<br>
-            📊 <strong>Occupancy:</strong> ${assigned.length} / ${dorm.capacity}<br>
-            👥 <strong>Residents:</strong> ${assigned.length ? assigned.join(', ') : 'Empty'}
-          </div>
-        </div>`;
-    }
-    if (status) status.textContent = '🎉 Code Matched!';
-    toast('✅ Scanned Room: ' + dorm.name, 'info');
-  } else {
-    if (result) {
-      result.style.display = 'block';
-      result.innerHTML = `
-        <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);border-radius:14px;padding:14px;text-align:center;color:#fca5a5;margin-top:14px;">
-          ❌ No record found matching "<strong>${esc(query)}</strong>". Try typing a valid Student ID (e.g., STU-001) or Room Name.
-        </div>`;
-    }
-    if (status) status.textContent = '❌ Code not found';
+function copyModalQrLink() {
+  const input = document.getElementById('modalQrUrlInput');
+  if (input) {
+    input.select();
+    navigator.clipboard.writeText(input.value).then(() => {
+      toast('📋 Hostel link copied to clipboard!');
+    }).catch(() => {
+      toast('Link: ' + input.value);
+    });
   }
 }
 
