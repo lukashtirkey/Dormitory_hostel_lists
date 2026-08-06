@@ -59,6 +59,20 @@ async function api(url, method = 'GET', body = null) {
   return res.json();
 }
 
+function confirmLogout() {
+  const modal = document.getElementById('logoutConfirmModal');
+  if (modal) {
+    modal.style.display = 'flex';
+  } else if (confirm('Do you want to log out?')) {
+    logout();
+  }
+}
+
+function closeLogoutConfirmModal() {
+  const modal = document.getElementById('logoutConfirmModal');
+  if (modal) modal.style.display = 'none';
+}
+
 function logout() {
   fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': TOKEN } }).catch(() => {});
   localStorage.removeItem('dorm_token');

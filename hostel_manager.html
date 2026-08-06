@@ -433,7 +433,7 @@
       <span id="tbUser" style="font-size:.8em;color:var(--muted);font-weight:600"></span>
       <button class="btn btn-girls btn-sm" id="btnAddMember" onclick="openModal('member')">➕ Add Member</button>
       <button class="btn btn-boys btn-sm" id="btnAddRoom" onclick="openModal('room')">🏢 Add Room</button>
-      <button class="btn btn-logout" onclick="doLogout()">🚪 Logout</button>
+      <button class="btn btn-logout" onclick="confirmLogout()">🚪 Logout</button>
     </div>
   </div>
 
@@ -784,8 +784,21 @@ function loginStudent() {
   startApp();
 }
 
+function confirmLogout() {
+  const modal = document.getElementById('logoutConfirmModal');
+  if (modal) {
+    modal.style.display = 'flex';
+  } else if (confirm('Do you want to log out?')) {
+    doLogout();
+  }
+}
+function closeLogoutConfirmModal() {
+  const modal = document.getElementById('logoutConfirmModal');
+  if (modal) modal.style.display = 'none';
+}
 function doLogout() {
   sessClear();
+  closeLogoutConfirmModal();
   document.getElementById('app').style.display='none';
   document.getElementById('loginPage').style.display='flex';
   document.getElementById('aPass').value='';
@@ -1433,5 +1446,18 @@ window.addEventListener('DOMContentLoaded',()=>{
   }
 });
 </script>
+<!-- Logout Confirmation Modal -->
+<div class="modal-ov" id="logoutConfirmModal" style="display:none;align-items:center;justify-content:center;">
+  <div class="modal-box" style="max-width:380px;text-align:center;">
+    <div class="modal-hdr" style="justify-content:center;">🚪 Logout Confirmation</div>
+    <div class="modal-body">
+      <p style="color:#e2e8f0;font-size:1.05em;margin-bottom:20px;font-weight:600;">Do you want to log out?</p>
+      <div style="display:flex;gap:12px;justify-content:center;">
+        <button class="btn btn-danger" style="flex:1;padding:11px;" onclick="doLogout()">YES, LOG OUT</button>
+        <button class="btn btn-ghost" style="flex:1;padding:11px;background:rgba(255,255,255,0.1);color:#fff;" onclick="closeLogoutConfirmModal()">NO, CANCEL</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
 </html>

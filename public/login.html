@@ -23,7 +23,9 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--dark);
+      background: 
+        linear-gradient(180deg, rgba(13, 15, 26, 0.72) 0%, rgba(13, 15, 26, 0.85) 50%, rgba(13, 15, 26, 0.95) 100%),
+        url('don_bosco_bg.jpg') center top / cover no-repeat fixed;
       color: var(--text);
       min-height: 100vh;
       display: flex;
@@ -35,14 +37,14 @@
       position: relative;
     }
 
-    /* Animated background */
+    /* Animated background overlay */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99,102,241,0.25) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 80% at 80% 80%, rgba(244,63,94,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99,102,241,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 80%, rgba(244,63,94,0.15) 0%, transparent 60%),
         radial-gradient(ellipse 40% 40% at 50% 50%, rgba(59,130,246,0.1) 0%, transparent 70%);
       z-index: 0;
     }

@@ -61,7 +61,7 @@
         <span id="sideCountdown" class="countdown">—</span>
         <span class="side-date" id="sideNextDate">Not scheduled</span>
       </div>
-      <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+      <button class="btn-logout" onclick="confirmLogout()">🚪 Logout</button>
     </div>
   </aside>
 
@@ -693,6 +693,22 @@
       <div style="display:flex;gap:10px;justify-content:flex-end;">
         <button class="btn btn-ghost" onclick="closeAdminLoginModal()">Cancel</button>
         <button class="btn btn-primary" id="dashAdminSubmitBtn" onclick="loginAdminFromModal()">🔐 Login as Admin</button>
+      </div>
+    </div>
+  </div>
+<!-- Logout Confirmation Modal -->
+<div class="modal-overlay" id="logoutConfirmModal" style="display:none;">
+  <div class="modal-box" style="max-width:400px;text-align:center;">
+    <div class="modal-header" style="justify-content:center;">
+      <span>🚪 Logout Confirmation</span>
+    </div>
+    <div class="modal-body">
+      <p style="color:#e0e7ff;font-size:1.05em;margin-bottom:20px;font-weight:600;">
+        Do you want to log out?
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;">
+        <button class="btn btn-danger" style="flex:1;padding:12px;font-size:0.95em;" onclick="logout()">YES, LOG OUT</button>
+        <button class="btn btn-ghost" style="flex:1;padding:12px;font-size:0.95em;background:rgba(255,255,255,0.1);color:#fff;" onclick="closeLogoutConfirmModal()">NO, CANCEL</button>
       </div>
     </div>
   </div>

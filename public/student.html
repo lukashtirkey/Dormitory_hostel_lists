@@ -362,7 +362,7 @@
       </div>
       <div class="tnav-right">
         <span class="tnav-user" id="navUserName">👤 Loading...</span>
-        <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+        <button class="btn-logout" onclick="confirmLogout()">🚪 Logout</button>
       </div>
     </div>
 
@@ -387,6 +387,20 @@
     }
 
     document.getElementById('navUserName').textContent = '👤 ' + (MY_NAME || 'Student');
+
+    function confirmLogout() {
+      const modal = document.getElementById('logoutConfirmModal');
+      if (modal) {
+        modal.style.display = 'flex';
+      } else if (confirm('Do you want to log out?')) {
+        logout();
+      }
+    }
+
+    function closeLogoutConfirmModal() {
+      const modal = document.getElementById('logoutConfirmModal');
+      if (modal) modal.style.display = 'none';
+    }
 
     function logout() {
       fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': TOKEN } }).catch(() => {});
@@ -594,5 +608,20 @@
     // Auto-refresh every 5 minutes
     setInterval(loadData, 300000);
   </script>
+  <!-- Logout Confirmation Modal -->
+  <div class="modal-overlay" id="logoutConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;width:100%;max-width:380px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.5);">
+      <div style="font-family:'Outfit',sans-serif;font-size:1.2em;font-weight:700;color:#fff;margin-bottom:14px;">
+        🚪 Logout Confirmation
+      </div>
+      <p style="color:#e2e8f0;font-size:1em;margin-bottom:20px;font-weight:600;">
+        Do you want to log out?
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;">
+        <button style="flex:1;padding:11px;background:#ef4444;border:none;border-radius:10px;color:#fff;font-weight:700;cursor:pointer;" onclick="logout()">YES, LOG OUT</button>
+        <button style="flex:1;padding:11px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:10px;color:#fff;font-weight:700;cursor:pointer;" onclick="closeLogoutConfirmModal()">NO, CANCEL</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

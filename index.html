@@ -303,7 +303,7 @@ tbody tr:hover td{background:#fafbff;}
       <div class="nav-item" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span> Settings</div>
     </nav>
     <div class="sidebar-bottom">
-      <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+      <button class="logout-btn" onclick="confirmLogout()">🚪 Logout</button>
     </div>
   </div>
 
@@ -853,8 +853,21 @@ function fillLogin(u, p) {
   document.getElementById('lErr').style.display = 'none';
   document.getElementById('lPass').focus();
 }
+function confirmLogout() {
+  const modal = document.getElementById('logoutConfirmModal');
+  if (modal) {
+    modal.style.display = 'flex';
+  } else if (confirm('Do you want to log out?')) {
+    doLogout();
+  }
+}
+function closeLogoutConfirmModal() {
+  const modal = document.getElementById('logoutConfirmModal');
+  if (modal) modal.style.display = 'none';
+}
 function doLogout() {
   sessionStorage.removeItem(SK);
+  closeLogoutConfirmModal();
   document.getElementById('appScreen').style.display='none';
   document.getElementById('loginScreen').style.display='flex';
   document.getElementById('lUser').value=''; document.getElementById('lPass').value='';
@@ -2248,5 +2261,16 @@ function buildPublicViewer(data) {
   setInterval(()=>{ const d=load(); if(d.nextRotationDate){ const el=document.getElementById('statDays'); if(el){ const l=daysLeft(d.nextRotationDate); el.textContent=l<=0?'Overdue!':l+' days'; }} }, 60000);
 })();
 </script>
+<!-- Logout Confirmation Modal -->
+<div class="modal-bg" id="logoutConfirmModal" style="display:none;align-items:center;justify-content:center;">
+  <div class="modal" style="max-width:380px;text-align:center;">
+    <h3 style="margin-bottom:12px;">🚪 Logout Confirmation</h3>
+    <p style="margin-bottom:20px;font-size:1.02em;color:#555;">Do you want to log out?</p>
+    <div style="display:flex;gap:10px;justify-content:center;">
+      <button class="btn btn-danger" style="flex:1;" onclick="doLogout()">YES, LOG OUT</button>
+      <button class="btn btn-gray" style="flex:1;" onclick="closeLogoutConfirmModal()">NO, CANCEL</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
