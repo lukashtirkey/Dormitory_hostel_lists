@@ -88,7 +88,12 @@ window.logout = function logout() {
   } catch (e) {}
   localStorage.clear();
   sessionStorage.clear();
-  window.location.href = '/login';
+  try {
+    document.cookie.split(";").forEach(function(c) {
+      document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+  } catch(e){}
+  window.location.href = '/login?logged_out=1';
 };
 
 // ── NAVIGATION ────────────────────────────────────────────────────

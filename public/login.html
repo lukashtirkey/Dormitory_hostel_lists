@@ -551,11 +551,17 @@
   </div>
 
   <script>
-    // Check if already logged in
-    const token = localStorage.getItem('dorm_token');
-    const role  = localStorage.getItem('dorm_role');
-    if (token && role === 'admin') window.location.href = '/admin';
-    if (token && (role === 'student' || role === 'guest')) window.location.href = '/student';
+    // Check if coming from explicit logout
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('logged_out') === '1') {
+      localStorage.clear();
+      sessionStorage.clear();
+    } else {
+      const token = localStorage.getItem('dorm_token');
+      const role  = localStorage.getItem('dorm_role');
+      if (token && role === 'admin') window.location.href = '/admin';
+      if (token && (role === 'student' || role === 'guest')) window.location.href = '/student';
+    }
 
     function switchTab(roleName) {
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
