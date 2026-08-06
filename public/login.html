@@ -24,114 +24,107 @@
     body {
       font-family: 'Inter', sans-serif;
       background: 
-        linear-gradient(180deg, rgba(13, 15, 26, 0.72) 0%, rgba(13, 15, 26, 0.85) 50%, rgba(13, 15, 26, 0.95) 100%),
+        linear-gradient(180deg, rgba(13, 15, 26, 0.15) 0%, rgba(13, 15, 26, 0.4) 45%, rgba(13, 15, 26, 0.85) 100%),
         url('don_bosco_bg.jpg') center top / cover no-repeat fixed;
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       overflow-y: auto;
-      padding: 24px 16px;
+      padding: 30px 16px;
       position: relative;
     }
 
-    /* Animated background overlay */
+    /* Subtle atmospheric overlay */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 80% 60% at 20% 20%, rgba(99,102,241,0.2) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 80% at 80% 80%, rgba(244,63,94,0.15) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(59,130,246,0.1) 0%, transparent 70%);
+        radial-gradient(ellipse 70% 50% at 50% 10%, rgba(255, 255, 255, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 90%, rgba(244,63,94,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 20% 90%, rgba(99,102,241,0.15) 0%, transparent 60%);
       z-index: 0;
-    }
-
-    /* Floating orbs */
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.3;
-      animation: float 8s ease-in-out infinite;
       pointer-events: none;
-      z-index: 0;
-    }
-    .orb1 { width: 400px; height: 400px; background: #6366f1; top: -100px; left: -100px; animation-delay: 0s; }
-    .orb2 { width: 300px; height: 300px; background: #f43f5e; bottom: -80px; right: -80px; animation-delay: -3s; }
-    .orb3 { width: 200px; height: 200px; background: #3b82f6; top: 50%; left: 50%; animation-delay: -5s; }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      33% { transform: translate(30px, -30px) scale(1.05); }
-      66% { transform: translate(-20px, 20px) scale(0.95); }
     }
 
     .wrapper {
       position: relative;
       z-index: 1;
       width: 100%;
-      max-width: 960px;
-      padding: 24px;
+      max-width: 1050px;
+      padding: 10px 0;
+      margin: auto 0 0;
     }
 
-    /* Header */
+    /* Glassmorphic Header */
     .header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
+    }
+    .header-pill {
+      display: inline-block;
+      background: rgba(13, 15, 26, 0.65);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 12px 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
     .header .logo {
       display: inline-flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 10px;
     }
     .logo-icon {
-      width: 48px;
-      height: 48px;
+      width: 44px;
+      height: 44px;
       background: linear-gradient(135deg, #6366f1, #a855f7);
-      border-radius: 14px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
-      box-shadow: 0 0 25px rgba(99,102,241,0.5);
+      font-size: 22px;
+      box-shadow: 0 0 25px rgba(99,102,241,0.6);
     }
     .logo-text {
       text-align: left;
     }
     .logo-text h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.6em;
+      font-size: 1.5em;
       font-weight: 800;
-      background: linear-gradient(135deg, #a5b4fc, #fff);
+      background: linear-gradient(135deg, #ffffff, #e0e7ff);
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
       line-height: 1.1;
     }
     .logo-text p {
-      color: var(--muted);
-      font-size: 0.82em;
+      color: #cbd5e1;
+      font-size: 0.8em;
       margin-top: 2px;
+      font-weight: 600;
     }
     .header .subtitle {
-      color: var(--muted);
-      font-size: 0.88em;
+      color: #94a3b8;
+      font-size: 0.85em;
+      margin-top: 6px;
     }
 
-    /* Login cards grid */
+    /* Login cards grid arranged neatly */
     .login-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
       align-items: stretch;
     }
 
     .login-card.guest::before { background: linear-gradient(90deg, #38bdf8, #3b82f6); }
-    .guest .card-icon { background: linear-gradient(135deg, rgba(56,189,248,0.3), rgba(59,130,246,0.3)); box-shadow: 0 0 20px rgba(56,189,248,0.3); }
+    .guest .card-icon { background: linear-gradient(135deg, rgba(56,189,248,0.35), rgba(59,130,246,0.35)); box-shadow: 0 0 20px rgba(56,189,248,0.4); }
     .guest .btn-login { background: linear-gradient(135deg, #0284c7, #2563eb); color: #fff; }
     .guest .badge { background: rgba(56,189,248,0.2); color: #7dd3fc; }
 
@@ -140,17 +133,18 @@
     }
 
     .login-card {
-      background: var(--card);
+      background: rgba(15, 18, 35, 0.68);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 24px 22px;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 22px;
+      padding: 26px 24px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
       position: relative;
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 16px 45px rgba(0, 0, 0, 0.5);
     }
     .login-card::before {
       content: '';
@@ -161,8 +155,9 @@
     .login-card.admin::before { background: linear-gradient(90deg, #6366f1, #a855f7); }
     .login-card.student::before { background: linear-gradient(90deg, #f43f5e, #ec4899); }
     .login-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+      transform: translateY(-5px);
+      border-color: rgba(255, 255, 255, 0.35);
+      box-shadow: 0 22px 60px rgba(0,0,0,0.6);
     }
 
     .card-icon {
@@ -314,14 +309,16 @@
 
   <div class="wrapper">
     <div class="header">
-      <div class="logo">
-        <div class="logo-icon">🏠</div>
-        <div class="logo-text">
-          <h1>Don Bosco Hostel</h1>
-          <p>Dormitory Management System</p>
+      <div class="header-pill">
+        <div class="logo">
+          <div class="logo-icon">🏠</div>
+          <div class="logo-text">
+            <h1>Don Bosco Hostel</h1>
+            <p>Dormitory Management System</p>
+          </div>
         </div>
+        <p class="subtitle">Select your role to continue</p>
       </div>
-      <p class="subtitle">Select your role to continue</p>
     </div>
 
     <div class="login-grid">
