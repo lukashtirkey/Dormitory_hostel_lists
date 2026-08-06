@@ -343,50 +343,65 @@
       transition: transform 0.3s ease;
     }
 
-    /* Floating Glassmorphic Design Feature Chips */
+    /* Floating Glassmorphic Design Feature Chips - Moving Smoothly Top to Bottom */
     .floating-chip {
       position: absolute;
       z-index: 5;
-      background: rgba(13, 16, 33, 0.82);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(13, 16, 33, 0.88);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       border-radius: 30px;
-      padding: 10px 18px;
+      padding: 10px 20px;
       color: #fff;
-      font-size: 0.85em;
+      font-size: 0.86em;
       font-weight: 700;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-      animation: floatChip 4s ease-in-out infinite alternate;
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.7);
+      animation: moveTopToBottom 9s ease-in-out infinite alternate;
+    }
+
+    .chip-cyan {
+      left: 35px;
+      top: 3%;
+      border: 1px solid rgba(56, 189, 248, 0.65);
+      color: #bae6fd;
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
+      animation-delay: 0s;
     }
 
     .chip-gold {
-      top: 30px;
-      right: 30px;
-      border: 1px solid rgba(251, 191, 36, 0.6);
+      right: 35px;
+      top: 3%;
+      border: 1px solid rgba(251, 191, 36, 0.65);
       color: #fef08a;
-      box-shadow: 0 0 25px rgba(251, 191, 36, 0.35);
-    }
-    .chip-rose {
-      bottom: 35px;
-      right: 30px;
-      border: 1px solid rgba(244, 63, 94, 0.6);
-      color: #fecdd3;
-      box-shadow: 0 0 25px rgba(244, 63, 94, 0.35);
-    }
-    .chip-cyan {
-      top: 30px;
-      left: 30px;
-      border: 1px solid rgba(56, 189, 248, 0.6);
-      color: #bae6fd;
-      box-shadow: 0 0 25px rgba(56, 189, 248, 0.35);
+      box-shadow: 0 0 25px rgba(251, 191, 36, 0.4);
+      animation-delay: 3s;
     }
 
-    @keyframes floatChip {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-8px); }
+    .chip-rose {
+      right: 25%;
+      top: 3%;
+      border: 1px solid rgba(244, 63, 94, 0.65);
+      color: #fecdd3;
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.4);
+      animation-delay: 6s;
+    }
+
+    @keyframes moveTopToBottom {
+      0% {
+        top: 3%;
+        transform: translateY(0) scale(1);
+      }
+      50% {
+        top: 45%;
+        transform: translateY(0) scale(1.05);
+      }
+      100% {
+        top: 88%;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .spinner {
