@@ -255,58 +255,26 @@
       color: var(--muted);
       border-top: 1px solid var(--border);
       padding-top: 16px;
-    }
-
-    /* Right Hero Panel with Don Bosco & Students Background Image */
+    }    /* Right Hero Panel showcasing the St. John Bosco artwork */
     .right-panel {
       flex: 1;
       position: relative;
-      background: url('don_bosco_bg.jpg') center right / cover no-repeat;
-      filter: brightness(1.15) contrast(1.1);
+      background: #0f1224 url('don_bosco_bg.jpg') center center / cover no-repeat;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 48px;
+      padding: 32px;
+      box-shadow: inset 0 0 80px rgba(0,0,0,0.4);
     }
 
-    /* Vignette gradient overlay for right panel */
+    /* Light overlay to enhance image vibrancy without obscuring text */
     .right-panel::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(9, 10, 20, 0.05) 0%, rgba(9, 10, 20, 0.2) 50%, rgba(9, 10, 20, 0.75) 100%);
+      background: radial-gradient(circle at 50% 30%, transparent 60%, rgba(9, 10, 20, 0.4) 100%);
       z-index: 1;
       pointer-events: none;
-    }
-
-    /* Floating quote card on right panel */
-    .quote-card {
-      position: relative;
-      z-index: 2;
-      background: rgba(13, 15, 26, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      padding: 24px 28px;
-      max-width: 580px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-      animation: fadeIn 0.6s ease;
-    }
-    .quote-text {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.15em;
-      font-weight: 600;
-      color: #fff;
-      line-height: 1.45;
-      margin-bottom: 8px;
-      font-style: italic;
-    }
-    .quote-author {
-      color: #a5b4fc;
-      font-size: 0.88em;
-      font-weight: 700;
-      text-align: right;
     }
 
     .spinner {
@@ -318,33 +286,27 @@
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       vertical-align: middle;
-      margin-right: 8px;
+      margin-right: 6px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* Responsive */
     @media (max-width: 900px) {
       .split-container {
-        flex-direction: column-reverse;
+        flex-direction: column;
+      }
+      .right-panel {
+        min-height: 480px;
+        background: #0f1224 url('don_bosco_bg.jpg') center top / cover no-repeat;
       }
       .left-panel {
         width: 100%;
         min-width: 100%;
         border-right: none;
         border-top: 1px solid var(--border);
-        padding: 28px 20px;
+        padding: 32px 24px;
       }
-      .right-panel {
-        min-height: 340px;
-        padding: 24px;
-      }
-      .quote-card {
-        padding: 18px 20px;
-      }
-      .quote-text {
-        font-size: 1em;
-      }
-    }
+    } }
   </style>
 </head>
 <body>
@@ -441,12 +403,7 @@
     </div>
 
     <!-- RIGHT HERO PANEL (Full St. John Bosco Painting Showcase) -->
-    <div class="right-panel">
-      <div class="quote-card">
-        <div class="quote-text">"It is not enough to love the young; they must know that they are loved."</div>
-        <div class="quote-author">— St. John Bosco</div>
-      </div>
-    </div>
+    <div class="right-panel"></div>
 
   </div>
 
