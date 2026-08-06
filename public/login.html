@@ -27,9 +27,11 @@
       color: var(--text);
       min-height: 100vh;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      overflow-y: auto;
+      padding: 24px 16px;
       position: relative;
     }
 
@@ -76,31 +78,31 @@
     /* Header */
     .header {
       text-align: center;
-      margin-bottom: 48px;
+      margin-bottom: 24px;
     }
     .header .logo {
       display: inline-flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
     .logo-icon {
-      width: 56px;
-      height: 56px;
+      width: 48px;
+      height: 48px;
       background: linear-gradient(135deg, #6366f1, #a855f7);
-      border-radius: 16px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 28px;
-      box-shadow: 0 0 30px rgba(99,102,241,0.5);
+      font-size: 24px;
+      box-shadow: 0 0 25px rgba(99,102,241,0.5);
     }
     .logo-text {
       text-align: left;
     }
     .logo-text h1 {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.8em;
+      font-size: 1.6em;
       font-weight: 800;
       background: linear-gradient(135deg, #a5b4fc, #fff);
       -webkit-background-clip: text;
@@ -115,14 +117,15 @@
     }
     .header .subtitle {
       color: var(--muted);
-      font-size: 0.9em;
+      font-size: 0.88em;
     }
 
     /* Login cards grid */
     .login-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      align-items: stretch;
     }
 
     .login-card.guest::before { background: linear-gradient(90deg, #38bdf8, #3b82f6); }
@@ -139,11 +142,13 @@
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 36px 32px;
+      border-radius: 20px;
+      padding: 24px 22px;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       position: relative;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
     .login-card::before {
       content: '';
@@ -159,30 +164,30 @@
     }
 
     .card-icon {
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
-      margin-bottom: 20px;
+      font-size: 26px;
+      margin-bottom: 14px;
     }
     .admin .card-icon { background: linear-gradient(135deg, rgba(99,102,241,0.3), rgba(168,85,247,0.3)); box-shadow: 0 0 20px rgba(99,102,241,0.3); }
     .student .card-icon { background: linear-gradient(135deg, rgba(244,63,94,0.3), rgba(236,72,153,0.3)); box-shadow: 0 0 20px rgba(244,63,94,0.3); }
 
     .card-title {
       font-family: 'Outfit', sans-serif;
-      font-size: 1.4em;
+      font-size: 1.3em;
       font-weight: 700;
       color: #fff;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .card-desc {
       color: var(--muted);
       font-size: 0.82em;
-      margin-bottom: 28px;
-      line-height: 1.5;
+      margin-bottom: 16px;
+      line-height: 1.45;
     }
 
     .form-group {
