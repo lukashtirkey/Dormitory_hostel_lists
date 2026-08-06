@@ -617,8 +617,8 @@
 
     // Load on boot
     loadData();
-    // Auto-refresh every 5 minutes
-    setInterval(loadData, 300000);
+    // Auto-refresh every 10 seconds for real-time sync
+    setInterval(loadData, 10000);
   </script>
   <!-- Logout Confirmation Modal -->
   <div class="modal-overlay" id="logoutConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;align-items:center;justify-content:center;">

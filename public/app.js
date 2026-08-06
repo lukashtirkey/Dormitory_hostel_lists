@@ -13,7 +13,7 @@ let STATE = null;
 // ── BOOT ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   refresh();
-  setInterval(refresh, 30000);
+  setInterval(refresh, 10000);
 });
 
 // ── DATA ──────────────────────────────────────────────────────────
