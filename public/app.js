@@ -74,11 +74,13 @@ function closeLogoutConfirmModal() {
 }
 
 function logout() {
-  fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': TOKEN } }).catch(() => {});
-  localStorage.removeItem('dorm_token');
-  localStorage.removeItem('dorm_role');
-  localStorage.removeItem('dorm_name');
-  window.location.href = '/';
+  try {
+    const t = localStorage.getItem('dorm_token') || TOKEN;
+    if (t) fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': t } }).catch(() => {});
+  } catch (e) {}
+  localStorage.clear();
+  sessionStorage.clear();
+  window.location.href = '/login';
 }
 
 // ── NAVIGATION ────────────────────────────────────────────────────
@@ -751,12 +753,15 @@ async function clearAllData() {
 
 // ── LIVE SHARE & SCANNER ──────────────────────────────────────────
 function renderShare() {
-  const shareUrl = window.location.origin + '/';
+  const shareUrl = window.location.origin + '/student';
   const input = document.getElementById('shareUrlInput');
   if (input) input.value = shareUrl;
   const qrImg = document.getElementById('qrImage');
   if (qrImg) {
     qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(shareUrl)}`;
+    qrImg.onerror = function() {
+      this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23ffffff'/><path d='M20 20h50v50H20zM30 30v30h30V30zM40 40h10v10H40zM130 20h50v50h-50zM140 30v30h30V30zM150 40h10v10h-10zM20 130h50v50H20zM30 140v30h30v-30zM40 150h10v10H40zM90 20h20v20H90zM90 60h20v20H90zM90 100h20v20H90zM130 90h20v20h-20zM100 130h30v20h-30zM140 140h30v30h-30z' fill='%230f172a'/></svg>";
+    };
   }
 }
 
@@ -781,7 +786,12 @@ function openQrCodeModal() {
 
   if (input) input.value = shareUrl;
   const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(shareUrl)}`;
-  if (img) img.src = qrApiUrl;
+  if (img) {
+    img.src = qrApiUrl;
+    img.onerror = function() {
+      this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23ffffff'/><path d='M20 20h50v50H20zM30 30v30h30V30zM40 40h10v10H40zM130 20h50v50h-50zM140 30v30h30V30zM150 40h10v10h-10zM20 130h50v50H20zM30 140v30h30v-30zM40 150h10v10H40zM90 20h20v20H90zM90 60h20v20H90zM90 100h20v20H90zM130 90h20v20h-20zM100 130h30v20h-30zM140 140h30v30h-30z' fill='%230f172a'/></svg>";
+    };
+  }
   if (dlBtn) dlBtn.href = qrApiUrl;
 
   if (modal) modal.classList.add('open');

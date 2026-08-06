@@ -27,9 +27,13 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      background: 
+        radial-gradient(circle at 10% 15%, rgba(99,102,241,0.35) 0%, transparent 45%),
+        radial-gradient(circle at 90% 85%, rgba(244,63,94,0.3) 0%, transparent 45%),
+        linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #180e2a 100%);
+      color: #f8fafc;
       min-height: 100vh;
+      overflow-y: auto;
     }
 
     body::before {
@@ -37,8 +41,8 @@
       position: fixed;
       inset: 0;
       background:
-        radial-gradient(ellipse 60% 50% at 10% 10%, rgba(99,102,241,0.15) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 60% at 90% 90%, rgba(244,63,94,0.12) 0%, transparent 60%);
+        radial-gradient(ellipse 60% 50% at 10% 10%, rgba(99,102,241,0.2) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 60% at 90% 90%, rgba(244,63,94,0.2) 0%, transparent 60%);
       pointer-events: none;
       z-index: 0;
     }
@@ -406,9 +410,13 @@
     }
 
     function logout() {
-      fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': TOKEN } }).catch(() => {});
+      try {
+        const t = localStorage.getItem('dorm_token');
+        if (t) fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': t } }).catch(() => {});
+      } catch (e) {}
       localStorage.clear();
-      window.location.href = '/';
+      sessionStorage.clear();
+      window.location.href = '/login';
     }
 
     async function loadData() {
@@ -668,7 +676,12 @@
 
       if (input) input.value = shareUrl;
       const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=280x280&data=${encodeURIComponent(shareUrl)}`;
-      if (img) img.src = qrApiUrl;
+      if (img) {
+        img.src = qrApiUrl;
+        img.onerror = function() {
+          this.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23ffffff'/><path d='M20 20h50v50H20zM30 30v30h30V30zM40 40h10v10H40zM130 20h50v50h-50zM140 30v30h30V30zM150 40h10v10h-10zM20 130h50v50H20zM30 140v30h30v-30zM40 150h10v10H40zM90 20h20v20H90zM90 60h20v20H90zM90 100h20v20H90zM130 90h20v20h-20zM100 130h30v20h-30zM140 140h30v30h-30z' fill='%230f172a'/></svg>";
+        };
+      }
       if (dlBtn) dlBtn.href = qrApiUrl;
 
       if (modal) modal.style.display = 'flex';
