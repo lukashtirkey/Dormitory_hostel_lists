@@ -668,13 +668,13 @@ function formatResidentItem(r, i) {
   const isAssLeader = r.includes(' - Ass. Leader');
   if (isLeader) {
     const name = r.replace(' - Leader', '');
-    return `<li><span class="li-num">${i + 1}.</span><strong style="color:#f43f5e;font-weight:800">${esc(name)}</strong> <span class="role-badge leader">— Leader</span></li>`;
+    return `<li><span class="li-num">${i + 1}.</span><span class="li-name" style="color:#ff0055;font-weight:800">${esc(name)}</span> <span class="role-badge leader">— Leader</span></li>`;
   }
   if (isAssLeader) {
     const name = r.replace(' - Ass. Leader', '');
-    return `<li><span class="li-num">${i + 1}.</span><strong style="color:#6366f1;font-weight:700">${esc(name)}</strong> <span class="role-badge ass-leader">— Ass. Leader</span></li>`;
+    return `<li><span class="li-num">${i + 1}.</span><span class="li-name" style="color:#38bdf8;font-weight:700">${esc(name)}</span> <span class="role-badge ass-leader">— Ass. Leader</span></li>`;
   }
-  return `<li><span class="li-num">${i + 1}.</span>${esc(r)}</li>`;
+  return `<li><span class="li-num">${i + 1}.</span><span class="li-name">${esc(r)}</span></li>`;
 }
 
 // ── HISTORY ───────────────────────────────────────────────────────

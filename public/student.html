@@ -539,7 +539,7 @@
           <div class="dorm-bar-bg"><div class="dorm-bar" style="width:${pct}%"></div></div>
           <ul>
             ${occ
-              ? (dm.residents || []).map((r, i) => `<li class="${r === me.name ? 'is-me' : ''}"><span class="li-num">${i+1}.</span>${esc(r)}${r === me.name ? ' ⭐' : ''}</li>`).join('')
+              ? (dm.residents || []).map((r, i) => `<li class="${r === me.name ? 'is-me' : ''}"><span class="li-num">${i+1}.</span><span class="li-name">${esc(r)}</span>${r === me.name ? ' ⭐' : ''}</li>`).join('')
               : '<li style="opacity:.6;font-style:italic">No residents</li>'}
           </ul>
         </div>`;
