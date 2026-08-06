@@ -59,25 +59,29 @@ async function api(url, method = 'GET', body = null) {
   return res.json();
 }
 
-function confirmLogout() {
+window.confirmLogout = function confirmLogout() {
   const modal = document.getElementById('logoutConfirmModal');
   if (modal) {
     modal.classList.add('open');
     modal.style.display = 'flex';
-  } else if (confirm('Do you want to log out?')) {
-    logout();
+    modal.style.opacity = '1';
+    modal.style.visibility = 'visible';
+  } else {
+    if (window.confirm('Do you want to log out?')) logout();
   }
-}
+};
 
-function closeLogoutConfirmModal() {
+window.closeLogoutConfirmModal = function closeLogoutConfirmModal() {
   const modal = document.getElementById('logoutConfirmModal');
   if (modal) {
     modal.classList.remove('open');
     modal.style.display = 'none';
+    modal.style.opacity = '0';
+    modal.style.visibility = 'hidden';
   }
-}
+};
 
-function logout() {
+window.logout = function logout() {
   try {
     const t = localStorage.getItem('dorm_token') || TOKEN;
     if (t) fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': t } }).catch(() => {});
@@ -85,7 +89,7 @@ function logout() {
   localStorage.clear();
   sessionStorage.clear();
   window.location.href = '/login';
-}
+};
 
 // ── NAVIGATION ────────────────────────────────────────────────────
 const PAGE_TITLES = {

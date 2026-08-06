@@ -724,6 +724,37 @@
   </div>
 </div>
 
+<script>
+  function confirmLogout() {
+    const modal = document.getElementById('logoutConfirmModal');
+    if (modal) {
+      modal.classList.add('open');
+      modal.style.display = 'flex';
+      modal.style.opacity = '1';
+      modal.style.visibility = 'visible';
+    } else {
+      if (window.confirm('Do you want to log out?')) logout();
+    }
+  }
+  function closeLogoutConfirmModal() {
+    const modal = document.getElementById('logoutConfirmModal');
+    if (modal) {
+      modal.classList.remove('open');
+      modal.style.display = 'none';
+      modal.style.opacity = '0';
+      modal.style.visibility = 'hidden';
+    }
+  }
+  function logout() {
+    try {
+      const t = localStorage.getItem('dorm_token');
+      if (t) fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': t } }).catch(() => {});
+    } catch (e) {}
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = '/login';
+  }
+</script>
 <script src="app.js"></script>
 </body>
 </html>

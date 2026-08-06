@@ -398,15 +398,23 @@
     function confirmLogout() {
       const modal = document.getElementById('logoutConfirmModal');
       if (modal) {
+        modal.classList.add('open');
         modal.style.display = 'flex';
-      } else if (confirm('Do you want to log out?')) {
-        logout();
+        modal.style.opacity = '1';
+        modal.style.visibility = 'visible';
+      } else {
+        if (window.confirm('Do you want to log out?')) logout();
       }
     }
 
     function closeLogoutConfirmModal() {
       const modal = document.getElementById('logoutConfirmModal');
-      if (modal) modal.style.display = 'none';
+      if (modal) {
+        modal.classList.remove('open');
+        modal.style.display = 'none';
+        modal.style.opacity = '0';
+        modal.style.visibility = 'hidden';
+      }
     }
 
     function logout() {
