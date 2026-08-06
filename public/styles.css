@@ -703,7 +703,8 @@ textarea { resize: vertical; min-height: 100px; }
   .dash-lower { grid-template-columns: 1fr; }
   .gender-overview { grid-template-columns: 1fr; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .topbar-actions .btn { display: none; }
+  .topbar-actions .btn:not(.btn-topbar-logout) { display: none; }
+  .btn-topbar-logout { display: inline-flex !important; }
 }
 
 /* ── ROLE BADGES ───────────────────────────────────────────────── */
