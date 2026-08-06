@@ -382,7 +382,7 @@
     const ROLE  = localStorage.getItem('dorm_role');
     const MY_NAME = localStorage.getItem('dorm_name');
 
-    if (!TOKEN || ROLE !== 'student') {
+    if (!TOKEN || (ROLE !== 'student' && ROLE !== 'guest')) {
       window.location.href = '/';
     }
 
