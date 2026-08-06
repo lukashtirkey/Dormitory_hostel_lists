@@ -708,25 +708,25 @@
     </div>
   </div>
 <!-- Logout Confirmation Modal -->
-<div class="modal-overlay" id="logoutConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;align-items:center;justify-content:center;">
-  <div class="modal-box" style="max-width:400px;text-align:center;">
-    <div class="modal-header" style="justify-content:center;">
-      <span>🚪 Logout Confirmation</span>
+<div class="modal-overlay" id="logoutConfirmModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:999999;align-items:center;justify-content:center;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);">
+  <div class="modal-box" style="max-width:400px;text-align:center;background:#1e293b;border:2px solid #ef4444;border-radius:24px;padding:28px;box-shadow:0 25px 70px rgba(239,68,68,0.3), 0 0 100px rgba(0,0,0,0.9);position:relative;z-index:1000000;">
+    <div class="modal-header" style="justify-content:center;margin-bottom:14px;">
+      <span style="font-family:'Outfit',sans-serif;font-size:1.3em;font-weight:800;color:#fff;">🚪 Logout Confirmation</span>
     </div>
     <div class="modal-body">
-      <p style="color:#e0e7ff;font-size:1.05em;margin-bottom:20px;font-weight:600;">
+      <p style="color:#e0e7ff;font-size:1.1em;margin-bottom:24px;font-weight:600;">
         Do you want to log out?
       </p>
-      <div style="display:flex;gap:12px;justify-content:center;">
-        <button class="btn btn-danger" style="flex:1;padding:12px;font-size:0.95em;cursor:pointer;" onclick="logout()">YES, LOG OUT</button>
-        <button class="btn btn-ghost" style="flex:1;padding:12px;font-size:0.95em;background:rgba(255,255,255,0.1);color:#fff;cursor:pointer;" onclick="closeLogoutConfirmModal()">NO, CANCEL</button>
+      <div style="display:flex;gap:14px;justify-content:center;">
+        <button class="btn btn-danger" style="flex:1;padding:14px;font-size:1em;font-weight:800;cursor:pointer;background:#ef4444;border:none;border-radius:12px;color:#fff;box-shadow:0 4px 20px rgba(239,68,68,0.5);" onclick="logout()">YES, LOG OUT</button>
+        <button class="btn btn-ghost" style="flex:1;padding:14px;font-size:1em;font-weight:700;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:12px;color:#fff;cursor:pointer;" onclick="closeLogoutConfirmModal()">NO, CANCEL</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-  function confirmLogout() {
+  window.confirmLogout = function confirmLogout() {
     const modal = document.getElementById('logoutConfirmModal');
     if (modal) {
       modal.classList.add('open');
@@ -736,8 +736,8 @@
     } else {
       if (window.confirm('Do you want to log out?')) logout();
     }
-  }
-  function closeLogoutConfirmModal() {
+  };
+  window.closeLogoutConfirmModal = function closeLogoutConfirmModal() {
     const modal = document.getElementById('logoutConfirmModal');
     if (modal) {
       modal.classList.remove('open');
@@ -745,21 +745,24 @@
       modal.style.opacity = '0';
       modal.style.visibility = 'hidden';
     }
-  }
-  function logout() {
+  };
+  window.logout = function logout() {
     try {
       const t = localStorage.getItem('dorm_token');
-      if (t) fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': t } }).catch(() => {});
+      if (t) fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': t } }).catch(function(){});
     } catch (e) {}
-    localStorage.clear();
-    sessionStorage.clear();
+    try { localStorage.removeItem('dorm_token'); } catch (e) {}
+    try { localStorage.removeItem('dorm_role'); } catch (e) {}
+    try { localStorage.removeItem('dorm_name'); } catch (e) {}
+    try { localStorage.clear(); } catch (e) {}
+    try { sessionStorage.clear(); } catch (e) {}
     try {
       document.cookie.split(";").forEach(function(c) {
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
       });
     } catch(e){}
     window.location.href = '/login?logged_out=1';
-  }
+  };
 </script>
 <script src="app.js"></script>
 </body>

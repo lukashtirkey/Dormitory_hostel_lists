@@ -83,11 +83,14 @@ window.closeLogoutConfirmModal = function closeLogoutConfirmModal() {
 
 window.logout = function logout() {
   try {
-    const t = localStorage.getItem('dorm_token') || TOKEN;
-    if (t) fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': t } }).catch(() => {});
+    const t = localStorage.getItem('dorm_token') || (typeof TOKEN !== 'undefined' ? TOKEN : '');
+    if (t) fetch('/api/logout', { method: 'POST', headers: { 'x-auth-token': t } }).catch(function(){});
   } catch (e) {}
-  localStorage.clear();
-  sessionStorage.clear();
+  try { localStorage.removeItem('dorm_token'); } catch (e) {}
+  try { localStorage.removeItem('dorm_role'); } catch (e) {}
+  try { localStorage.removeItem('dorm_name'); } catch (e) {}
+  try { localStorage.clear(); } catch (e) {}
+  try { sessionStorage.clear(); } catch (e) {}
   try {
     document.cookie.split(";").forEach(function(c) {
       document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
